@@ -117,7 +117,7 @@ event_categories = ["Service", "Brotherhood", "Recruitment", "Social"].map do |n
   EventCategory.create!(name: name)
 end
 
-# Create events
+#Create events
 puts "Creating events..."
 10.times do |i|
   Event.create!(
@@ -126,6 +126,12 @@ puts "Creating events..."
     starts_at: i.days.from_now,
     ends_at: i.days.from_now + 2.hours,
     location: "Room #{100 + i}",
+    location_type: ['campus', 'off_campus'].sample,
+    campus_code: ['ZACH', 'HRBB', 'ETB', 'BLOC'].sample,
+    campus_number: rand(100..500),
+    location_name: "Conference Room #{i+1}",
+    address: "123 University Drive, College Station, TX 77840",
+    published: [:draft, :published].sample,
     event_category: event_categories.sample,
     visibility: [:public_event, :members_only, :execs_only].sample
   )
