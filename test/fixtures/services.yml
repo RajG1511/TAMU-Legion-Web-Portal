@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  hours: 9.99
+  name: MyString
+  description: MyText
+  date_performed: 2025-09-24
+  status: 1
+
+two:
+  user: two
+  hours: 9.99
+  name: MyString
+  description: MyText
+  date_performed: 2025-09-24
+  status: 1
