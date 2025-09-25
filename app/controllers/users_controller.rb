@@ -55,18 +55,19 @@ class UsersController < ApplicationController
 
   private
 
+  def base_permitted_params
+    [:email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url]
+  end
+
+  def exec_permitted_params
+    base_permitted_params + [:status, :position, :role]
+  end
+
   def user_params
-    params.require(:user).permit(
-      :email,
-      :first_name,
-      :last_name,
-      :graduation_year,
-      :major,
-      :t_shirt_size,
-      :status,
-      :position,
-      :role,
-      :image_url
-    )
+    if current_user&.exec?
+      params.require(:user).permit(exec_permitted_params)
+    else
+      params.require(:user).permit(base_permitted_params)
+    end
   end
 end
