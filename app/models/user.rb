@@ -36,8 +36,12 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
+  def president?
+    role == 'president'
+  end
+
   def exec?
-    role == 'exec' || role == 'president'
+    role == 'exec' || president?
   end
 
   def member?
