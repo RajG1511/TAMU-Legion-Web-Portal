@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  # Devise
+  devise :omniauthable, omniauth_providers: [:google_oauth2]
+
   # Enums - Updated to include president
   enum :status, { inactive: 0, active: 1 }
   enum :role, { nonmember: 0, member: 1, exec: 2, president: 3 }
@@ -51,6 +54,12 @@ class User < ApplicationRecord
 
   def can_create_events?
     exec?
+  end
+
+  #OAuth mapping
+  def self.from_google(email:, full_name:, uid:, avatar_url:)
+    # Accounts should not be created automatically by oauth
+    user = find_by(email: email)
   end
 
   private
