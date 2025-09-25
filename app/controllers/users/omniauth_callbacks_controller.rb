@@ -1,4 +1,4 @@
-module users
+module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def google_oauth2
       user = User.from_google(**from_google_params)
