@@ -22,5 +22,9 @@ Rails.application.routes.draw do
     get "/users/sign_out", to: "devise/sessions#destroy", as: :destroy_user_session
   end
 
-  resources :users, except: [:show]
+  resources :users do
+    member do
+      get :delete
+    end
+  end
 end

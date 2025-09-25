@@ -3,13 +3,13 @@ class UsersController < ApplicationController
   # will want to allow users to view themselves later
   # may want a directory for members to view, depends on what the customer wants
   before_action :require_exec!, only: [:index, :show, :new, :create, :edit, :update, :delete, :destroy]
+  before_action :set_user, only: [:show, :edit, :update, :delete, :destroy]
 
   def index
     @users = User.all
   end
 
   def show
-    @user = User.find(params[:id])
   end
 
   def new
@@ -18,7 +18,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new(user_params)
-    if @user.active_storage_overview
+    if @user.save
       flash[:success] = "User created."
       redirect to users_path
     else
@@ -28,11 +28,9 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = User.find(params[:id])
   end
 
   def update
-    @user = User.find(params[:id])
     if @user.update(user_params)
       flash[:success] = "User updated."
       redirect to users_path
@@ -43,11 +41,9 @@ class UsersController < ApplicationController
   end
 
   def delete
-    @user = User.find(params[:id])
   end
 
   def destroy
-    @user = User.find(params[:id])
     @user.destroy
     flash[:success] = "User deleted."
     redirect to users_path
@@ -60,14 +56,24 @@ class UsersController < ApplicationController
   end
 
   def exec_permitted_params
-    base_permitted_params + [:status, :position, :role]
+    base_permitted_params + [:status]
+  end
+
+  def pres_permitted_params
+    exec_permitted_params + [:position, :role]
   end
 
   def user_params
-    if current_user&.exec?
+    if current_user&.president?
+      params.require(:user).permit(pres_permitted_params)
+    elsif current_user&.exec?
       params.require(:user).permit(exec_permitted_params)
     else
       params.require(:user).permit(base_permitted_params)
     end
+  end
+
+  def set_user
+    @user = User.find(params[:id])
   end
 end
