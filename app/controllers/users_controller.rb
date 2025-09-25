@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   # will be exec only for now
   # will want to allow users to view themselves later
   # may want a directory for members to view, depends on what the customer wants
-  before_action :require_exec!
+  before_action :require_exec!, only: [:index, :show, :new, :create, :edit, :update, :delete, :destroy]
 
   def index
     @users = User.all

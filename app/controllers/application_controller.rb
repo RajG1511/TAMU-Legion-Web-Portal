@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   def require_exec!
     return if current_user&.exec?
-    redirect_to new_user_session_path, alert: 'Execuitive access only.'
+    redirect_to new_user_session_path, alert: 'Executive access only.'
   end
 
   def require_president!
