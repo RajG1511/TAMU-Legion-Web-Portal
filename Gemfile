@@ -55,6 +55,9 @@ group :development, :test do
   gem 'rspec-rails'
 
   gem 'rubycritic', require: false
+
+  gem 'factory_bot_rails'
+
 end
 
 group :development do
