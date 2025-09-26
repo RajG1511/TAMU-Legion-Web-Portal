@@ -1,0 +1,179 @@
+<%= form_with model: @event, local: true do |f| %>
+    <!-- Event Name -->
+    <div>
+        <%= f.label :name, required: true %>
+        <%= f.text_field :name %>
+    </div>
+
+    <!-- Category Dropdown -->
+    <div>
+        <%= f.label :event_category_id, "Event Category", required: true %>
+        <%= f.collection_select :event_category_id, @categories, :id, :name, prompt: "Select a category" %>
+    </div>
+
+    <!-- Description -->
+    <div>
+        <%= f.label :description, required: true %>
+        <%= f.text_area :description %>
+    </div>
+
+    <!-- Location Type -->
+    <div>
+        <%= f.label :location_type, "Location Type", required: true %><br>
+        
+        <%= f.radio_button :location_type, "campus", id: "on_campus", required: true %>
+        <%= f.label :location_type, "On Campus", for: "on_campus" %>
+        
+        <%= f.radio_button :location_type, "off_campus", id: "off_campus", required: true %>
+        <%= f.label :location_type, "Off Campus", for: "off_campus" %>
+
+        <%= f.radio_button :location_type, "other_location", id: "other_location", required: true %>
+        <%= f.label :location_type, "Other Location", for: "other_location" %>
+    </div>
+
+    <!-- On-Campus Fields -->
+    <div id="on-campus-fields" style="display:none;">
+        <%= f.label :campus_code %>
+        <%= f.text_field :campus_code %>
+
+        <%= f.label :campus_number %>
+        <%= f.number_field :campus_number %>
+    </div>
+
+    <!-- Off-Campus Fields -->
+    <div id="off-campus-fields" style="display:none;">
+        <%= f.label :location_name %>
+        <%= f.text_field :location_name %>
+
+        <%= f.label :address %>
+        <%= f.text_field :address %>
+    </div>
+
+    <!-- Other Location Fields (Virtual/Other) -->
+    <div id="other-location-fields" style="display:none;">
+        <%= f.label :location_text %>
+        <%= f.text_field :location_text %>
+    </div>
+
+    <!-- Start/End Times -->
+    <div>
+        <%= f.label :starts_at, "Start Time", required: true %>
+        <%= f.datetime_field :starts_at, id: "starts_at", aria: { label: "Event start time", describedby: "starts_at_help" } %>
+        <small id="starts_at_help">Select the date and time the event begins</small>
+    </div>
+
+    <div>
+        <%= f.label :ends_at, "End Time", required: true %>
+        <%= f.datetime_field :ends_at, id: "ends_at", aria: { label: "Event end time", describedby: "ends_at_help" } %>
+        <small id="ends_at_help">Select the date and time the event ends</small>
+    </div>
+
+    <!-- Visibility -->
+    <div>
+        <%= f.label :visibility, "Visibility", required: true %>
+        <%= f.select :visibility, Event.visibilities.keys.map { |v| [v.titleize, v] }, prompt: "Select visibility" %>
+    </div>
+
+    <!-- Submit -->
+    <div>
+        <%= f.submit %>
+    </div>
+
+    <!-- Back to Dashboard -->
+    <%= link_to "← Back to Dashboard", dashboard_events_path, class: "btn btn-secondary", role: "button" %>
+<% end %>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const onCampusBtn = document.getElementById("on_campus");
+    const offCampusBtn = document.getElementById("off_campus");
+    const otherLocationBtn = document.getElementById("other_location");
+    const onCampusFields = document.getElementById("on-campus-fields");
+    const offCampusFields = document.getElementById("off-campus-fields");
+    const otherLocationFields = document.getElementById("other-location-fields");
+    const startTimeField = document.getElementById("starts_at");
+    const endTimeField = document.getElementById("ends_at");
+
+    // Helper - Get local Machine Time in YYYY-MM-DDTHH:MM format
+    function fmt(d) {
+        const pad = (n) => String(n).padStart(2, "0");
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    // Helper - Adds at least 1 minute from start time to a date object for end time selection
+    function addMinutes(date, minutes) {
+        const d = new Date(date.getTime());
+        d.setMinutes(d.getMinutes() + minutes);
+        return d;
+    }
+
+    // Helper - Toggles display of on-campus and off-campus fields
+    function toggleLocationFields() {
+        if (onCampusBtn.checked) {
+            onCampusFields.style.display = "block";
+            offCampusFields.style.display = "none";
+            otherLocationFields.style.display = "none";
+        } 
+        else if (offCampusBtn.checked) {
+            onCampusFields.style.display = "none";
+            offCampusFields.style.display = "block";
+            otherLocationFields.style.display = "none";
+        }
+        else if (otherLocationBtn.checked) {
+            onCampusFields.style.display = "none";
+            offCampusFields.style.display = "none";
+            otherLocationFields.style.display = "block";
+        } 
+        else {
+            onCampusFields.style.display = "none";
+            offCampusFields.style.display = "none";
+            otherLocationFields.style.display = "none";
+        }
+    }
+
+    // Helper - Syncs end time minimum to be at least 1 minute after start time
+    function syncEndMinToStart() {
+        if (!startTimeField.value) return;
+        const start = new Date(startTimeField.value);
+        const minEnd = addMinutes(start, 1);
+        endTimeField.min = fmt(minEnd);
+
+        if (!endTimeField.value || new Date(endTimeField.value) < minEnd) {
+            endTimeField.value = fmt(minEnd);
+        }
+    }
+
+    // Helper - Validates that end time is at least 1 minute after start time
+    function validateEndTime() {
+        if (startTimeField.value && endTimeField.value) {
+            const start = new Date(startTimeField.value);
+            const end = new Date(endTimeField.value);
+            const minEnd = addMinutes(start, 1);
+            if (end < minEnd) {
+                endTimeField.value = fmt(minEnd);
+                alert("End time must be at least 1 minute after start time.");
+            }
+        }
+    }
+
+    // Initialize time fields
+    const now = new Date();
+    now.setSeconds(0, 0);
+    startTimeField.min = fmt(now);
+    startTimeField.value ||= fmt(now);
+    syncEndMinToStart();
+
+    // Event listeners
+    onCampusBtn?.addEventListener("change", toggleLocationFields);
+    offCampusBtn?.addEventListener("change", toggleLocationFields);
+    otherLocationBtn?.addEventListener("change", toggleLocationFields);
+    startTimeField?.addEventListener("change", () => {
+        syncEndMinToStart();
+        validateEndTime();
+    });
+    endTimeField?.addEventListener("change", validateEndTime);
+
+    // Initial state
+    toggleLocationFields();
+});
+</script>

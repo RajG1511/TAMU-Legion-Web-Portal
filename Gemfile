@@ -53,6 +53,8 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   gem 'rspec-rails'
+
+  gem 'rubycritic', require: false
 end
 
 group :development do
@@ -77,3 +79,4 @@ gem 'turbo-rails'
 gem 'stimulus-rails'
 gem 'cssbundling-rails'
 gem 'rails-erd'
+gem 'whenever', require: false

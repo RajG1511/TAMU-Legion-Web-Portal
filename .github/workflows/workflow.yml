@@ -55,6 +55,9 @@ jobs:
 
       - name: Run rubocop
         run: bundler exec rubocop --force-exclusion vendor/*/** --out rubocop.txt
+      
+      - name: Run RubyCritic
+        run: bundle exec rubycritic --no-browser --format console
 
       - name: Upload coverage results
         uses: actions/upload-artifact@master
