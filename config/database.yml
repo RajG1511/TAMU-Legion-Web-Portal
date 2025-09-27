@@ -18,7 +18,6 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: localhost
   username: <%= ENV['DATABASE_USER'] %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
 
@@ -26,6 +25,7 @@ default: &default
 development:
   <<: *default
   database: legion_development
+  host: localhost
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -99,3 +99,7 @@ production:
     <<: *primary_production
     database: legion_production_cable
     migrations_paths: db/cable_migrate
+
+review:
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
