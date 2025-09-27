@@ -83,3 +83,4 @@ gem 'stimulus-rails'
 gem 'cssbundling-rails'
 gem 'rails-erd'
 gem 'whenever', require: false
+gem "active_storage_validations"
