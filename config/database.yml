@@ -86,6 +86,7 @@ production:
     <<: *default
     database: legion_production
     username: legion
+    url: <%= ENV["DATABASE_URL"] %>
     password: <%= ENV["LEGION_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production
