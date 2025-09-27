@@ -23,6 +23,10 @@
   </head>
 
   <body>
+    <p style="color: red"><%= flash[:error] %></p>
+    <p style="color: blue"><%= flash[:notice] %></p>
+    <p style="color: green"><%= flash[:success] %></p>
+
     <% if user_signed_in? %>
       <%= link_to "Sign out", destroy_user_session_path, method: :delete, data: { turbo: false }  %>
     <% else %>

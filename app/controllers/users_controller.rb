@@ -2,8 +2,8 @@ class UsersController < ApplicationController
   # will be exec only for now
   # will want to allow users to view themselves later
   # may want a directory for members to view, depends on what the customer wants
-  before_action :require_exec!, only: [:index, :show, :new, :create, :edit, :update, :delete, :destroy]
-  before_action :set_user, only: [:show, :edit, :update, :delete, :destroy]
+  before_action :require_exec!, only: [ :index, :show, :new, :create, :edit, :update, :delete, :destroy ]
+  before_action :set_user, only: [ :show, :edit, :update, :delete, :destroy ]
 
   def index
     @users = User.all
@@ -20,7 +20,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
     if @user.save
       flash[:success] = "User created."
-      redirect to users_path
+      redirect_to users_path
     else
       flash[:error] = "User not created."
       render :new
@@ -33,7 +33,7 @@ class UsersController < ApplicationController
   def update
     if @user.update(user_params)
       flash[:success] = "User updated."
-      redirect to users_path
+      redirect_to users_path
     else
       flash[:error] = "User not updated."
       render :edit
@@ -46,21 +46,21 @@ class UsersController < ApplicationController
   def destroy
     @user.destroy
     flash[:success] = "User deleted."
-    redirect to users_path
+    redirect_to users_path
   end
 
   private
 
   def base_permitted_params
-    [:email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url]
+    [ :email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url ]
   end
 
   def exec_permitted_params
-    base_permitted_params + [:status]
+    base_permitted_params + [ :status ]
   end
 
   def pres_permitted_params
-    exec_permitted_params + [:position, :role]
+    exec_permitted_params + [ :position, :role ]
   end
 
   def user_params
