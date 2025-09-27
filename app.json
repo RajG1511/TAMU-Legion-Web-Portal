@@ -5,7 +5,8 @@
       "addons": ["heroku-postgresql:in-dyno"],
       "env": {
         "RAILS_ENV": "review",
-        "DISABLE_DATABASE_ENVIRONMENT_CHECK": "1"
+        "DISABLE_DATABASE_ENVIRONMENT_CHECK": "1",
+        "DATABASE_URL": "postgres://localhost:5432/mydb?encoding=utf8"
       },
       "scripts": {
         "postdeploy": "bundle exec rails db:schema:load && yarn build && yarn build:css"
