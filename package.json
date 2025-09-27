@@ -1,6 +1,10 @@
 {
   "name": "app",
   "private": true,
+  "engines": {
+    "node": "22.x",
+    "yarn": "1.22.x"
+  },
   "scripts": {
     "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets",
     "build:css": "tailwindcss -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.css --minify"
@@ -11,9 +15,5 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.1.13",
     "tailwindcss": "^4.1.13"
-  },
-  "engines": {
-    "node": "22.x",
-    "yarn": "1.22.x"
   }
 }
