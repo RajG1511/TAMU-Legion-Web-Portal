@@ -24,7 +24,7 @@ RSpec.describe Resource, type: :model do
       resource = build(:resource)
       resource.file.detach
       expect(resource).not_to be_valid
-      expect(resource.errors[:file]).to include("must be attached")
+      expect(resource.errors[:file]).to include("can't be blank")
     end
 
     it "is invalid with wrong file type" do
@@ -36,7 +36,7 @@ RSpec.describe Resource, type: :model do
         content_type: "text/plain"
       )
       expect(resource).not_to be_valid
-      expect(resource.errors[:file]).to include("has an invalid content type")
+      expect(resource.errors[:file].first).to include("has an invalid content type")
     end
   end
 

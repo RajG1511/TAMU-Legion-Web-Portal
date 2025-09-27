@@ -36,6 +36,7 @@ class ResourcesController < ApplicationController
         else
             flash.now[:alert] = "Please fill out all required fields."
             @categories = ResourceCategory.all
+            Rails.logger.debug @resource.errors.full_messages
             render :new, status: :unprocessable_entity
         end
     end
@@ -53,6 +54,7 @@ class ResourcesController < ApplicationController
         else
             flash.now[:alert] = "Please fill out all required fields."
             @categories = ResourceCategory.all
+            Rails.logger.debug @resource.errors.full_messages
             render :edit, status: :unprocessable_entity
         end
     end

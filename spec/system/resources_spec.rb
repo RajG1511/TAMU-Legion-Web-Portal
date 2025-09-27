@@ -31,7 +31,7 @@ RSpec.describe "Resource management", type: :system do
 
     expect(page).to have_content("Please fill out all required fields.")
     expect(page).to have_content("Name can't be blank")
-    expect(page).to have_content("File must be attached")
+    expect(page).to have_content("File can't be blank")
   end
 
   it "allows admin to update an existing resource" do

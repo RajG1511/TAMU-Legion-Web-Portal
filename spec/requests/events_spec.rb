@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe "Events", type: :request do
   let(:category) { create(:event_category) }
-  let(:user)     { create(:user) } # needed because log_event_version uses User.last
+  let(:user)     { create(:user) }
 
   let(:valid_attributes) do
     attributes_for(:event,

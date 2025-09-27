@@ -1,8 +1,14 @@
 require "rails_helper"
 
 RSpec.describe "Resources", type: :request do
+  include ActionDispatch::TestProcess::FixtureFile
+
   let(:category) { create(:resource_category) }
-  let(:user) { create(:user) }
+  let!(:user) { create(:user) }
+
+  let(:valid_file) do
+    fixture_file_upload(Rails.root.join("spec/fixtures/files/test.pdf"), "application/pdf")
+  end
 
   describe "GET /resources" do
     it "renders the index with published resources" do
@@ -27,7 +33,7 @@ RSpec.describe "Resources", type: :request do
           content: "Some description",
           visibility: "public_resource",
           resource_category_id: category.id,
-          file: fixture_file_upload(Rails.root.join("spec/fixtures/files/test.pdf"), "application/pdf")
+          file: valid_file
         }
       }
     end
@@ -35,9 +41,9 @@ RSpec.describe "Resources", type: :request do
     let(:invalid_params) do
       {
         resource: {
-          name: "",
+          name: "", # invalid
           visibility: "public_resource",
-          resource_category_id: nil
+          resource_category_id: nil # invalid
         }
       }
     end
@@ -45,8 +51,10 @@ RSpec.describe "Resources", type: :request do
     it "creates a resource with valid params" do
       expect {
         post resources_path, params: valid_params
+        puts response.body
       }.to change(Resource, :count).by(1)
       expect(response).to redirect_to(dashboard_resources_path)
+      expect(Resource.last.name).to eq("New Resource")
     end
 
     it "does not create a resource with invalid params" do
@@ -64,6 +72,7 @@ RSpec.describe "Resources", type: :request do
       patch resource_path(resource), params: {
         resource: { name: "Updated Name" }
       }
+      puts response.body
       expect(response).to redirect_to(dashboard_resources_path)
       expect(resource.reload.name).to eq("Updated Name")
     end
@@ -76,9 +85,8 @@ RSpec.describe "Resources", type: :request do
     end
   end
 
-  describe "DELETE /resources/:id" do
+  describe "DELETE /resources/:id" do  
     let!(:resource) { create(:resource, resource_category: category) }
-
     it "deletes the resource" do
       expect {
         delete resource_path(resource)
