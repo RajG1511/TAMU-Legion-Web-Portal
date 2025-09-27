@@ -11,5 +11,9 @@
   "dependencies": {
     "@tailwindcss/cli": "^4.1.13",
     "tailwindcss": "^4.1.13"
+  },
+  "engines": {
+    "node": "22.x",
+    "yarn": "1.22.x"
   }
 }
