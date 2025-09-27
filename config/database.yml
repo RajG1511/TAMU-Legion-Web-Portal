@@ -18,14 +18,14 @@ default: &default
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  username: <%= ENV['DATABASE_USER'] %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
 
 
 development:
   <<: *default
   database: legion_development
   host: localhost
+  username: <%= ENV['DATABASE_USER'] %>
+  password: <%= ENV['DATABASE_PASSWORD'] %>
 
   # The specified database role being used to connect to PostgreSQL.
   # To create additional roles in PostgreSQL see `$ createuser --help`.
@@ -82,23 +82,25 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
-  primary: &primary_production
-    <<: *default
-    database: legion_production
-    username: legion
-    password: <%= ENV["LEGION_DATABASE_PASSWORD"] %>
-  cache:
-    <<: *primary_production
-    database: legion_production_cache
-    migrations_paths: db/cache_migrate
-  queue:
-    <<: *primary_production
-    database: legion_production_queue
-    migrations_paths: db/queue_migrate
-  cable:
-    <<: *primary_production
-    database: legion_production_cable
-    migrations_paths: db/cable_migrate
+  #primary: &primary_production
+    #<<: *default
+    #database: legion_production
+    #username: legion
+    #password: <%= ENV["LEGION_DATABASE_PASSWORD"] %>
+  #cache:
+    #<<: *primary_production
+    #database: legion_production_cache
+    #migrations_paths: db/cache_migrate
+  #queue:
+    #<<: *primary_production
+    #database: legion_production_queue
+    #migrations_paths: db/queue_migrate
+  #cable:
+    #<<: *primary_production
+    #database: legion_production_cable
+    #migrations_paths: db/cable_migrate
+  <<: *default
+  url: <%= ENV['DATABASE_URL'] %>
 
 review:
   <<: *default
