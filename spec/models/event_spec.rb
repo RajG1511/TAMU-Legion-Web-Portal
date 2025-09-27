@@ -79,26 +79,26 @@ RSpec.describe Event, type: :model do
     end
   end
 
-  describe "scopes" do
-    let!(:upcoming_event) { create(:event, starts_at: 2.days.from_now, ends_at: 3.days.from_now, published: :published) }
-    let!(:past_event)     { create(:event, starts_at: 3.days.ago, ends_at: 2.days.ago, published: :published) }
+    describe "scopes" do
+    let!(:upcoming_event) { create(:event, name: "Upcoming Event", starts_at: 2.days.from_now, ends_at: 3.days.from_now, published: :published) }
+    let!(:past_event)     { create(:event, name: "Past Event", starts_at: 3.days.ago, ends_at: 2.days.ago, published: :published) }
+    let!(:draft_event)    { create(:event, name: "Draft Event", starts_at: 1.day.from_now, ends_at: 2.days.from_now, published: :draft) }
 
     it "returns upcoming events" do
-      expect(Event.upcoming).to include(upcoming_event)
-      expect(Event.upcoming).not_to include(past_event)
+        expect(Event.upcoming).to include(upcoming_event)
+        expect(Event.upcoming).not_to include(past_event)
     end
 
     it "returns past events" do
-      expect(Event.past).to include(past_event)
-      expect(Event.past).not_to include(upcoming_event)
+        expect(Event.past).to include(past_event)
+        expect(Event.past).not_to include(upcoming_event)
     end
 
     it "returns only published events" do
-      draft_event = create(:event, published: :draft)
-      expect(Event.published_only).to include(upcoming_event, past_event)
-      expect(Event.published_only).not_to include(draft_event)
+        expect(Event.published_only).to include(upcoming_event, past_event)
+        expect(Event.published_only).not_to include(draft_event)
     end
-  end
+    end
 
   describe "callbacks" do
     it "clears irrelevant fields when location_type changes" do
@@ -110,10 +110,12 @@ RSpec.describe Event, type: :model do
       expect(event.location_text).to be_nil
     end
 
+    let(:category) { create(:event_category) }
+
     it "sets location before save" do
-      event = build(:event, location_type: "campus", campus_code: "ENGR", campus_number: 101)
-      event.save!
-      expect(event.location).to eq("ENGR - 101")
+    event = build(:event, event_category: category, location_type: "campus", campus_code: "ENGR", campus_number: 101)
+    event.save!
+    expect(event.location).to eq("ENGR - 101")
     end
   end
 

@@ -114,8 +114,8 @@ User.where(role: [:member, :exec, :president]).each do |user|
 end
 =end
 
+# Create event 
 =begin
-# Create event categories
 puts "Creating event categories..."
 event_categories = ["Service", "Brotherhood", "Recruitment", "Social"].map do |name|
   EventCategory.create!(name: name)
