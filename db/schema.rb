@@ -185,6 +185,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_193227) do
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["role"], name: "index_users_on_role"
     t.index ["status"], name: "index_users_on_status"
+    t.string "provider"
+    t.string "uid"
+    t.index ["uid"], name: "index_users_on_uid"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

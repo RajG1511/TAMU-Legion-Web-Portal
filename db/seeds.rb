@@ -34,7 +34,55 @@ president = User.create!(
   position: "President"
 )
 
-=begin
+# Create developer users with president level access
+dev0 = User.create!(
+  email: 'uzairak12@tamu.edu',
+  first_name: 'Uzair',
+  last_name: 'Khan',
+  graduation_year: 2026,
+  major: 'Computer Science',
+  t_shirt_size: 'S',
+  status: :active,
+  role: :president,
+  position: 'President'
+)
+
+dev1 = User.create!(
+  email: 'kylepalermo@tamu.edu',
+  first_name: 'Kyle',
+  last_name: 'Palermo',
+  graduation_year: 2026,
+  major: 'Computer Science',
+  t_shirt_size: 'S',
+  status: :active,
+  role: :president,
+  position: 'President'
+)
+
+dev2 = User.create!(
+  email: 'djw9699@tamu.edu',
+  first_name: 'David',
+  last_name: 'Wang',
+  graduation_year: 2026,
+  major: 'Computer Science',
+  t_shirt_size: 'S',
+  status: :active,
+  role: :president,
+  position: 'President'
+)
+
+dev3 = User.create!(
+  email: 'raj.gupta@tamu.edu',
+  first_name: 'Raj',
+  last_name: 'Gupta',
+  graduation_year: 2026,
+  major: 'Computer Science',
+  t_shirt_size: 'S',
+  status: :active,
+  role: :president,
+  position: 'President'
+)
+
 # Create exec users
 vp = User.create!(
   email: "vp@org.edu",
