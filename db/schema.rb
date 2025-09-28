@@ -182,11 +182,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_27_193227) do
     t.string "image_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "provider"
+    t.string "uid"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["role"], name: "index_users_on_role"
     t.index ["status"], name: "index_users_on_status"
-    t.string "provider"
-    t.string "uid"
     t.index ["uid"], name: "index_users_on_uid"
   end
 
