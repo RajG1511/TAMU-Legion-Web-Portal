@@ -1,5 +1,9 @@
 <h1>Resources</h1>
 
+<p>
+  <%= link_to "Reimbursement Request Form", "https://docs.google.com/forms/d/e/1FAIpQLSf72UrBgiSIvulHJWR2HCeND2GiGS43xShzlWsXUKj5RGIcWQ/viewform", target: "_blank", rel: "noopener" %>
+</p>
+
 <% if @resources.any? %>
     <%# Filters resource by category %>
     <%= form_with url: resources_path, method: :get, local: true do %>
