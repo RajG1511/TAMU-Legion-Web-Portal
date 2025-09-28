@@ -49,6 +49,12 @@ jobs:
       - name: Precompile Rails assets
         run: bin/rails assets:precompile RAILS_ENV=test
 
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22
+          cache: "yarn"
+      
       - uses: borales/actions-yarn@v3.0.0
         with:
           cmd: install
