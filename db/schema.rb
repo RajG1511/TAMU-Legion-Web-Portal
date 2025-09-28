@@ -10,9 +10,37 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_25_004624) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_27_193227) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "committee_memberships", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -65,18 +93,20 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_25_004624) do
     t.text "location_name"
     t.text "address"
     t.string "image"
+    t.string "change_type"
+    t.string "location_text"
     t.index ["event_id"], name: "index_event_versions_on_event_id"
     t.index ["user_id"], name: "index_event_versions_on_user_id"
   end
 
   create_table "events", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "description"
-    t.datetime "starts_at"
-    t.datetime "ends_at"
+    t.datetime "starts_at", null: false
+    t.datetime "ends_at", null: false
     t.string "location"
-    t.bigint "event_category_id", null: false
-    t.integer "visibility"
+    t.bigint "event_category_id"
+    t.integer "visibility", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "published", default: 0, null: false
@@ -86,8 +116,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_25_004624) do
     t.text "location_name"
     t.text "address"
     t.string "image"
+    t.string "location_text"
     t.index ["event_category_id"], name: "index_events_on_event_category_id"
     t.index ["published"], name: "index_events_on_published"
+    t.index ["starts_at"], name: "index_events_on_starts_at"
+    t.index ["visibility"], name: "index_events_on_visibility"
   end
 
   create_table "resource_categories", force: :cascade do |t|
@@ -104,58 +137,67 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_25_004624) do
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "change_type"
+    t.boolean "published", default: false, null: false
     t.index ["resource_id"], name: "index_resource_versions_on_resource_id"
     t.index ["user_id"], name: "index_resource_versions_on_user_id"
   end
 
   create_table "resources", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "content"
-    t.integer "visibility"
-    t.bigint "resource_category_id", null: false
+    t.integer "visibility", default: 0, null: false
+    t.bigint "resource_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "published", default: false, null: false
     t.index ["resource_category_id"], name: "index_resources_on_resource_category_id"
+    t.index ["visibility"], name: "index_resources_on_visibility"
   end
 
   create_table "services", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.decimal "hours"
-    t.string "name"
+    t.decimal "hours", precision: 5, scale: 2, null: false
+    t.string "name", null: false
     t.text "description"
-    t.date "date_performed"
-    t.integer "status"
+    t.date "date_performed", null: false
+    t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["date_performed"], name: "index_services_on_date_performed"
+    t.index ["status"], name: "index_services_on_status"
     t.index ["user_id"], name: "index_services_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email"
-    t.string "first_name"
-    t.string "last_name"
+    t.string "email", null: false
+    t.string "first_name", null: false
+    t.string "last_name", null: false
     t.integer "graduation_year"
     t.string "major"
     t.string "t_shirt_size"
-    t.integer "status"
+    t.integer "status", default: 1, null: false
     t.string "position"
-    t.integer "role"
+    t.integer "role", default: 0, null: false
     t.string "image_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["role"], name: "index_users_on_role"
+    t.index ["status"], name: "index_users_on_status"
     t.string "provider"
     t.string "uid"
     t.index ["uid"], name: "index_users_on_uid"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "committee_memberships", "committees"
   add_foreign_key "committee_memberships", "users"
   add_foreign_key "committee_versions", "committees"
   add_foreign_key "committee_versions", "users"
-  add_foreign_key "event_versions", "events"
   add_foreign_key "event_versions", "users"
   add_foreign_key "events", "event_categories"
-  add_foreign_key "resource_versions", "resources"
   add_foreign_key "resource_versions", "users"
   add_foreign_key "resources", "resource_categories"
   add_foreign_key "services", "users"

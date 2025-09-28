@@ -1,0 +1,52 @@
+<% if @resource.errors.any? %>
+  <div class="errors">
+    <h2><%= pluralize(@resource.errors.count, "error") %> prevented this resource from being saved:</h2>
+    <ul>
+        <% @resource.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+        <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: @resource, local: true do |f| %>
+    <div>
+        <%= f.label :name %><br>
+        <%= f.text_field :name %>
+    </div>
+
+    <div>
+        <%= f.label :visibility %><br>
+        <%= f.select :visibility, Resource.visibilities.keys.map { |v| [v.humanize, v] } %>
+    </div>
+
+    <div>
+        <%= f.label :resource_category_id, "Category" %><br>
+        <%= f.collection_select :resource_category_id, ResourceCategory.all, :id, :name %>
+    </div>
+
+    <div>
+        <%= f.label :file, "Upload File" %><br>
+        <%= f.file_field :file %>
+
+        <% if @resource.file.attached? %>
+            <p>
+                Currently attached:
+                <%= link_to @resource.file.filename.to_s,
+                rails_blob_path(@resource.file, disposition: "attachment") %>
+            </p>
+            <p><em>Uploading a new file will replace the current one.</em></p>
+        <% end %>
+    </div>
+
+    <div>
+        <%= f.label :content, "Description (optional)" %><br>
+        <%= f.text_area :content, rows: 4, placeholder: "Add an optional description for this resource..." %>
+    </div>
+
+    <div>
+        <%= f.submit %>
+    </div>
+
+    <p><%= link_to "Back to Dashboard", dashboard_resources_path %></p>
+<% end %>

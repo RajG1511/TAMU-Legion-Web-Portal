@@ -18,11 +18,17 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
   <body>
+    <nav>
+      <%= link_to "Events Dashboard", dashboard_events_path %> |
+      <%= link_to "Resources Dashboard", dashboard_resources_path %> |
+      <%= link_to "Events", events_path %> |
+      <%= link_to "Resources", resources_path %>
+    </nav>
     <p style="color: red"><%= flash[:error] %></p>
     <p style="color: blue"><%= flash[:notice] %></p>
     <p style="color: green"><%= flash[:success] %></p>
@@ -33,5 +39,8 @@
       <%= link_to "Sign in", new_user_session_path, data: { turbo: false } %>
     <% end %>
     <%= yield %>
+    <% flash.each do |key, message| %>
+      <div class="flash <%= key %>"><%= message %></div>
+    <% end %>
   </body>
 </html>

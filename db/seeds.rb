@@ -9,6 +9,7 @@
 #   end
 
 # Clear existing data
+=begin
 puts "Cleaning database..."
 Service.destroy_all
 CommitteeMembership.destroy_all
@@ -18,7 +19,7 @@ EventCategory.destroy_all
 Resource.destroy_all
 ResourceCategory.destroy_all
 User.destroy_all
-
+=end
 puts "Creating users..."
 # Create president
 president = User.create!(
@@ -159,13 +160,17 @@ User.where(role: [:member, :exec, :president]).each do |user|
     CommitteeMembership.create!(user: user, committee: committee)
   end
 end
+=end
 
-# Create event categories
+# Create event 
+=begin
 puts "Creating event categories..."
 event_categories = ["Service", "Brotherhood", "Recruitment", "Social"].map do |name|
   EventCategory.create!(name: name)
 end
+=end
 
+=begin
 #Create events
 puts "Creating events..."
 10.times do |i|
@@ -240,3 +245,4 @@ puts "Created #{Committee.count} committees"
 puts "Created #{Event.count} events"
 puts "Created #{Resource.count} resources"
 puts "Created #{Service.count} service submissions"
+=end
