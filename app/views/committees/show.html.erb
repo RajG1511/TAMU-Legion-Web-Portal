@@ -1,6 +1,6 @@
 <h1><%= @committee.name %> Committee</h1>
 
-<% if current_user.exec? %>
+<% if current_user&.exec? %>
     <div><%= link_to "Edit Committee", edit_committee_path(@committee) %></div>
     <div><%= link_to "Delete Committee", delete_committee_path(@committee) %></div>
 <% end %>
@@ -23,7 +23,7 @@
 
 <% # Committee membership management %>
 
-<% if current_user.exec? %>
+<% if current_user&.exec? %>
     <%= form_with url: committee_committee_memberships_path(@committee), method: :post, local: true do %>
         <h2>Add Member</h2>
         <%= select_tag :user_id, options_from_collection_for_select(@non_members, :id, :full_name), prompt: "Select User" %>

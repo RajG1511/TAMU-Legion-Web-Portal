@@ -1,6 +1,6 @@
 <h1>Committees</h1>
 
-<% if current_user.exec? %>
+<% if current_user&.exec? %>
     <div><%= link_to "Create New Committee", new_committee_path %></div>
 <% end %>
 
