@@ -1,16 +1,12 @@
 class ServicesController < ApplicationController
   before_action :authenticate_user!   # must be logged in for all actions
-  before_action :require_exec!, only: [:approve, :reject]
 
   def index
-    # Everyone can see their own requests
+    # Show all service requests to everyone
     if params[:user_id]
       @services = Service.where(user_id: params[:user_id])
-    # Execs/President can see all
-    elsif current_user.exec? || current_user.president?
-      @services = Service.all
     else
-      @services = current_user.services
+      @services = Service.all
     end
   end
 
@@ -45,11 +41,5 @@ class ServicesController < ApplicationController
 
   def service_params
     params.require(:service).permit(:description, :hours, :status)
-  end
-
-  def require_exec!
-    unless current_user.exec? || current_user.president?
-      redirect_to root_path, alert: "Not authorized."
-    end
   end
 end
