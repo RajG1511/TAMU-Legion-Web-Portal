@@ -1,0 +1,28 @@
+<h1><%= @committee.name %> Committee</h1>
+
+<% if current_user.exec? %>
+    <div><%= link_to "Edit Committee", edit_committee_path %></div>
+    <div><%= link_to "Delete Committee", delete_committee_path %></div>
+<% end %>
+
+<p><%= @committee.description %></p>
+
+<p>
+    <strong>Members:</strong>
+    <ul>
+    <% @committee.users.each do |member| %>
+        <li>
+            <% if member.image_url.present? %>
+                <img src="<%= member.image_url %>">
+            <% end %>
+            <p><%= member.full_name %></p>
+        </li>
+    <% end %>
+    </ul>
+</p>
+
+<% # Committee membership management %>
+
+<% if current_user.exec? %>
+
+<% end %>

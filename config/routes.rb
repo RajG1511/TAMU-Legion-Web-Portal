@@ -33,11 +33,11 @@ Rails.application.routes.draw do
 
   # Committee routes
   resources :committees do
+    resources :committee_memberships, only: [ :create, :destroy ]
     member do
       get :delete
     end
   end
-  resources :committee_memberships, only: [ :create, :destroy ]
 
   # root
   root "home#index"

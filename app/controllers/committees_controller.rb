@@ -3,7 +3,7 @@ class CommitteesController < ApplicationController
   before_action :set_committee, only: [ :show, :edit, :update, :delete, :destroy ]
 
   def index
-    @committees = Committee.include(:committee_memberships).order(:name)
+    @committees = Committee.includes(committee_memberships: :user).order(:name)
   end
 
   def show
@@ -42,6 +42,8 @@ class CommitteesController < ApplicationController
   def delete
   end
 
+
+  # TODO: This will get rid of the version logs, if logs need to be kept, change this
   def destroy
     @committee.destroy
     log_committee_version("deleted")
@@ -52,17 +54,18 @@ class CommitteesController < ApplicationController
   private
 
   def set_committee
-    @committee = Committee.find(params[:id]).include(:committee_memberships)
+    @committee = Committee.includes(committee_memberships: :user).find(params[:id])
   end
 
   def committee_params
     params.require(:committee).permit(:name, :description)
   end
 
+
   def log_committee_version(change_type)
     CommitteeVersion.create!(
         committee: @committee,
-        user: User.last,
+        user: current_user,
 
         name: @committee.name,
         description: @committee.description,
