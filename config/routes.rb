@@ -32,11 +32,17 @@ Rails.application.routes.draw do
   end
 
   # Committee routes
-  resources :committees
+  resources :committees do
+    member do
+      get :delete
+    end
+  end
   resources :committee_memberships, only: [ :create, :destroy ]
 
+  # root
   root "home#index"
 
+  # User / Auth routes
   devise_for :users, controllers: {
     omniauth_callbacks: "users/omniauth_callbacks"
   }
