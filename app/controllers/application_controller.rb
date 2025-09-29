@@ -15,7 +15,6 @@ class ApplicationController < ActionController::Base
     return if current_user&.president?
     redirect_to new_user_session_path, alert: 'President access only.'
   end
-end
   helper_method :current_user
 
   private

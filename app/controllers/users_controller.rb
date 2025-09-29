@@ -1,12 +1,12 @@
 class UsersController < ApplicationController
-  # will be exec only for now
-  # will want to allow users to view themselves later
-  # may want a directory for members to view, depends on what the customer wants
-  before_action :require_exec!, only: [ :index, :show, :new, :create, :edit, :update, :delete, :destroy ]
-  before_action :set_user, only: [ :show, :edit, :update, :delete, :destroy ]
+  # Restrict access: only execs (and president) can manage users
+  # For now, allow anyone to view/manage users by commenting this out
+  # before_action :require_exec!, only: [:index, :show, :new, :create, :edit, :update, :delete, :destroy]
+
+  before_action :set_user, only: [:show, :edit, :update, :delete, :destroy]
 
   def index
-    @users = User.all
+    @users = User.all.order(:first_name, :last_name)
   end
 
   def show
@@ -51,16 +51,17 @@ class UsersController < ApplicationController
 
   private
 
+  # --- Strong params ---
   def base_permitted_params
-    [ :email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url ]
+    [:email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url]
   end
 
   def exec_permitted_params
-    base_permitted_params + [ :status ]
+    base_permitted_params + [:status]
   end
 
   def pres_permitted_params
-    exec_permitted_params + [ :position, :role ]
+    exec_permitted_params + [:position, :role]
   end
 
   def user_params
@@ -73,17 +74,16 @@ class UsersController < ApplicationController
     end
   end
 
+  # --- Callbacks ---
   def set_user
     @user = User.find(params[:id])
   end
-end
-  # For now, no authorization checks
-  # before_action :authenticate_user!
-  def index
-    @users = User.all.order(:first_name, :last_name)
-  end
 
-  def show
-    @user = User.find(params[:id])
+  # --- Authorization (currently disabled) ---
+  def require_exec!
+    return if current_user&.exec? || current_user&.president?
+    redirect_to root_path, alert: "Executive access only."
+    # Or, if you prefer to force login:
+    # redirect_to user_google_oauth2_omniauth_authorize_path, alert: "Please sign in as an exec."
   end
 end

@@ -1,13 +1,9 @@
 Rails.application.routes.draw do
   # Devise routes with OmniAuth
   devise_for :users, controllers: {
-    omniauth_callbacks: "users/omniauth_callbacks"
+    omniauth_callbacks: "users/omniauth_callbacks",
+    sessions: "devise/sessions"
   }
-
-  devise_scope :user do
-    get "/users/sign_in", to: "devise/sessions#new"
-    get "/users/sign_out", to: "devise/sessions#destroy"
-  end
 
   # Services routes
   resources :services, only: [:new, :create, :index] do
