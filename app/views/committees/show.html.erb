@@ -24,5 +24,8 @@
 <% # Committee membership management %>
 
 <% if current_user.exec? %>
-
+    <%= form_with url: committee_committee_memberships_path(@committee), method: :post, local: true do %>
+        <%= select_tag :user_id, options_from_collection_for_select(@non_members, :id, :full_name), prompt: "Select User" %>
+        <%= submit_tag "Add Member" %>
+    <% end %>
 <% end %>

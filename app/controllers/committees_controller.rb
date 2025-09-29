@@ -7,6 +7,8 @@ class CommitteesController < ApplicationController
   end
 
   def show
+    @members = @committee.users.order(:last_name, :first_name)
+    @non_members = User.where.not(id: @members.select(:id)).order(:last_name, :first_name)
   end
 
   def new
