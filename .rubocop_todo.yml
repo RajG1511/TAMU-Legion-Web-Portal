@@ -1,0 +1,34 @@
+Layout/IndentationWidth:
+  Exclude:
+    - "app/**/*.rb"
+    - "config/**/*.rb"
+    - "db/**/*.rb"
+    - "lib/**/*.rb"
+    - "spec/**/*.rb"
+
+Metrics/MethodLength:
+  Max: 100
+
+Metrics/ClassLength:
+  Max: 300
+
+Style/Documentation:
+  Enabled: false
+
+Style/AsciiComments:
+  Enabled: false
+
+Metrics/BlockLength:
+  Max: 200
+
+Style/LineLength:
+  Max: 120
+
+Style/GlobalVars:
+  Exclude:
+    - "spec/**/*"
+    - "db/seeds.rb"
+
+Naming/PredicateName:
+  Exclude:
+    - "db/schema.rb"
