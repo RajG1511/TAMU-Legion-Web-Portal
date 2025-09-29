@@ -1,0 +1,21 @@
+<h1><%= @user.first_name %> <%= @user.last_name %>’s Profile</h1>
+
+<ul>
+  <li>Email: <%= @user.email %></li>
+  <li>Role: <%= @user.role %></li>
+  <li>Joined: <%= @user.created_at.strftime("%B %d, %Y") %></li>
+</ul>
+
+<h2>Submitted Services</h2>
+<% if @user.services.any? %>
+  <ul>
+    <% @user.services.each do |service| %>
+      <li>
+        <strong><%= service.name %></strong> — <%= service.status %>  
+        (<%= service.hours %> hours on <%= service.date_performed %>)
+      </li>
+    <% end %>
+  </ul>
+<% else %>
+  <p>No services submitted yet.</p>
+<% end %>

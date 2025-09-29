@@ -23,6 +23,8 @@ puts "Creating users..."
 # Create president
 president = User.create!(
   email: "president@org.edu",
+  password: "password123",
+  password_confirmation: "password123",
   first_name: "Joe",
   last_name: "President",
   graduation_year: 2025,
@@ -36,6 +38,8 @@ president = User.create!(
 # Create exec users
 vp = User.create!(
   email: "vp@org.edu",
+  password: "password123",
+  password_confirmation: "password123",
   first_name: "Jane",
   last_name: "VP",
   graduation_year: 2026,
@@ -48,6 +52,8 @@ vp = User.create!(
 
 treasurer = User.create!(
   email: "treasurer@org.edu",
+  password: "password123",
+  password_confirmation: "password123",
   first_name: "Tom",
   last_name: "Treasurer",
   graduation_year: 2025,
@@ -60,6 +66,8 @@ treasurer = User.create!(
 
 service_chair = User.create!(
   email: "service@org.edu",
+  password: "password123",
+  password_confirmation: "password123",
   first_name: "Sarah",
   last_name: "Service",
   graduation_year: 2026,
@@ -74,6 +82,8 @@ service_chair = User.create!(
 5.times do |i|
   User.create!(
     email: "member#{i+1}@org.edu",
+    password: "password123",
+    password_confirmation: "password123",
     first_name: "Member",
     last_name: "#{i+1}",
     graduation_year: 2024 + rand(4),
@@ -88,6 +98,8 @@ end
 2.times do |i|
   User.create!(
     email: "nonmember#{i+1}@org.edu",
+    password: "password123",
+    password_confirmation: "password123",
     first_name: "Guest",
     last_name: "#{i+1}",
     graduation_year: 2024 + rand(4),
@@ -191,3 +203,25 @@ puts "Created #{Committee.count} committees"
 puts "Created #{Event.count} events"
 puts "Created #{Resource.count} resources"
 puts "Created #{Service.count} service submissions"
+
+User.destroy_all
+
+User.create!(
+  email: "role1@example.com",
+  password: "password123",
+  password_confirmation: "password123",
+  first_name: "Role",
+  last_name: "One",
+  role: :member,   # submitter
+  status: :active
+)
+
+User.create!(
+  email: "role2@example.com",
+  password: "password123",
+  password_confirmation: "password123",
+  first_name: "Role",
+  last_name: "Two",
+  role: :exec,     # reviewer
+  status: :active
+)

@@ -1,4 +1,8 @@
 class User < ApplicationRecord
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  devise :database_authenticatable, :registerable,
+         :recoverable, :rememberable, :validatable
   # Enums - Updated to include president
   enum :status, { inactive: 0, active: 1 }
   enum :role, { nonmember: 0, member: 1, exec: 2, president: 3 }
