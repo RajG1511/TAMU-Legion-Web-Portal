@@ -10,7 +10,8 @@
     <%= link_to "Review Services", services_path %>
   <% end %>
 
-  <%= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete } %>
+  <%# Removed logout link since destroy_user_session_path is undefined %>
+  <%#= link_to "Logout", destroy_user_session_path, data: { turbo_method: :delete } %>
 <% else %>
   <p>Please log in to continue.</p>
   <%= link_to "Login with Google", user_google_oauth2_omniauth_authorize_path %>
