@@ -5,8 +5,8 @@ Rails.application.routes.draw do
   }
 
   devise_scope :user do
-    get "/users/sign_in", to: "devise/sessions#new", as: :new_user_session
-    get "/users/sign_out", to: "devise/sessions#destroy", as: :destroy_user_session
+    get "/users/sign_in", to: "devise/sessions#new"
+    get "/users/sign_out", to: "devise/sessions#destroy"
   end
 
   # Services routes
