@@ -1,8 +1,8 @@
 <h1><%= @committee.name %> Committee</h1>
 
 <% if current_user.exec? %>
-    <div><%= link_to "Edit Committee", edit_committee_path %></div>
-    <div><%= link_to "Delete Committee", delete_committee_path %></div>
+    <div><%= link_to "Edit Committee", edit_committee_path(@committee) %></div>
+    <div><%= link_to "Delete Committee", delete_committee_path(@committee) %></div>
 <% end %>
 
 <p><%= @committee.description %></p>

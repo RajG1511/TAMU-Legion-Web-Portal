@@ -48,7 +48,7 @@ class CommitteesController < ApplicationController
   # TODO: This will get rid of the version logs, if logs need to be kept, change this
   def destroy
     @committee.destroy
-    log_committee_version("deleted")
+    # log_committee_version("deleted")
     flash[:success] = "Committee #{@committee.name} deleted."
     redirect_to committees_path
   end
