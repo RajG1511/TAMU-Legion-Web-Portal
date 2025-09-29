@@ -1,0 +1,7 @@
+<h1>This is the home page</h1>
+
+<% if @user %>
+    <p>Hi <%= @user.full_name %>!</p>
+    <p>Your role is <%= @user.role %>.</p>
+    <p>Your position is <%= @user.position %>.</p>
+<% end %>

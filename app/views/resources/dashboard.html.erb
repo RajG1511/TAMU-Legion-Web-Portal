@@ -1,0 +1,62 @@
+<h1>All Resources (Admin View)</h1>
+
+<%= form_with url: dashboard_resources_path, method: :get, local: true do %>
+    <label for="category_filter">Filter by Category:</label>
+    <%= select_tag :category_id,
+        options_for_select([["All", ""]] + ResourceCategory.pluck(:name, :id), params[:category_id]),
+        include_blank: false %>
+    <%= submit_tag "Filter" %>
+<% end %>
+
+<%= link_to "Create New Resource", new_resource_path %>
+
+<ul>
+    <% @resources.each do |resource| %>
+        <li>
+            <h2><%= resource.name %></h2>
+            <p>Category: <%= resource.resource_category&.name %></p>
+            <% if resource.content.present? %>
+                <p>Description: <%= resource.content %></p>
+            <% end %>
+            <% if resource.file.attached? %>
+                <p>
+                    <p><strong>File:</strong> <%= resource.file.filename.to_s %></p>
+                    <%= link_to "View File", rails_blob_path(resource.file, disposition: "inline"), target: "_blank" %> |
+                    <%= link_to "Download File", rails_blob_path(resource.file, disposition: "attachment") %>
+                </p>
+            <% end %>
+
+            <%= link_to "Edit", edit_resource_path(resource) %> |
+            <%= button_to "Delete", resource_path(resource), method: :delete, data: { confirm: "Are you sure?" }, form_class: "inline-button" %> |
+            <%= button_to (resource.published? ? "Unpublish" : "Publish"),
+                toggle_publish_resource_path(resource),
+                method: :patch,
+                data: { confirm: "Are you sure you want to #{ resource.published? ? 'unpublish' : 'publish' } this resource?" },
+                form_class: "inline-button" %>
+        </li>
+    <% end %>
+</ul>
+
+<h2>Resource Update Log</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Resource</th>
+      <th>Updated By</th>
+      <th>Timestamp</th>
+      <th>Change Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @resource_versions.each do |version| %>
+        <tr>
+            <td><%= version.name %></td>
+            <td><%= version.user.first_name %> <%= version.user.last_name %></td>
+            <td><%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
+            <td><%= version.change_type.capitalize %></td>
+        </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p><%= link_to "View Member Resources", resources_path %></p>
