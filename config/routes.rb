@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  # Devise routes with OmniAuth
+  # Devise routes with OmniAuth (keeps sessions so logout works)
   devise_for :users, controllers: {
     omniauth_callbacks: "users/omniauth_callbacks",
     sessions: "devise/sessions"
