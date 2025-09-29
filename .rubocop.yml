@@ -1,11 +1,9 @@
 # Omakase Ruby styling for Rails
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
-# Overwrite or add rules to create your own house style
-#
-# # Use `[a, [b, c]]` not `[ a, [ b, c ] ]`
-# Layout/SpaceInsideArrayLiteralBrackets:
-#   Enabled: false
+# Pull in the auto-generated TODO file to ignore legacy offenses
+inherit_from:
+  - .rubocop_todo.yml
 
 AllCops:
   NewCops: enable
@@ -19,5 +17,11 @@ AllCops:
     - "config/environments/development.rb"
     - "config/environments/production.rb"
     - "spec/spec_helper.rb"
+
 Style/Documentation:
   Enabled: false
+
+# Enforce 5-space indentation moving forward
+Layout/IndentationWidth:
+  Enabled: true
+  Width: 5
