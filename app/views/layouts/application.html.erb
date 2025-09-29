@@ -17,17 +17,13 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-<<<<<<< HEAD
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-=======
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
->>>>>>> origin/test-david
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
   <body>
-<<<<<<< HEAD
     <nav>
       <%= link_to "Events Dashboard", dashboard_events_path %> |
       <%= link_to "Resources Dashboard", dashboard_resources_path %> |
@@ -47,7 +43,6 @@
     <% flash.each do |key, message| %>
       <div class="flash <%= key %>"><%= message %></div>
     <% end %>
-=======
     <header>
       <nav>
         <%= link_to "Home", root_path %> |
@@ -71,6 +66,5 @@
     <footer>
       <p>&copy; <%= Time.current.year %> Legion</p>
     </footer>
->>>>>>> origin/test-david
   </body>
 </html>

@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "devise"
+# gem "devise"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2.1", ">= 8.0.2.1"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
@@ -74,7 +74,7 @@ group :test do
   gem 'simplecov', :require => false
 end
 
-ruby '3.4.5'
+ruby '~> 3.4.5'
 gem 'concurrent-ruby', '1.3.5'
 
 gem 'jbuilder', '~> 2.7'

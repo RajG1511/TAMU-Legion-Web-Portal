@@ -1,5 +1,4 @@
 class UsersController < ApplicationController
-<<<<<<< HEAD
   # will be exec only for now
   # will want to allow users to view themselves later
   # may want a directory for members to view, depends on what the customer wants
@@ -78,7 +77,6 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 end
-=======
   # For now, no authorization checks
   # before_action :authenticate_user!
   def index
@@ -89,4 +87,3 @@ end
     @user = User.find(params[:id])
   end
 end
->>>>>>> origin/test-david

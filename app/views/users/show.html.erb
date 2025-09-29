@@ -1,40 +1,32 @@
-<<<<<<< HEAD
-<h1><%= @user.full_name %></h1>
+<h1><%= @user.full_name %>’s Profile</h1>
 
 <dl>
-    <dt>Email</dt><dd><%= @user.email %></dd>
-    <dt>First name</dt><dd><%= @user.first_name %></dd>
-    <dt>Last name</dt><dd><%= @user.last_name %></dd>
-    <dt>Graduation year</dt><dd><%= @user.graduation_year %></dd>
-    <dt>Major</dt><dd><%= @user.major %></dd>
-    <dt>T-Shirt size</dt><dd><%= @user.t_shirt_size %></dd>
-    <dt>Status</dt><dd><%= @user.status.humanize %></dd>
-    <dt>Position</dt><dd><%= @user.position %></dd>
-    <dt>Role</dt><dd><%= @user.role.humanize %></dd>
-    <dt>Image URL</dt><dd><%= @user.image_url %></dd>
+  <dt>Email</dt><dd><%= @user.email %></dd>
+  <dt>First name</dt><dd><%= @user.first_name %></dd>
+  <dt>Last name</dt><dd><%= @user.last_name %></dd>
+  <dt>Graduation year</dt><dd><%= @user.graduation_year %></dd>
+  <dt>Major</dt><dd><%= @user.major %></dd>
+  <dt>T-Shirt size</dt><dd><%= @user.t_shirt_size %></dd>
+  <dt>Status</dt><dd><%= @user.status.humanize %></dd>
+  <dt>Position</dt><dd><%= @user.position %></dd>
+  <dt>Role</dt><dd><%= @user.role.humanize %></dd>
+  <dt>Image URL</dt><dd><%= @user.image_url %></dd>
+  <dt>Joined</dt><dd><%= @user.created_at.strftime("%B %d, %Y") %></dd>
 </dl>
 
-<img src="<%= @user.image_url %>">
+<img src="<%= @user.image_url %>" alt="<%= @user.full_name %>">
 
 <p>
-    <%= link_to 'Edit', edit_user_path(@user) %>
-    <%= link_to 'Delete', delete_user_path(@user) %>
+  <%= link_to 'Edit', edit_user_path(@user) %> |
+  <%= link_to 'Delete', delete_user_path(@user) %>
 </p>
-=======
-<h1><%= @user.first_name %> <%= @user.last_name %>’s Profile</h1>
-
-<ul>
-  <li>Email: <%= @user.email %></li>
-  <li>Role: <%= @user.role %></li>
-  <li>Joined: <%= @user.created_at.strftime("%B %d, %Y") %></li>
-</ul>
 
 <h2>Submitted Services</h2>
 <% if @user.services.any? %>
   <ul>
     <% @user.services.each do |service| %>
       <li>
-        <strong><%= service.name %></strong> — <%= service.status %>  
+        <strong><%= service.name %></strong> — <%= service.status %>
         (<%= service.hours %> hours on <%= service.date_performed %>)
       </li>
     <% end %>
@@ -42,4 +34,3 @@
 <% else %>
   <p>No services submitted yet.</p>
 <% end %>
->>>>>>> origin/test-david

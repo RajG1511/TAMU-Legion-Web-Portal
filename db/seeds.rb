@@ -257,29 +257,4 @@ puts "Created #{Committee.count} committees"
 puts "Created #{Event.count} events"
 puts "Created #{Resource.count} resources"
 puts "Created #{Service.count} service submissions"
-<<<<<<< HEAD
 =end
-=======
-
-User.destroy_all
-
-User.create!(
-  email: "role1@example.com",
-  password: "password123",
-  password_confirmation: "password123",
-  first_name: "Role",
-  last_name: "One",
-  role: :member,   # submitter
-  status: :active
-)
-
-User.create!(
-  email: "role2@example.com",
-  password: "password123",
-  password_confirmation: "password123",
-  first_name: "Role",
-  last_name: "Two",
-  role: :exec,     # reviewer
-  status: :active
-)
->>>>>>> origin/test-david
