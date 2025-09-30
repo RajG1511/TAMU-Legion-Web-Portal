@@ -1,0 +1,55 @@
+<h1>All Events (Admin View)</h1>
+
+<%= form_with url: dashboard_events_path, method: :get, local: true do %>
+  <label for="category_filter">Filter by Category:</label>
+  <%= select_tag :category_id,
+        options_for_select([["All", ""]] + EventCategory.pluck(:name, :id), params[:category_id]),
+        include_blank: false %>
+  <%= submit_tag "Filter" %>
+<% end %>
+
+<%= link_to "Create New Event", new_event_path %>
+
+<ul>
+  <% @events.each do |event| %>
+    <li>
+      <h2><%= event.name %></h2>
+      <p><%= event.full_location %></p>
+      <p><%= event.event_category&.name %></p>
+      <%= event.starts_at.strftime("%B %d, %Y at %I:%M %p") %> - <%= event.ends_at.strftime("%B %d, %Y at %I:%M %p") %>
+      <p><%= event.description %></p>
+
+      <%= link_to "Edit", edit_event_path(event) %> |
+      <%= button_to "Delete", event_path(event), method: :delete, data: { confirm: "Are you sure?" }, form_class: "inline-button" %> |
+        <%= button_to (event.published? ? "Unpublish" : "Publish"),
+                    toggle_publish_event_path(event),
+                    method: :patch,
+                    data: { confirm: "Are you sure you want to #{ event.published? ? 'unpublish' : 'publish' } this event?" },
+                    form_class: "inline-button" %>
+    </li>
+  <% end %>
+</ul>
+
+<h2>Event Update Log</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Event</th>
+      <th>Updated By</th>
+      <th>Timestamp</th>
+      <th>Change Type</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @event_versions.each do |version| %>
+      <tr>
+        <td><%= version.name %></td>
+        <td><%= version.user.first_name %> <%= version.user.last_name %></td>
+        <td><%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
+        <td><%= version.change_type.capitalize %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p><%= link_to "View Member Events", events_path %></p>

@@ -1,0 +1,38 @@
+<h1>Resources</h1>
+
+<p>
+  <%= link_to "Reimbursement Request Form", "https://docs.google.com/forms/d/e/1FAIpQLSf72UrBgiSIvulHJWR2HCeND2GiGS43xShzlWsXUKj5RGIcWQ/viewform", target: "_blank", rel: "noopener" %>
+</p>
+
+<% if @resources.any? %>
+    <%# Filters resource by category %>
+    <%= form_with url: resources_path, method: :get, local: true do %>
+        <label for="category_filter">Filter by Category:</label>
+        <%= select_tag :category_id,
+            options_for_select([["All", ""]] + ResourceCategory.pluck(:name, :id), params[:category_id]),include_blank: false %>
+            <%= submit_tag "Filter" %>
+        <% end %>
+
+    <ul>
+        <% @resources.each do |resource| %>
+        <%# Renders available/published resources %>
+            <li>
+                <h2><%= resource.name %></h2>
+                <% if resource.content.present? %>
+                    <p>Description: <%= resource.content %></p>
+                <% end %>
+                <% if resource.file.attached? %>
+                    <p>
+                        <%= link_to "View File", rails_blob_path(resource.file, disposition: "inline"), target: "_blank" %> |
+                        <%= link_to "Download File", rails_blob_path(resource.file, disposition: "attachment") %>
+                    </p>
+                <% end %>
+            </li>
+        <% end %>
+    </ul>
+
+<% else %>
+    <p>No resources published.</p>
+<% end %>
+
+<p><%= link_to "Admin View", dashboard_resources_path %></p>

@@ -1,0 +1,29 @@
+<h1>Upcoming Events</h1>
+
+<% if @events.any? %>
+    <%# Filters event by type %>    
+    <%= form_with url: events_path, method: :get, local: true do %>
+        <label for="category_filter">Filter by Category:</label>
+        <%= select_tag :category_id,
+            options_for_select([["All", ""]] + EventCategory.pluck(:name, :id), params[:category_id]),include_blank: false %>
+            <%= submit_tag "Filter" %>
+        <% end %>
+
+    <ul>
+        <% @events.each do |event| %>
+        <%# Renders available/published events %>
+            <li>
+                <h2><%= event.name %></h2>
+                <p><%= event.full_location %></p>
+                <p><%= event.event_category&.name %></p>
+                <p><%= event.starts_at.strftime("%B %d, %Y at %I:%M %p") %> - <%= event.ends_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+                <p><%= event.description %></p>
+            </li>
+        <% end %>
+    </ul>
+
+<% else %>
+    <p>No upcoming events.</p>
+<% end %>
+
+<p><%= link_to "Admin View", dashboard_events_path %></p>

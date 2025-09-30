@@ -1,0 +1,14 @@
+<h1>Delete Committee</h1>
+
+<p>Are you sure you want to delete this committee?</p>
+
+<p><strong>Name:</strong> <%= @committee.name %></p>
+<p><strong>Description:</strong> <%= @committee.description %></p>
+
+<p>This action cannot be undone.</p>
+
+<%= form_with url: committee_path(@committee), method: :delete do %>
+    <div>
+        <%= submit_tag "Delete" %>
+    </div>
+<% end %>

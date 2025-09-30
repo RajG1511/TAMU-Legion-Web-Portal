@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
+# gem "devise"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2.1", ">= 8.0.2.1"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
@@ -53,6 +54,11 @@ group :development, :test do
   gem "rubocop-rails-omakase", require: false
 
   gem 'rspec-rails'
+
+  gem 'rubycritic', require: false
+
+  gem 'factory_bot_rails'
+
 end
 
 group :development do
@@ -68,7 +74,7 @@ group :test do
   gem 'simplecov', :require => false
 end
 
-ruby '3.4.5'
+ruby '~> 3.4.5'
 gem 'concurrent-ruby', '1.3.5'
 
 gem 'jbuilder', '~> 2.7'
@@ -77,3 +83,13 @@ gem 'turbo-rails'
 gem 'stimulus-rails'
 gem 'cssbundling-rails'
 gem 'rails-erd'
+
+gem 'whenever', require: false
+gem "active_storage_validations"
+
+
+gem 'devise', '~>4.9'
+gem 'omniauth', '~>2.1'
+gem 'omniauth-rails_csrf_protection', '~> 1.0'
+gem 'omniauth-google-oauth2', '~> 1.1'
+
