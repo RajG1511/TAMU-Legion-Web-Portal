@@ -14,7 +14,6 @@
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
@@ -26,17 +25,20 @@
   <body>
     <nav>
       <%= link_to "Events Dashboard", dashboard_events_path %> |
-      <%# Only execs/president see the Resources admin dashboard %>
       <% if user_signed_in? && (current_user.exec? || current_user.president?) %>
         <%= link_to "Resources Dashboard", dashboard_resources_path %> |
       <% end %>
       <%= link_to "Events", events_path %> |
       <%= link_to "Resources", resources_path %>
 
-      <%# Only execs/president see Manage Users %>
       <% if user_signed_in? && (current_user.exec? || current_user.president?) %>
         | <%= link_to "Manage Users", users_path %>
       <% end %>
+
+      <!-- Service Hours navigation (visible to everyone) -->
+      | <%= link_to "Submit Service Hours", new_service_path %>
+      | <%= link_to "View Service Hours", services_path %>
+      | <%= link_to "Approve/Reject Service Hours", services_path %>
     </nav>
 
     <p style="color: red"><%= flash[:error] %></p>
