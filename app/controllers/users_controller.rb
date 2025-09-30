@@ -1,4 +1,5 @@
 class UsersController < ApplicationController
+
   # execs only for now
   before_action :require_exec!, only: [:index, :show, :new, :create, :edit, :update, :delete, :destroy]
   before_action :set_user,      only: [:show, :edit, :update, :delete, :destroy]
@@ -83,16 +84,20 @@ class UsersController < ApplicationController
   end
 
   # base fields everyone can edit
+
   def base_permitted_params
     [:email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url]
   end
 
   # execs can also set status
+
   def exec_permitted_params
     base_permitted_params + [:status]
   end
 
+
   # president can also set position/role
+
   def pres_permitted_params
     exec_permitted_params + [:position, :role]
   end

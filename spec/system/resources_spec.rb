@@ -30,7 +30,9 @@ RSpec.describe "Resource management", type: :system do
     fill_in "Name", with: "Employee Handbook"
     select "Public resource", from: "Visibility"
     select "Policies", from: "Category"
+
     attach_file "Upload File", pdf_path
+
     fill_in "Description (optional)", with: "The official handbook"
 
     click_button "Create Resource"
@@ -89,4 +91,3 @@ RSpec.describe "Resource management", type: :system do
     expect(page).to have_content("Resource unpublished successfully.")
   end
 end
-

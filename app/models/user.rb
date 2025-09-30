@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+
   # Devise
   devise :omniauthable, omniauth_providers: [:google_oauth2]
 
