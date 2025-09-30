@@ -11,7 +11,9 @@
     "heroku-postbuild": "yarn build:css"
   },
   "devDependencies": {
-    "esbuild": "^0.25.10"
+    "esbuild": "^0.25.10",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
   },
   "dependencies": {
     "@tailwindcss/cli": "^4.1.13",

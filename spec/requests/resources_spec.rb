@@ -116,7 +116,6 @@ RSpec.describe "Resources", type: :request do
       expect {
         delete resource_path(resource)
       }.to change(Resource, :count).by(-1)
-
       expect(response).to redirect_to(dashboard_resources_path)
     end
   end
@@ -136,4 +135,3 @@ RSpec.describe "Resources", type: :request do
     end
   end
 end
-

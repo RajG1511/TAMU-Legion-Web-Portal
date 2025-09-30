@@ -132,4 +132,3 @@ end
 puts "Done."
 puts "Users: #{User.count} (presidents=#{User.where(role: :president).count}, execs=#{User.where(role: :exec).count}, members=#{User.where(role: :member).count}, nonmembers=#{User.where(role: :nonmember).count})"
 puts "Committees: #{Committee.count}"
-
