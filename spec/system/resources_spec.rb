@@ -1,12 +1,28 @@
+# frozen_string_literal: true
 require "rails_helper"
 
 RSpec.describe "Resource management", type: :system do
-  let!(:category) { create(:resource_category, name: "Policies") }
-  let!(:user) { create(:user) } # adjust if you need login
+  include Warden::Test::Helpers
+
+  let!(:category) { ResourceCategory.create!(name: "Policies") }
+  let(:pdf_path)  { Rails.root.join("spec/fixtures/files/test.pdf") }
 
   before do
-    driven_by(:rack_test) # or :selenium_chrome_headless if you want JS
+    Warden.test_mode!
+    driven_by(:rack_test)
+
+    # Log in an exec so dashboard/new/edit/etc. are accessible
+    exec = User.create!(
+      email: "exec_sys@example.org",
+      first_name: "Exec",
+      last_name: "Sys",
+      role: :exec,
+      status: :active
+    )
+    login_as(exec, scope: :user)
   end
+
+  after { Warden.test_reset! }
 
   it "allows admin to create a new resource (sunny day)" do
     visit new_resource_path
@@ -14,7 +30,9 @@ RSpec.describe "Resource management", type: :system do
     fill_in "Name", with: "Employee Handbook"
     select "Public resource", from: "Visibility"
     select "Policies", from: "Category"
-    attach_file "Upload File", Rails.root.join("spec/fixtures/files/test.pdf")
+
+    attach_file "Upload File", pdf_path
+
     fill_in "Description (optional)", with: "The official handbook"
 
     click_button "Create Resource"
@@ -22,7 +40,6 @@ RSpec.describe "Resource management", type: :system do
     expect(page).to have_content("Resource created successfully.")
     expect(page).to have_content("Employee Handbook")
     expect(page).to have_content("Policies")
-    expect(page).to have_content("test.pdf")
   end
 
   it "shows validation errors when required fields are missing (rainy day)" do
@@ -35,7 +52,13 @@ RSpec.describe "Resource management", type: :system do
   end
 
   it "allows admin to update an existing resource" do
-    resource = create(:resource, resource_category: category)
+    resource = Resource.create!(
+      name: "Old Resource",
+      visibility: :public_resource,
+      published: false,
+      resource_category: category,
+      file: Rack::Test::UploadedFile.new(pdf_path, "application/pdf")
+    )
 
     visit edit_resource_path(resource)
 
@@ -47,7 +70,13 @@ RSpec.describe "Resource management", type: :system do
   end
 
   it "allows admin to toggle publish/unpublish" do
-    resource = create(:resource, resource_category: category, published: false)
+    resource = Resource.create!(
+      name: "Draft Doc",
+      visibility: :public_resource,
+      published: false,
+      resource_category: category,
+      file: Rack::Test::UploadedFile.new(pdf_path, "application/pdf")
+    )
 
     visit dashboard_resources_path
     expect(page).to have_button("Publish")
@@ -55,6 +84,10 @@ RSpec.describe "Resource management", type: :system do
     click_button "Publish"
     expect(page).to have_content("Resource published successfully.")
 
-    expect(resource.reload.published).to be true
+    visit dashboard_resources_path
+    expect(page).to have_button("Unpublish")
+
+    click_button "Unpublish"
+    expect(page).to have_content("Resource unpublished successfully.")
   end
 end

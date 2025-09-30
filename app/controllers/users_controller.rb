@@ -1,16 +1,14 @@
 class UsersController < ApplicationController
-  # Restrict access: only execs (and president) can manage users
-  # For now, allow anyone to view/manage users by commenting this out
-  # before_action :require_exec!, only: [:index, :show, :new, :create, :edit, :update, :delete, :destroy]
 
-  before_action :set_user, only: [:show, :edit, :update, :delete, :destroy]
+  # execs only for now
+  before_action :require_exec!, only: [:index, :show, :new, :create, :edit, :update, :delete, :destroy]
+  before_action :set_user,      only: [:show, :edit, :update, :delete, :destroy]
 
   def index
-    @users = User.all.order(:first_name, :last_name)
+    @users = User.all
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @user = User.new
@@ -22,26 +20,24 @@ class UsersController < ApplicationController
       flash[:success] = "User created."
       redirect_to users_path
     else
-      flash[:error] = "User not created."
-      render :new
+      flash.now[:error] = "User not created."
+      render :new, status: :unprocessable_entity
     end
   end
 
-  def edit
-  end
+  def edit; end
 
   def update
     if @user.update(user_params)
       flash[:success] = "User updated."
       redirect_to users_path
     else
-      flash[:error] = "User not updated."
-      render :edit
+      flash.now[:error] = "User not updated."
+      render :edit, status: :unprocessable_entity
     end
   end
 
-  def delete
-  end
+  def delete; end
 
   def destroy
     @user.destroy
@@ -49,16 +45,58 @@ class UsersController < ApplicationController
     redirect_to users_path
   end
 
+  # ---------- BULK ACTIONS ----------
+  def bulk_edit
+    @users = User.where(id: params[:user_ids])
+    redirect_to(users_path, alert: "Please select users to edit") if @users.empty?
+  end
+
+  def bulk_update
+    user_ids = params[:user_ids] || []
+    updates  = {}
+
+    [:status, :graduation_year, :major, :t_shirt_size].each do |field|
+      value = params.dig(:bulk_update, field)
+      updates[field] = value if value.present?
+    end
+
+    if updates.any?
+      User.where(id: user_ids).update_all(updates)
+      flash[:success] = "#{user_ids.count} users updated successfully"
+    else
+      flash[:alert] = "No fields selected for update"
+    end
+
+    redirect_to users_path
+  end
+
+  def reset_inactive
+    inactive_count = User.inactive.update_all(status: :active)
+    flash[:success] = "Reset #{inactive_count} inactive members to active status"
+    redirect_to users_path
+  end
+  # ----------------------------------
+
   private
 
-  # --- Strong params ---
+  def set_user
+    @user = User.find(params[:id])
+  end
+
+  # base fields everyone can edit
+
   def base_permitted_params
     [:email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url]
   end
 
+  # execs can also set status
+
   def exec_permitted_params
     base_permitted_params + [:status]
   end
+
+
+  # president can also set position/role
 
   def pres_permitted_params
     exec_permitted_params + [:position, :role]
@@ -73,17 +111,5 @@ class UsersController < ApplicationController
       params.require(:user).permit(base_permitted_params)
     end
   end
-
-  # --- Callbacks ---
-  def set_user
-    @user = User.find(params[:id])
-  end
-
-  # --- Authorization (currently disabled) ---
-  def require_exec!
-    return if current_user&.exec? || current_user&.president?
-    redirect_to root_path, alert: "Executive access only."
-    # Or, if you prefer to force login:
-    # redirect_to user_google_oauth2_omniauth_authorize_path, alert: "Please sign in as an exec."
-  end
 end
+

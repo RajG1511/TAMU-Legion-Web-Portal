@@ -1,5 +1,6 @@
 class User < ApplicationRecord
-  # Devise - OAuth only
+
+  # Devise
   devise :omniauthable, omniauth_providers: [:google_oauth2]
 
   # Enums - Updated to include president
@@ -60,10 +61,10 @@ class User < ApplicationRecord
     exec?
   end
 
-  # OAuth mapping
+  #OAuth mapping
   def self.from_google(email:, full_name:, uid:, avatar_url:)
     # Accounts should not be created automatically by oauth
-    find_by(email: email)
+    user = find_by(email: email)
   end
 
   private

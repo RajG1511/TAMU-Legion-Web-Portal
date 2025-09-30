@@ -19,4 +19,19 @@ class Resource < ApplicationRecord
     "image/png",
     "image/jpeg"
   ]
+
+  scope :published, -> { where(published: true) }
+
+  # Returns a relation of resources visible to the given user
+  def self.visible_to(user)
+    return where(visibility: :public_resource) if user.nil? || user.try(:nonmember?)
+
+    if user.president? || user.exec?
+      where(visibility: [:public_resource, :members_only, :execs_only])
+    elsif user.member?
+      where(visibility: [:public_resource, :members_only])
+    else
+      where(visibility: :public_resource)
+    end
+  end
 end

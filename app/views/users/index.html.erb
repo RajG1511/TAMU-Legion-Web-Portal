@@ -1,26 +1,84 @@
-<h1>Users</h1>
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Users Management</h1>
+    <div class="flex gap-2">
+      <%= link_to 'New User', new_user_path, class: "bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" %>
+      <% if current_user.exec? %>
+        <%= button_to 'Reset All Inactive', reset_inactive_users_path, method: :post, 
+            data: { confirm: "Are you sure you want to reset all inactive members to active?" },
+            class: "bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600" %>
+      <% end %>
+    </div>
+  </div>
 
-<p>
-    <%= link_to 'New User', new_user_path %>
-</p>
+  <%= form_with url: bulk_edit_users_path, method: :get, local: true do |f| %>
+    <div class="mb-4">
+      <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4">
+        Edit Selected Users
+      </button>
+    </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Position</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        <% @users.each do |user| %>
-            <tr>
-                <td><%= link_to user.full_name, user_path(user) %></td>
-                <td><%= user.email %></td>
-                <td><%= user.position %></td>
-                <td><%= user.status.humanize %></td>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border border-gray-300">
+        <thead class="bg-gray-100">
+          <tr>
+            <th class="px-4 py-2 border">
+              <input type="checkbox" id="select-all" class="form-checkbox">
+            </th>
+            <th class="px-4 py-2 border">Name</th>
+            <th class="px-4 py-2 border">Email</th>
+            <th class="px-4 py-2 border">Role</th>
+            <th class="px-4 py-2 border">Position</th>
+            <th class="px-4 py-2 border">Status</th>
+            <th class="px-4 py-2 border">Graduation Year</th>
+            <th class="px-4 py-2 border">Major</th>
+            <th class="px-4 py-2 border">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @users.each do |user| %>
+            <tr class="hover:bg-gray-50">
+              <td class="px-4 py-2 border">
+                <%= check_box_tag "user_ids[]", user.id, false, class: "user-checkbox form-checkbox" %>
+              </td>
+              <td class="px-4 py-2 border">
+                <%= link_to user.full_name, user_path(user), class: "text-blue-600 hover:underline" %>
+              </td>
+              <td class="px-4 py-2 border"><%= user.email %></td>
+              <td class="px-4 py-2 border">
+                <span class="px-2 py-1 text-xs rounded <%= user.exec? ? 'bg-purple-200' : 'bg-gray-200' %>">
+                  <%= user.role.humanize %>
+                </span>
+              </td>
+              <td class="px-4 py-2 border"><%= user.position || '-' %></td>
+              <td class="px-4 py-2 border">
+                <span class="px-2 py-1 text-xs rounded <%= user.active? ? 'bg-green-200' : 'bg-red-200' %>">
+                  <%= user.status.humanize %>
+                </span>
+              </td>
+              <td class="px-4 py-2 border"><%= user.graduation_year || '-' %></td>
+              <td class="px-4 py-2 border"><%= user.major || '-' %></td>
+              <td class="px-4 py-2 border">
+                <%= link_to 'Edit', edit_user_path(user), class: "text-blue-600 hover:underline mr-2" %>
+                <%= link_to 'Delete', delete_user_path(user), class: "text-red-600 hover:underline" %>
+              </td>
             </tr>
-        <% end %>
-    </tbody>
-</table>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const selectAll = document.getElementById('select-all');
+    const checkboxes = document.querySelectorAll('.user-checkbox');
+    
+    selectAll.addEventListener('change', function() {
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = selectAll.checked;
+      });
+    });
+  });
+</script>

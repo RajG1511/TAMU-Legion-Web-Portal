@@ -1,61 +1,66 @@
 <%= form_for @user do |f| %>
+  <div>
+    <%= f.label :email %><br>
+    <%= f.email_field :email %>
+  </div>
+
+  <div>
+    <%= f.label :first_name %><br>
+    <%= f.text_field :first_name %>
+  </div>
+
+  <div>
+    <%= f.label :last_name %><br>
+    <%= f.text_field :last_name %>
+  </div>
+
+  <div>
+    <%= f.label :graduation_year, "Graduation year" %><br>
+    <%= f.number_field :graduation_year, min: 2020, step: 1 %>
+  </div>
+
+  <div>
+    <%= f.label :major %><br>
+    <%= f.text_field :major %>
+  </div>
+
+  <div>
+    <%= f.label :t_shirt_size, "T shirt size" %><br>
+    <%= f.select :t_shirt_size,
+                 options_for_select(%w[XS S M L XL XXL XXXL], @user.t_shirt_size),
+                 include_blank: true %>
+  </div>
+
+  <% if current_user&.exec? %>
     <div>
-        <%= f.label :email %><br>
-        <%= f.email_field :email %>
+      <%= f.label :status %><br>
+      <% statuses_for_select = User.statuses.keys.map { |s| [s.humanize, s] } %>
+      <%= f.select :status,
+                   options_for_select(statuses_for_select, @user.status) %>
+    </div>
+  <% end %>
+
+  <% if current_user&.president? %>
+    <div>
+      <%= f.label :position %><br>
+      <%= f.text_field :position %>
     </div>
 
     <div>
-        <%= f.label :first_name %><br>
-        <%= f.text_field :first_name %>
+      <%= f.label :role %><br>
+      <% roles_for_select = User.roles.except('nonmember').keys.map { |r| [r.humanize, r] } %>
+      <%= f.select :role,
+                   options_for_select(roles_for_select, @user.role),
+                   include_blank: true %>
     </div>
+  <% end %>
 
-    <div>
-        <%= f.label :last_name %><br>
-        <%= f.text_field :last_name %>
-    </div>
+  <div>
+    <%= f.label :image_url, "Image url" %><br>
+    <%= f.text_field :image_url %>
+  </div>
 
-    <div>
-        <%= f.label :graduation_year %><br>
-        <%= f.number_field :graduation_year, min: 2020, step: 1 %>
-    </div>
-
-    <div>
-        <%= f.label :major %><br>
-        <%= f.text_field :major %>
-    </div>
-
-    <div>
-        <%= f.label :t_shirt_size %><br>
-        <%= f.select :t_shirt_size, options_for_select(%w[XS S M L XL XXL XXXL]), include_blank: true %>
-    </div>
-
-    <% if current_user&.exec?%>
-        <div>
-            <%= f.label :status %><br>
-            <% statuses_for_select = User.statuses.keys.map{ |s| [s.humanize, s]} %>
-            <%= f.select :status, options_for_select(statuses_for_select) %>
-        </div>
-    <% end %>
-
-    <% if current_user&.president?%>
-        <div>
-            <%= f.label :position %><br>
-            <%= f.text_field :position %><br>
-        </div>
-
-        <div>
-            <%= f.label :role %><br>
-            <% roles_for_select = User.roles.except('nonmember').keys.map{|r| [r.humanize, r]}%>
-            <%= f.select :role, options_for_select(roles_for_select), include_blank: true %>
-        </div>
-    <% end %>
-
-    <div>
-        <%= f.label :image_url %><br>
-        <%= f.text_field :image_url %>
-    </div>
-
-    <div>
-        <%= f.submit %>
-    </div>
+  <div>
+    <%= f.submit @user.persisted? ? "Update User" : "Create User" %>
+  </div>
 <% end %>
