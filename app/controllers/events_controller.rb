@@ -3,12 +3,30 @@ class EventsController < ApplicationController
 
     # Member view index controller
     def index
-        if params[:category_id].present?
-            @events = Event.where(event_category_id: params[:category_id], published: :published).order(:starts_at)
+    # Start with published events, optionally filtered by category
+    @events = if params[:category_id].present?
+                Event.where(event_category_id: params[:category_id], published: :published)
+                else
+                Event.where(published: :published)
+                end
+
+    # Apply role-based visibility filtering
+    if user_signed_in?
+        case current_user.role
+        when "exec", "president"
+        @events = @events.where(visibility: ["public_event", "members_only", "execs_only"])
+        when "member"
+        @events = @events.where(visibility: ["public_event", "members_only"])
         else
-            @events = Event.where(published: :published).order(:starts_at)
+        @events = @events.where(visibility: ["public_event"])
         end
+    else
+        @events = @events.where(visibility: ["public_event"])
     end
+
+    @events = @events.order(:starts_at)
+    end
+
 
     # Admin view dashboard controller
     def dashboard
@@ -93,7 +111,7 @@ class EventsController < ApplicationController
     def log_event_version(change_type)
     EventVersion.create!(
         event: @event,
-        user: User.last,
+        user: current_user,
         
         name: @event.name, description: @event.description,
         starts_at: @event.starts_at, ends_at: @event.ends_at,
