@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_29_030824) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_12_174919) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -101,13 +101,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_29_030824) do
   end
 
   create_table "events", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "description"
-    t.datetime "starts_at"
-    t.datetime "ends_at"
+    t.datetime "starts_at", null: false
+    t.datetime "ends_at", null: false
     t.string "location"
-    t.bigint "event_category_id", null: false
-    t.integer "visibility"
+    t.bigint "event_category_id"
+    t.integer "visibility", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "published", default: 0, null: false
@@ -120,6 +120,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_29_030824) do
     t.string "location_text"
     t.index ["event_category_id"], name: "index_events_on_event_category_id"
     t.index ["published"], name: "index_events_on_published"
+    t.index ["starts_at"], name: "index_events_on_starts_at"
+    t.index ["visibility"], name: "index_events_on_visibility"
   end
 
   create_table "resource_categories", force: :cascade do |t|
@@ -138,43 +140,48 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_29_030824) do
     t.datetime "updated_at", null: false
     t.string "change_type"
     t.boolean "published", default: false, null: false
+    t.string "resource_type"
     t.index ["resource_id"], name: "index_resource_versions_on_resource_id"
     t.index ["user_id"], name: "index_resource_versions_on_user_id"
   end
 
   create_table "resources", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "content"
-    t.integer "visibility"
-    t.bigint "resource_category_id", null: false
+    t.integer "visibility", default: 0, null: false
+    t.bigint "resource_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "published", default: false, null: false
+    t.integer "published", default: 0, null: false
+    t.string "resource_type"
     t.index ["resource_category_id"], name: "index_resources_on_resource_category_id"
+    t.index ["visibility"], name: "index_resources_on_visibility"
   end
 
   create_table "services", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.decimal "hours"
-    t.string "name"
+    t.decimal "hours", precision: 5, scale: 2, null: false
+    t.string "name", null: false
     t.text "description"
-    t.date "date_performed"
-    t.integer "status"
+    t.date "date_performed", null: false
+    t.integer "status", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["date_performed"], name: "index_services_on_date_performed"
+    t.index ["status"], name: "index_services_on_status"
     t.index ["user_id"], name: "index_services_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "email"
-    t.string "first_name"
-    t.string "last_name"
+    t.string "email", null: false
+    t.string "first_name", null: false
+    t.string "last_name", null: false
     t.integer "graduation_year"
     t.string "major"
     t.string "t_shirt_size"
-    t.integer "status"
+    t.integer "status", default: 1, null: false
     t.string "position"
-    t.integer "role"
+    t.integer "role", default: 0, null: false
     t.string "image_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -186,6 +193,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_29_030824) do
     t.datetime "remember_created_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["role"], name: "index_users_on_role"
+    t.index ["status"], name: "index_users_on_status"
     t.index ["uid"], name: "index_users_on_uid"
   end
 

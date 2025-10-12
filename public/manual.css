@@ -1,171 +1,86 @@
 /* Manual CSS for TAMU Legion Branding */
-.bg-legion-blue {
-  background-color: #0f296b !important;
-}
-.bg-polo-slate {
-  background-color: #494949 !important;
-}
-.bg-white {
-  background-color: #ffffff !important;
-}
-.bg-black {
-  background-color: #000000 !important;
-}
-.bg-dark-navy {
-  background-color: #081436 !important;
-}
-.bg-gold {
-  background-color: #dbc296 !important;
-}
-.bg-powder-blue {
-  background-color: #8fccff !important;
-}
-.bg-cornflower-blue {
-  background-color: #4b6fcb !important;
+.bg-legion-blue { background-color: #0f296b !important; }
+.bg-polo-slate { background-color: #494949 !important; }
+.bg-white { background-color: #ffffff !important; }
+.bg-black { background-color: #000000 !important; }
+.bg-dark-navy { background-color: #081436 !important; }
+.bg-gold { background-color: #dbc296 !important; }
+.bg-powder-blue { background-color: #8fccff !important; }
+.bg-cornflower-blue { background-color: #4b6fcb !important; }
+
+.text-legion-blue { color: #0f296b !important; }
+.text-polo-slate { color: #494949 !important; }
+.text-dark-navy { color: #081436 !important; }
+.text-gold { color: #dbc296 !important; }
+.text-powder-blue { color: #8fccff !important; }
+.text-cornflower-blue { color: #4b6fcb !important; }
+
+.border-legion-blue { border-color: #0f296b !important; }
+.border-polo-slate { border-color: #494949 !important; }
+.border-dark-navy { border-color: #081436 !important; }
+.border-gold { border-color: #dbc296 !important; }
+.border-powder-blue { border-color: #8fccff !important; }
+.border-cornflower-blue { border-color: #4b6fcb !important; }
+
+.font-primary-title { font-family: 'Librebaskerville'; font-weight: bold; }
+.font-primary-heading { font-family: 'Public Sans'; font-weight: bold; }
+.font-primary-body { font-family: 'Public Sans'; font-weight: normal; }
+.font-primary-subheading { font-family: 'Public Sans'; font-weight: 100; }
+
+.font-secondary-heading { font-family: 'Barlow'; font-weight: bold; }
+.font-secondary-body { font-family: 'Barlow'; font-weight: 600; }
+.font-secondary-subheading { font-family: 'Barlow'; font-weight: normal; }
+
+.text-sm-custom { font-size: 0.875rem; }
+.text-md-custom { font-size: 1rem; }
+.text-lg-custom { font-size: 1.25rem; }
+
+.default-border-radius { border-radius: 0 !important; }
+.thick-white-divider { border-top: 6px solid #ffffff !important; }
+
+.visually-hidden {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
 }
 
-.text-legion-blue {
-  color: #0f296b !important;
-}
-.text-polo-slate {
-  color: #494949 !important;
-}
-.text-dark-navy {
-  color: #081436 !important;
-}
-.text-gold {
-  color: #dbc296 !important;
-}
-.text-powder-blue {
-  color: #8fccff !important;
-}
-.text-cornflower-blue {
-  color: #4b6fcb !important;
-}
-
-.border-legion-blue {
-  border-color: #0f296b !important;
-}
-.border-polo-slate {
-  border-color: #494949 !important;
-}
-.border-dark-navy {
-  border-color: #081436 !important;
-}
-.border-gold {
-  border-color: #dbc296 !important;
-}
-.border-powder-blue {
-  border-color: #8fccff !important;
-}
-.border-cornflower-blue {
-  border-color: #4b6fcb !important;
-}
-
-.font-primary-title {
-  font-family: 'Librebaskerville';
-  font-weight: bold;
-}
-.font-primary-heading {
-  font-family: 'Public Sans';
-  font-weight: bold;
-}
-.font-primary-body {
-  font-family: 'Public Sans';
-  font-weight: normal;
-}
-.font-primary-subheading {
-  font-family: 'Public Sans';
-  font-weight: 100;
-}
-
-.font-secondary-heading {
-  font-family: 'Barlow';
-  font-weight: bold;
-}
-.font-secondary-body {
-  font-family: 'Barlow';
-  font-weight: 600;
-}
-.font-secondary-subheading {
-  font-family: 'Barlow';
-  font-weight: normal;
-}
-
-.text-sm-custom {
-  font-size: 0.875rem;
-}
-.text-md-custom {
-  font-size: 1rem;
-}
-.text-lg-custom {
-  font-size: 1.25rem;
-}
-
-.default-border-radius {
-  border-radius: 0 !important;
-}
-
-.thick-white-divider {
-  border-top: 6px solid #ffffff !important;
-}
-
-
-/* Scrollable container */
-.event-scroll-container {
-  max-height: 1200px;
+/* Scrollable containers */
+.event-scroll-container,
+.resource-scroll-container {
+  max-height: 1200px; /* choose max height as 1200px */
   overflow-y: auto;
-  padding-right: 8px; /* prevent scrollbar overlap */
+  padding-right: 8px;
 }
 
-/* Custom scrollbar */
-.event-scroll-container::-webkit-scrollbar {
-  width: 8px;
+.event-scroll-container::-webkit-scrollbar,
+.resource-scroll-container::-webkit-scrollbar { width: 8px; }
+.event-scroll-container::-webkit-scrollbar-thumb,
+.resource-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #dbc296; border-radius: 0;
 }
-.event-scroll-container::-webkit-scrollbar-thumb {
-  background-color: #dbc296; /* Legion gold */
-  border-radius: 0;
-}
-.event-scroll-container::-webkit-scrollbar-track {
-  background-color: #081436; /* dark navy */
+.event-scroll-container::-webkit-scrollbar-track,
+.resource-scroll-container::-webkit-scrollbar-track {
+  background-color: #081436;
 }
 
-/* Event card styling */
-.event-card {
-  background-color: #081436 !important; /* dark navy */
+/* Event & resource cards */
+.event-card,
+.resource-card {
+  background-color: #081436 !important;
   border: 4px solid #ffffff !important;
   border-radius: 0 !important;
   color: white;
 }
 
-/* Gold button override */
+/* Buttons */
 .btn-gold {
-  background-color: #dbc296 !important; /* Legion gold */
-  color: #081436 !important;            /* Dark navy text */
+  background-color: #dbc296 !important;
+  color: #081436 !important;
   font-weight: bold;
   border-radius: 0 !important;
 }
-
-
-.form-dark {
-  background-color: #081436 !important;
-  color: #ffffff !important;
-  border: 1px solid #ffffff !important;
-  border-radius: 0 !important;
-}
-
-.form-dark::placeholder {
-  color: #cccccc !important;
-}
-
-/* Dropdown options styling (limited support) */
-.form-dark option {
-  background-color: #ffffff !important;
-  color: #0f296b !important;
-}
-
-
-
 
 .white-btn {
   background-color: #ffffff !important;
@@ -175,11 +90,56 @@
   border-radius: 0 !important;
 }
 
+/* Forms */
+.form-dark {
+  background-color: #081436 !important;
+  color: #ffffff !important;
+  border: 1px solid #ffffff !important;
+  border-radius: 0 !important;
+}
+.form-dark::placeholder { color: #cccccc !important; }
+.form-dark option { background-color: #ffffff !important; color: #0f296b !important; }
 
-.visually-hidden {
-  position: absolute !important;
-  height: 1px; width: 1px;
-  overflow: hidden;
-  clip: rect(1px, 1px, 1px, 1px);
-  white-space: nowrap;
+/* Resource buttons & file containers */
+.resource-link-btn {
+  width: 100%; background-color: white; color: #001f3f;
+  text-align: center; padding: 0.5rem 1rem;
+  display: inline-block; text-decoration: none;
+}
+
+.resource-file-btn { overflow: hidden; }
+.resource-file { background-color: white; flex-grow: 1; display: flex; flex-direction: column; border: none; margin: 0; }
+.resource-file-name {
+  background-color: white; color: #001f3f;
+  padding: 0.5rem; text-align: center;
+  flex: 1; display: flex; align-items: center; justify-content: center;
+}
+.resource-file-actions { display: flex; }
+.resource-view-btn,
+.resource-download-btn,
+.resource-file-action {
+  flex: 1; padding: 0.5rem; background-color: #dbc296; color: white;
+  text-align: center; text-decoration: none;
+}
+.resource-view-btn { border-right: 1px solid white; }
+.resource-file-action { border-left: 1px solid white; }
+.resource-file-action:first-child { border-left: none; }
+
+/* Card container for all resources */
+.resource-card-member { display: flex; flex-direction: column; height: 120px; border: none; margin: 0; }
+
+/* Execs-only badge */
+.execs-badge {
+  background-color: #0f296b;
+  color: white; text-align: center;
+  margin: 0 0 0.25rem 0; flex: 0 0 auto;
+  font-size: 0.75rem; padding: 0.25rem 0;
+}
+
+/* Link button styling */
+.resource-button {
+  background-color: white; color: #001f3f;
+  text-decoration: none; text-align: center;
+  display: flex; align-items: center; justify-content: center;
+  flex-grow: 1; border: none; margin: 0;
 }

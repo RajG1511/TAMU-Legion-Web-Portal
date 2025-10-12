@@ -1,3 +1,4 @@
+<!-- Flash Messages -->
 <% flash.each do |key, message| %>
   <div class="container-fluid bg-gold text-dark-navy py-0">
     <div class="alert alert-dismissible fade show mb-0 text-center" role="alert" style="background-color: transparent; border: none;">
@@ -13,27 +14,24 @@
 </div>
 
 
-<!-- Main Split Section -->
+<!-- Main Split Body Section -->
 <div class="container-fluid bg-gold py-2">
   <div class="row">
-    <!-- Left Column (40%) -->
+    
+    <!-- Left Column Contains Logs and Buttons -->
     <div class="col-md-4 bg-legion-blue py-4">
-      <!-- Full-width Button -->
-    <!-- Button Row -->
-    <div class="d-grid gap-3 px-4 mt-4 mb-4">
-      <%= link_to "Create New Event", new_event_path, class: "btn bg-white text-legion-blue default-border-radius btn-lg w-100 font-primary-heading" %>
-      <%= link_to "View Member Events", events_path, class: "btn bg-white text-legion-blue default-border-radius btn-lg w-100 font-primary-heading" %>
-    </div>
+    
+      <!-- Full-width Create and Member View Buttons -->
+      <div class="d-grid gap-3 px-4 mt-4 mb-4">
+        <%= link_to "Create New Event", new_event_path, class: "btn bg-white text-legion-blue default-border-radius btn-lg w-100 font-primary-heading" %>
+        <%= link_to "View Member Events", events_path, class: "btn bg-white text-legion-blue default-border-radius btn-lg w-100 font-primary-heading" %>
+      </div>
 
       <!-- Event Update Log Table -->
       <div class="table-responsive" style="max-height: 1200px; overflow-y: auto;">
         <table class="table table-bordered table-striped border-primary border-legion-blue">
           <thead>
-            <tr>
-              <th colspan="4" class="bg-white text-black border-white text-center h4 font-secondary-heading">
-                Event Update Log
-              </th>
-            </tr>
+            <tr> <th colspan="4" class="bg-white text-black border-white text-center h4 font-secondary-heading"> Event Update Log </th> </tr>
             <tr>
               <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Event</th>
               <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Updated By</th>
@@ -55,87 +53,71 @@
       </div>
     </div>
 
-    <!-- Right Column (70%) -->
+    <!-- Right Column Contains All Event Cards and Filter Bar -->
     <div class="col-md-8 bg-dark-navy text-white py-4">
 
       <!-- Section Heading with Divider -->
       <h2 class="mb-2 font-primary-heading">All Events</h2>
       <hr class="thick-white-divider mb-4">
 
-  <!-- Filter Bar -->
-  <div class="bg-white p-3 mb-4 default-border-radius">
-    <%= form_with url: dashboard_events_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue" do %>
+      <!-- Filter Bar -->
+      <div class="bg-white p-3 mb-4 default-border-radius">
+        <%= form_with url: dashboard_events_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue" do %>
       
-      <!-- Label: Filters By -->
-      <div class="col-auto">
-        <span class="fw-bold font-secondary-body">Filter By</span>
-      </div>
+          <!-- Label: Filters By -->
+          <div class="col-auto"> <span class="fw-bold font-secondary-body">Filter By</span> </div>
 
-      <!-- Category Label + Dropdown -->
-      <div class="col-auto">
-        <label for="category_filter" class="form-label mb-0 font-secondary-subheading">Category:</label>
-      </div>
-      <div class="col">
-        <%= select_tag :category_id,
-              options_for_select([["All", ""]] + EventCategory.pluck(:name, :id), params[:category_id]),
-              include_blank: false,
-              class: "form-select default-border-radius text-legion-blue" %>
-      </div>
+          <!-- Category Label + Dropdown -->
+          <div class="col-auto"> <label for="category_filter" class="form-label mb-0 font-secondary-subheading">Category:</label> </div>
+          <div class="col">
+            <%= select_tag :category_id, options_for_select([["All", ""]] + EventCategory.pluck(:name, :id), params[:category_id]),
+              include_blank: false, class: "form-select default-border-radius text-legion-blue" %>
+          </div>
 
-      <!-- Visibility Label + Dropdown -->
-      <div class="col-auto">
-        <label for="visibility_filter" class="form-label mb-0 font-secondary-subheading">Visibility:</label>
-      </div>
-      <div class="col">
-        <%= select_tag :visibility,
-              options_for_select([["All", ""]] + Event.visibilities.keys.map { |v| [v.titleize, v] }, params[:visibility]),
-              include_blank: false,
-              class: "form-select default-border-radius text-legion-blue" %>
-      </div>
+          <!-- Visibility Label + Dropdown -->
+          <div class="col-auto"> <label for="visibility_filter" class="form-label mb-0 font-secondary-subheading">Visibility:</label> </div>
+          <div class="col">
+            <%= select_tag :visibility, options_for_select([["All", ""]] + Event.visibilities.keys.map { |v| [v.titleize, v] }, params[:visibility]),
+              include_blank: false, class: "form-select default-border-radius text-legion-blue" %>
+          </div>
 
-      <!-- Submit Button -->
-      <div class="col-auto">
-        <%= submit_tag "Filter", class: "btn btn-gold text-dark-navy default-border-radius font-secondary-body" %>
+          <!-- Submit Button -->
+          <div class="col-auto"> <%= submit_tag "Filter", class: "btn btn-gold text-dark-navy default-border-radius font-secondary-body" %> </div>
+      <% end %>
       </div>
-
-    <% end %>
-  </div>
 
       <!-- Scrollable Events Container -->
       <div class="event-scroll-container">
         <ul class="list-unstyled">
           <% @events.each do |event| %>
-            <li class="event-card mb-4 p-3">
-              <div class="d-flex justify-content-between align-items-start mb-2">
-                <h3 class="mb-0 text-white font-primary-title"><%= event.name %></h3>
-                <div class="d-flex gap-2">
-                  <%= link_to "Edit", edit_event_path(event), class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
-                  <%= button_to "Delete", event_path(event), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
-                  <%= button_to (event.published? ? "Unpublish" : "Publish"),
-                              toggle_publish_event_path(event),
-                              method: :patch,
-                              data: { confirm: "Are you sure you want to #{ event.published? ? 'unpublish' : 'publish' } this event?" },
-                              class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
-                </div>
-              </div>
-
-              <p class="text-gold mb-2 font-primary-heading">
-                <%= event.starts_at.strftime("%B %d, %Y at %I:%M %p") %> – <%= event.ends_at.strftime("%B %d, %Y at %I:%M %p") %>
-              </p>
-
-              <p class="text-white mb-0 font-primary-heading">
-                <strong>Category:</strong> <%= event.event_category&.name %> |
-                <strong>Visibility:</strong> <%= event.visibility.titleize %>
-              </p>
-
-              <p class="text-white mb-0 font-secondary-body">
-                  <strong>Location:</strong> <%= event.full_location %>
-              </p>
-
-              <p class="text-white mt-3 font-secondary-subheading">
-                <strong>Description:</strong> <%= event.description %>
-              </p>
-            </li>
+          <li class="event-card mb-4 p-3">
+          <div class="d-flex justify-content-between align-items-start mb-2">
+            <h3 class="mb-0 text-white font-primary-title"><%= event.name %></h3>
+            
+            <!-- Action Buttons: Edit, Delete, Publish/Unpublish -->
+            <div class="d-flex gap-2">
+              <%= link_to "Edit", edit_event_path(event), class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
+              <%= button_to "Delete", event_path(event), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
+              <%= button_to (event.published? ? "Unpublish" : "Publish"),
+                  toggle_publish_event_path(event), method: :patch,
+                  data: { confirm: "Are you sure you want to #{ event.published? ? 'unpublish' : 'publish' } this event?" },
+                  class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
+            </div>
+            </div>
+            
+            <!-- Event Details -->
+            <p class="text-gold mb-2 font-primary-heading"> <%= event.starts_at.strftime("%B %d, %Y at %I:%M %p") %> – <%= event.ends_at.strftime("%B %d, %Y at %I:%M %p") %> </p>
+            <p class="text-white mb-0 font-primary-heading">
+              <strong>Category:</strong> <%= event.event_category&.name %> |
+              <strong>Visibility:</strong> <%= event.visibility.titleize %>
+            </p>
+            <p class="text-white mb-0 font-secondary-body">
+              <strong>Location:</strong> <%= event.full_location %>
+            </p>
+            <p class="text-white mt-3 font-secondary-subheading">
+              <strong>Description:</strong> <%= event.description %>
+            </p>
+          </li>
           <% end %>
         </ul>
       </div>

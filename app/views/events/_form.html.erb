@@ -3,128 +3,135 @@
 
   <!-- Header Strip -->
   <div class="container-fluid bg-polo-slate text-white py-3">
-    <h2 class="text-center font-primary-title">
-      <%= @event.persisted? ? "Update an Event" : "Create an Event" %>
-    </h2>
+    <h2 class="text-center font-primary-title"> <%= @event.persisted? ? "Update an Event" : "Create an Event" %> </h2>
   </div>
 
   <!-- Gold Divider -->
   <div class="container-fluid bg-gold" style="height: 12px;"></div>
 
 
-<!-- Form Container -->
-<div class="container my-4 p-4 border border-4 border-white bg-dark-navy text-white default-border-radius">
+  <!-- Form Container -->
+  <div class="container my-4 p-4 border border-4 border-white bg-dark-navy text-white default-border-radius">
 
-  <%= form_with model: @event, local: true do |f| %>
-    <% if @event.errors.any? %>
-    <div class="container-fluid bg-gold text-dark-navy py-2 mb-3">
-        <p class="text-center mb-0 h5">
-        Please fill out all required fields.
-        </p>
-    </div>
+    <%= form_with model: @event, local: true do |f| %>
+      <!-- Error Messages -->
+      <% if @event.errors.any? %>
+        <div class="container-fluid bg-gold text-dark-navy py-2 mb-3">
+            <p class="text-center mb-0 h5"> Please fill out all required fields. </p>
+        </div>
+      <% end %>
+      
+      <!-- Error Handling -->
+      <% if @event.errors.any? %>
+        <div class="visually-hidden">
+          <ul>
+            <% @event.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <!-- Section 1: Name, Category, Visibility -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <%= f.label :name, "Event Name", class: "form-label font-primary-heading" %>
+          <%= f.text_field :name, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
+        </div>
+
+        <div class="col-md-4">
+          <%= f.label :event_category_id, "Event Category", class: "form-label font-primary-heading" %>
+          <%= f.collection_select :event_category_id, @categories, :id, :name, { prompt: "Select a category" }, class: "form-select form-dark default-border-radius font-secondary-subheading " %>
+        </div>
+
+        <div class="col-md-4">
+          <%= f.label :visibility, "Visibility", class: "form-label font-primary-heading" %>
+          <%= f.select :visibility, Event.visibilities.keys.map { |v| [v.titleize, v] }, { prompt: "Select visibility" }, class: "form-select form-dark default-border-radius font-secondary-subheading " %>
+        </div>
+      </div>
+
+      <hr class="border-white border-4">
+
+      <!-- Section 2: Start/End Times -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <%= f.label :starts_at, "Start Time", class: "form-label font-primary-heading" %>
+          <%= f.datetime_field :starts_at, id: "starts_at", class: "form-control form-dark default-border-radius font-secondary-subheading " %>
+          <small id="starts_at_help" class="text-white font-secondary-subheading ">Select the date and time the event begins</small>
+        </div>
+
+        <div class="col-md-6">
+          <%= f.label :ends_at, "End Time", class: "form-label font-primary-heading" %>
+          <%= f.datetime_field :ends_at, id: "ends_at", class: "form-control form-dark default-border-radius font-secondary-subheading " %>
+          <small id="ends_at_help" class="text-white font-secondary-subheading ">Select the date and time the event ends</small>
+        </div>
+      </div>
+
+      <hr class="border-white border-4">
+
+      <!-- Section 3: Location Type + Conditional Fields -->
+      <div class="mb-4">
+        <%= f.label :location_type, "Location Type", class: "form-label d-block font-primary-heading" %>
+
+        <div class="form-check form-check-inline">
+          <%= f.radio_button :location_type, "campus", id: "on_campus", class: "form-check-input font-primary-body" %>
+          <%= f.label :location_type, "On Campus", for: "on_campus", class: "form-check-label font-secondary-subheading " %>
+        </div>
+
+        <div class="form-check form-check-inline">
+          <%= f.radio_button :location_type, "off_campus", id: "off_campus", class: "form-check-input font-primary-body" %>
+          <%= f.label :location_type, "Off Campus", for: "off_campus", class: "form-check-label font-secondary-subheading " %>
+        </div>
+
+        <div class="form-check form-check-inline">
+          <%= f.radio_button :location_type, "other_location", id: "other_location", class: "form-check-input font-primary-body" %>
+          <%= f.label :location_type, "Other Location", for: "other_location", class: "form-check-label font-secondary-subheading " %>
+        </div>
+      </div>
+
+      <!-- Conditional Fields for Location Type -->
+      <div id="on-campus-fields" style="display:none;" class="mb-3">
+        <%= f.label :campus_code, class: "form-label font-secondary-heading" %>
+        <%= f.text_field :campus_code, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
+
+        <%= f.label :campus_number, class: "form-label mt-2 font-secondary-heading" %>
+        <%= f.number_field :campus_number, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
+      </div>
+
+      <div id="off-campus-fields" style="display:none;" class="mb-3">
+        <%= f.label :location_name, class: "form-label font-secondary-heading" %>
+        <%= f.text_field :location_name, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
+
+        <%= f.label :address, class: "form-label mt-2 font-secondary-heading" %>
+        <%= f.text_field :address, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
+      </div>
+
+      <div id="other-location-fields" style="display:none;" class="mb-3">
+        <%= f.label :location_text, class: "form-label font-secondary-heading" %>
+        <%= f.text_field :location_text, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
+      </div>
+
+      <hr class="border-white border-4">
+
+      <!-- Section 4: Description -->
+      <div class="mb-4">
+        <%= f.label :description, class: "form-label font-primary-heading" %>
+        <%= f.text_area :description, class: "form-control form-dark default-border-radius font-secondary-subheading", rows: 4 %>
+      </div>
+
+      
+      <!-- Back and Submit Buttons -->
+      <div class="d-flex justify-content-start gap-2 mt-4">
+        <%= f.submit (@event.persisted? ? "Update Event" : "Create Event"), class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+        <%= link_to "← Back to Dashboard", dashboard_events_path, class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+      </div>
     <% end %>
 
-    <% if @event.errors.any? %>
-    <div class="visually-hidden">
-        <ul>
-        <% @event.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-        <% end %>
-        </ul>
-    </div>
-    <% end %>
+  </div>
 
-    <!-- Section 1: Name, Category, Visibility -->
-    <div class="row mb-4">
-      <div class="col-md-4">
-        <%= f.label :name, "Event Name", class: "form-label font-primary-heading" %>
-        <%= f.text_field :name, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
-      </div>
-      <div class="col-md-4">
-        <%= f.label :event_category_id, "Event Category", class: "form-label font-primary-heading" %>
-        <%= f.collection_select :event_category_id, @categories, :id, :name, { prompt: "Select a category" }, class: "form-select form-dark default-border-radius font-secondary-subheading " %>
-      </div>
-      <div class="col-md-4">
-        <%= f.label :visibility, "Visibility", class: "form-label font-primary-heading" %>
-        <%= f.select :visibility, Event.visibilities.keys.map { |v| [v.titleize, v] }, { prompt: "Select visibility" }, class: "form-select form-dark default-border-radius font-secondary-subheading " %>
-      </div>
-    </div>
-
-    <hr class="border-white border-4">
-
-    <!-- Section 2: Start/End Times -->
-    <div class="row mb-4">
-      <div class="col-md-6">
-        <%= f.label :starts_at, "Start Time", class: "form-label font-primary-heading" %>
-        <%= f.datetime_field :starts_at, id: "starts_at", class: "form-control form-dark default-border-radius font-secondary-subheading " %>
-        <small id="starts_at_help" class="text-white font-secondary-subheading ">Select the date and time the event begins</small>
-      </div>
-      <div class="col-md-6">
-        <%= f.label :ends_at, "End Time", class: "form-label font-primary-heading" %>
-        <%= f.datetime_field :ends_at, id: "ends_at", class: "form-control form-dark default-border-radius font-secondary-subheading " %>
-        <small id="ends_at_help" class="text-white font-secondary-subheading ">Select the date and time the event ends</small>
-      </div>
-    </div>
-
-    <hr class="border-white border-4">
-
-    <!-- Section 3: Location Type + Conditional Fields -->
-    <div class="mb-4">
-      <%= f.label :location_type, "Location Type", class: "form-label d-block font-primary-heading" %>
-      <div class="form-check form-check-inline">
-        <%= f.radio_button :location_type, "campus", id: "on_campus", class: "form-check-input font-primary-body" %>
-        <%= f.label :location_type, "On Campus", for: "on_campus", class: "form-check-label font-secondary-subheading " %>
-      </div>
-      <div class="form-check form-check-inline">
-        <%= f.radio_button :location_type, "off_campus", id: "off_campus", class: "form-check-input font-primary-body" %>
-        <%= f.label :location_type, "Off Campus", for: "off_campus", class: "form-check-label font-secondary-subheading " %>
-      </div>
-      <div class="form-check form-check-inline">
-        <%= f.radio_button :location_type, "other_location", id: "other_location", class: "form-check-input font-primary-body" %>
-        <%= f.label :location_type, "Other Location", for: "other_location", class: "form-check-label font-secondary-subheading " %>
-      </div>
-    </div>
-
-    <!-- Conditional Fields -->
-    <div id="on-campus-fields" style="display:none;" class="mb-3">
-      <%= f.label :campus_code, class: "form-label font-secondary-heading" %>
-      <%= f.text_field :campus_code, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
-
-      <%= f.label :campus_number, class: "form-label mt-2 font-secondary-heading" %>
-      <%= f.number_field :campus_number, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
-    </div>
-
-    <div id="off-campus-fields" style="display:none;" class="mb-3">
-      <%= f.label :location_name, class: "form-label font-secondary-heading" %>
-      <%= f.text_field :location_name, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
-
-      <%= f.label :address, class: "form-label mt-2 font-secondary-heading" %>
-      <%= f.text_field :address, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
-    </div>
-
-    <div id="other-location-fields" style="display:none;" class="mb-3">
-      <%= f.label :location_text, class: "form-label font-secondary-heading" %>
-      <%= f.text_field :location_text, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
-    </div>
-
-    <hr class="border-white border-4">
-
-    <!-- Section 4: Description -->
-    <div class="mb-4">
-      <%= f.label :description, class: "form-label font-primary-heading" %>
-      <%= f.text_area :description, class: "form-control form-dark default-border-radius font-secondary-subheading", rows: 4 %>
-    </div>
-
-    
-    <!-- Buttons -->
-    <div class="d-flex justify-content-start gap-2 mt-4">
-    <%= f.submit (@event.persisted? ? "Update Event" : "Create Event"), class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
-    <%= link_to "← Back to Dashboard", dashboard_events_path, class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
-    </div>
-    <% end %>
+  <!-- Gold Footer Strip -->
+  <div class="container-fluid bg-gold" style="height: 12px;"></div>
 </div>
-<!-- Gold Footer Strip -->
-<div class="container-fluid bg-gold" style="height: 12px;"></div>
 
 
 <script>

@@ -4,44 +4,45 @@ class EventsController < ApplicationController
 
     # Member view index controller
     def index
-    # Start with published events, optionally filtered by category
-    @events = if params[:category_id].present?
-                Event.where(event_category_id: params[:category_id], published: :published)
+        # Start with published events, optionally filtered by category
+        @events = if params[:category_id].present?
+                    Event.where(event_category_id: params[:category_id], published: :published)
+                    else
+                    Event.where(published: :published)
+                    end
+
+        # Apply role-based visibility filtering
+        if user_signed_in?
+            case current_user.role
+                when "exec", "president"
+                    @events = @events.where(visibility: ["public_event", "members_only", "execs_only"])
+                when "member"
+                    @events = @events.where(visibility: ["public_event", "members_only"])
                 else
-                Event.where(published: :published)
+                    @events = @events.where(visibility: ["public_event"])
                 end
-
-    # Apply role-based visibility filtering
-    if user_signed_in?
-        case current_user.role
-        when "exec", "president"
-        @events = @events.where(visibility: ["public_event", "members_only", "execs_only"])
-        when "member"
-        @events = @events.where(visibility: ["public_event", "members_only"])
-        else
-        @events = @events.where(visibility: ["public_event"])
+            else
+                @events = @events.where(visibility: ["public_event"])
         end
-    else
-        @events = @events.where(visibility: ["public_event"])
-    end
 
-    @events = @events.order(:starts_at)
+        @events = @events.order(:starts_at)
     end
 
 
+    # Admin dashboard controller
     def dashboard
-    @events = Event.all
+        @events = Event.all
 
-    if params[:category_id].present?
-        @events = @events.where(event_category_id: params[:category_id])
-    end
+        if params[:category_id].present?
+            @events = @events.where(event_category_id: params[:category_id])
+        end
 
-    if params[:visibility].present?
-        @events = @events.where(visibility: params[:visibility])
-    end
+        if params[:visibility].present?
+            @events = @events.where(visibility: params[:visibility])
+        end
 
-    @events = @events.order(:starts_at)
-    @event_versions = EventVersion.includes(:event, :user).order(created_at: :desc).limit(20)
+        @events = @events.order(:starts_at)
+        @event_versions = EventVersion.includes(:event, :user).order(created_at: :desc).limit(20)
     end
 
     # New event form
