@@ -1,7 +1,9 @@
 class User < ApplicationRecord
 
   # Devise
-  devise :omniauthable, omniauth_providers: [:google_oauth2]
+  devise :database_authenticatable, :registerable,
+       :recoverable, :rememberable, :validatable,
+       :omniauthable, omniauth_providers: [:google_oauth2]
 
   # Enums - Updated to include president
   enum :status, { inactive: 0, active: 1 }

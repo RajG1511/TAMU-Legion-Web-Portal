@@ -1,13 +1,14 @@
 Rails.application.routes.draw do
   # User / Auth routes
   devise_for :users, controllers: {
+    seesions: 'usrs/sessions',
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
-  devise_scope :user do
-    get "/users/sign_in",  to: "devise/sessions#new",     as: :new_user_session
-    get "/users/sign_out", to: "devise/sessions#destroy", as: :destroy_user_session
-  end
+  #devise_scope :user do
+    #get "/users/sign_in",  to: "devise/sessions#new",     as: :new_user_session
+    #get "/users/sign_out", to: "devise/sessions#destroy", as: :destroy_user_session
+  #end
 
   # Users
   resources :users do

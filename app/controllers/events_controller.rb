@@ -1,5 +1,6 @@
 class EventsController < ApplicationController
     before_action :set_event,  only: [:edit, :update, :destroy, :toggle_publish]
+    before_action :require_exec!, except: [:index]
 
     # Member view index controller
     def index
@@ -28,15 +29,19 @@ class EventsController < ApplicationController
     end
 
 
-    # Admin view dashboard controller
     def dashboard
-        if params[:category_id].present?
-            @events = Event.where(event_category_id: params[:category_id]).order(:starts_at)
-        else
-            @events = Event.all.order(:starts_at)
-        end
-        
-        @event_versions = EventVersion.includes(:event, :user).order(created_at: :desc).limit(20)
+    @events = Event.all
+
+    if params[:category_id].present?
+        @events = @events.where(event_category_id: params[:category_id])
+    end
+
+    if params[:visibility].present?
+        @events = @events.where(visibility: params[:visibility])
+    end
+
+    @events = @events.order(:starts_at)
+    @event_versions = EventVersion.includes(:event, :user).order(created_at: :desc).limit(20)
     end
 
     # New event form
