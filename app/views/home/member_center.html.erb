@@ -1,0 +1,12 @@
+<!-- app/views/home/member_center.html.erb -->
+<div class="container-fluid min-vh-100 bg-polo-slate text-white py-5 text-center">
+  <h1 class="display-4 mb-4 font-primary-title">Welcome to the Member Center</h1>
+  <p class="lead font-secondary-body">Hello, <%= @user.first_name %>!</p>
+
+  <div class="mt-4">
+    <%= link_to "Sign out", destroy_user_session_path,
+        method: :delete,
+        data: { turbo: false },
+        class: "btn bg-gold text-dark-navy px-4 py-2 rounded-pill font-secondary-body" %>
+  </div>
+</div>

@@ -5,17 +5,17 @@ module Users
       if user.present?
         sign_out_all_scopes
         flash[:success] = t 'devise.omniauth_callbacks.success', kind: 'Google'
-        sign_in_and_redirect user, event: :authentication
+        sign_in_and_redirect user, event: :authentication, fallback_location: login_path
       else
         flash[:alert] = "You are not authorized. Please contact an executive."
-        redirect_to new_user_session_path
+        redirect_to login_path
       end
     end
 
     protected
 
     def after_omniauth_failure_path_for(_scope)
-      new_user_session_path
+      login_path
     end
 
     def from_google_params

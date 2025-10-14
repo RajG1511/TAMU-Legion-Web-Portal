@@ -143,3 +143,28 @@
   display: flex; align-items: center; justify-content: center;
   flex-grow: 1; border: none; margin: 0;
 }
+
+/* Not Registered Pop-up Modal */
+.register-info-modal .modal-content {
+  background-color: #081436; 
+  color: white;
+  border: 2px solid #dbc296; 
+  border-radius: 0 !important;
+}
+.register-info-modal .modal-header,
+.register-info-modal .modal-footer {
+  border-color: #dbc296; 
+}
+.register-info-modal .modal-body a {
+  color: #dbc296; 
+  text-decoration: underline;
+}
+
+/* Login flash message (failure) */
+.login-flash {
+  background-color: #dbc296; 
+  color: #001F3F; 
+  border-radius: 0 !important;
+  padding: 1rem 1.25rem;
+  margin: 0; 
+}

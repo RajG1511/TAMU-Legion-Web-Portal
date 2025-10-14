@@ -63,4 +63,8 @@ Rails.application.routes.draw do
 
   # Root
   root "home#index"
+
+  
+  get "member_center", to: "home#member_center"
+  get "login", to: "home#login"
 end
