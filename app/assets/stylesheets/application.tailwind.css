@@ -358,3 +358,93 @@
 #editMemberCenterCaptionModal .btn-gold:hover {
   transform: scale(1.03);
 }
+
+/* ------------------------------
+   NAVBAR
+------------------------------ */
+  .nav {
+    display: flex;
+    flex-wrap: nowrap; /* prevent wrapping */
+    overflow-x: auto;  /* horizontal scroll on small screens */
+  }
+  
+  .nav-link {
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .nav-link:hover {
+    background-color: #324158 !important;
+    color: white !important; /* optional if you want text to invert */
+  }
+
+
+  .nav-link.active-link {
+    background-color: #0f296b !important;
+    color: white !important;
+  }
+
+  .border-bottom-dark-navy {
+    border-bottom: 4px solid #0f296b !important; /* adjust thickness */
+  }
+
+  .navbar-logo {
+    max-height: 50px;
+  }
+
+  /* Horizontal scrollbar for navbar */
+.nav::-webkit-scrollbar {
+  height: 8px; /* thickness of scrollbar */
+}
+
+.nav::-webkit-scrollbar-track {
+  background: white; /* optional track color */
+  border-radius: 0;
+}
+
+.nav::-webkit-scrollbar-thumb {
+  background-color: #0f296b ; /* Legion Blue */
+  border-radius: 0;
+  border: 2px solid white; /* space around thumb */
+}
+
+/* ------------------------------
+   FOOTER
+   ------------------------------ */
+/* Footer */
+.footer {
+  background-color: #081436; 
+  color: white;
+  font-size: 0.9rem;
+}
+
+.footer a {
+  color: white;
+}
+
+.footer a:hover {
+  color: #0f296b; 
+  text-decoration: none;
+}
+
+.footer-icon {
+  width: 36px;
+  height: 36px;
+  border: 1px solid white;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 36px;
+  transition: all 0.3s ease;
+}
+
+.footer-icon i {
+  font-size: 18px;
+}
+
+.footer-icon:hover {
+  background-color: white;
+  color: #081436; 
+}

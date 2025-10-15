@@ -47,7 +47,7 @@
 
                 <!-- Resource Action Button or File Actions -->
                 <% if resource.resource_type == "link" %>
-                    <%= link_to resource.name, resource.content, target: "_blank", rel: "noopener", class: "resource-button flex-fill font-primary-heading" %>
+                    <%= link_to resource.name, resource.content, target: "_blank", rel: "noopener", class: "resource-link-btn flex-fill font-primary-heading" %>
                 <% elsif resource.resource_type == "file" && resource.file.attached? %>
                     <div class="resource-file d-flex flex-column">
                     <div class="resource-file-name font-primary-heading"><%= resource.name %></div>
