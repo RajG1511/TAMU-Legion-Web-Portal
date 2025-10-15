@@ -1,5 +1,9 @@
 // Entry point for the build script in your package.json
-console.log("✅ application.js is loaded");
 import Rails from "@rails/ujs"
 Rails.start()
-console.log("Rails UJS loaded")
+
+import "best_in_place"
+document.addEventListener("turbo:load", () => {
+  /* activate best_in_place */
+  $(".best_in_place").best_in_place();
+});

@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   # User / Auth routes
   devise_for :users, controllers: {
-    seesions: 'usrs/sessions',
+    sessions: 'users/sessions',
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
@@ -64,7 +64,13 @@ Rails.application.routes.draw do
   # Root
   root "home#index"
 
-  
+  # Member Center gallery actions
+  post '/member_center/upload_gallery', to: 'home#upload_gallery', as: :upload_gallery
+  delete '/member_center/delete_gallery_photo/:photo_id', to: 'home#delete_gallery_photo', as: :delete_gallery_photo
+
   get "member_center", to: "home#member_center"
   get "login", to: "home#login"
+  # config/routes.rb
+  post "update_member_center_caption", to: "users#update_member_center_caption"
+
 end

@@ -16,6 +16,7 @@ class User < ApplicationRecord
   has_many :committee_versions
   has_many :resource_versions
   has_many :event_versions
+  has_many_attached :gallery_photos, dependent: :destroy
 
   # Validations
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
