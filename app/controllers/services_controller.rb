@@ -1,5 +1,6 @@
 class ServicesController < ApplicationController
-  #skip_before_action :authenticate_user!   # must be logged in for all actions
+  before_action :require_member!, only: [ :new, :create ]
+  before_action :require_exec!, only: [ :index, :approve, :reject ]
 
   def index
     # Show all service requests to everyone
