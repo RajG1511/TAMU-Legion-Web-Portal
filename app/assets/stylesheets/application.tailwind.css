@@ -1,3 +1,357 @@
+Raj
+zaddyzwag
+Invisible
+
+Kyle Palermo — 9/8/2025 4:00 PM
+should we add joe to this discord or create another one with him included?
+Uzair — 9/8/2025 4:54 PM
+Probably a different one
+Raj — 9/8/2025 8:43 PM
+https://docs.google.com/document/d/1OQ9g7OiUziu407GAf6Qwnc-ZJmMfpOuw/edit?usp=sharing&ouid=109284993810535500581&rtpof=true&sd=true
+Raj — 9/9/2025 5:06 PM
+Image
+Raj — 9/11/2025 4:34 PM
+Image
+Kyle Palermo — 9/22/2025 2:15 PM
+Attachment file type: document
+master.key
+32 bytes
+put this in legion/config/ before running. never push this file to the repo 
+Kyle Palermo — 9/23/2025 5:06 PM
+https://lucid.app/lucidchart/f025af50-6f17-4e26-80ef-22deefb8cf6d/edit?viewport_loc=1912%2C-1039%2C1896%2C901%2C0_0&invitationId=inv_ceb45b4f-2055-4549-af43-ecbf0ae0f544
+Uzair — 9/26/2025 2:02 PM
+https://discord.gg/AemCM5qrz
+C-4
+CSCE-431
+9 Online
+31 Members
+Est. Aug 2025
+
+Go to Server
+https://discord.gg/xK2WKw5y
+Kyle Palermo — 9/26/2025 8:52 PM
+new config file just dropped
+Attachment file type: document
+development.key
+32 bytes
+this goes in config/credentials/
+Kyle Palermo — 9/27/2025 5:37 PM
+run 
+heroku run -a legion-select-staging "DISABLE_DATABASE_ENVIRONMENT_CHECK=1 rails db:seed:replant"
+ if auth isnt working for you
+Raj — 9/28/2025 4:43 PM
+933000144
+Uzair — 9/28/2025 4:51 PM
+QA - Uzair
+ldrago17 — 9/28/2025 4:51 PM
+132009922
+Raj — 9/28/2025 4:51 PM
+Maintainabilitty - Raj
+Uzair — 9/28/2025 4:51 PM
+Integrity - David
+Usability - Kyle
+Maintainability - Raj
+CI - Uzair
+Deployment - Kyle
+Efficiency Summary DUE TONIGHT - Do the individual reflection, Raj do your justification for Value to customer
+Kyle Palermo — 9/28/2025 4:53 PM
+519004829
+Uzair — 9/28/2025 4:54 PM
+Deliverable code- - Github classroom - Uzaier
+Project Notebook - David
+Kyle - customer deployement
+Week 5 Lab - Raj
+Mock UAT - Uzair
+Deployment cutoff - 4:00 PM
+ldrago17 — 9/29/2025 1:57 PM
+are you talking
+Uzair — 9/29/2025 1:57 PM
+Yes
+ldrago17 — 10/1/2025 3:02 PM
+https://us05web.zoom.us/j/88019799931?pwd=ThhEuAh4agTNaD5PQCDzzdEtmTmXOk.1
+Zoom
+Join our Cloud HD Video Meeting
+Zoom is the leader in modern enterprise cloud communications.
+Join our Cloud HD Video Meeting
+Raj — 10/3/2025 1:31 PM
+https://tamu.zoom.us/j/95583325331
+Zoom
+Join our Cloud HD Video Meeting
+Zoom is the leader in modern enterprise cloud communications.
+Join our Cloud HD Video Meeting
+Kyle Palermo — 10/7/2025 4:18 PM
+Attachment file type: document
+development.key
+32 bytes
+Attachment file type: unknown
+development.yml.enc
+436 bytes
+Attachment file type: document
+master.key
+32 bytes
+Attachment file type: unknown
+credentials.yml.enc
+548 bytes
+Kyle Palermo — 10/7/2025 4:39 PM
+secret: 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
+id: 38971258976-ipisiopmu9e9hbuip9t6llar07sr2ou5.apps.googleusercontent.com
+ldrago17 — 10/8/2025 2:28 PM
+https://us05web.zoom.us/j/83600431308?pwd=tNjnQ8wV7xWUzhCb0Na5Q98DYBRg9n.1
+Uzair — 10/8/2025 4:16 PM
+I made a mockup for the events page and I've sent it to Joe for his approval, but here's what I have for reference:
+Attachment file type: acrobat
+TAMU Legion Events Mockup.pdf
+428.44 KB
+Uzair — 10/9/2025 3:53 PM
+Upload this file into app/assets/build 
+Within the head section of application.html.erb, paste this line at the end:   <link rel="stylesheet" href="/manual.css" media="all">
+Uzair — 10/9/2025 4:08 PM
+my bad wrong file: put this under public
+/* Manual CSS for TAMU Legion Branding */
+.bg-legion-blue {
+  background-color: #0f296b !important;
+}
+.bg-polo-slate {
+  background-color: #494949 !important;
+Expand
+manual.css
+2 KB
+add the same line into the application.html.erb file
+ldrago17 — 10/10/2025 1:48 PM
+https://us05web.zoom.us/j/88317681700?pwd=aZI8bvAY4dgv738ooQWz2kOilb50PF.1
+Zoom
+Join our Cloud HD Video Meeting
+Zoom is the leader in modern enterprise cloud communications.
+Join our Cloud HD Video Meeting
+Uzair — 10/12/2025 11:56 AM
+I made a mockup of the resources pages and sent it to Joe. This is the PDF for reference:
+Attachment file type: acrobat
+TAMU Legion Resources Mockup.pdf
+409.80 KB
+ldrago17 — Yesterday at 7:01 PM
+https://us05web.zoom.us/j/81720177585?pwd=zWPad2Mrbb6fhaJrLmv1blMFsOljKp.1
+Zoom
+Join our Cloud HD Video Meeting
+Zoom is the leader in modern enterprise cloud communications.
+Join our Cloud HD Video Meeting
+Uzair — 10:37 AM
+manual.css goes under public application.tailwind.css goes under app/assets/stylesheets. You may or should already have application.tailwind.css. Within application.html.erb, you must reference the sheets with this in <head> in this exact order:  <head>
+    <title><%= content_for(:title) || "Legion" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <!-- Includes all stylesheet files in app/assets/stylesheets -->
+    <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", crossorigin: "anonymous" %>
+    <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", crossorigin: "anonymous" %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload"%>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+
+    <link rel="stylesheet" href="/manual.css" media="all">
+
+  </head>
+/* Manual CSS for TAMU Legion Branding */
+.bg-legion-blue { background-color: #0f296b !important; }
+.bg-polo-slate { background-color: #494949 !important; }
+.bg-white { background-color: #ffffff !important; }
+.bg-black { background-color: #000000 !important; }
+.bg-dark-navy { background-color: #081436 !important; }
+Expand
+manual.css
+6 KB
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Manual CSS for TAMU Legion Branding */
+.bg-legion-blue { background-color: #0f296b !important; }
+Expand
+application.tailwind.css
+6 KB
+﻿
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Manual CSS for TAMU Legion Branding */
+.bg-legion-blue { background-color: #0f296b !important; }
+.bg-polo-slate { background-color: #494949 !important; }
+.bg-white { background-color: #ffffff !important; }
+.bg-black { background-color: #000000 !important; }
+.bg-dark-navy { background-color: #081436 !important; }
+.bg-gold { background-color: #dbc296 !important; }
+.bg-powder-blue { background-color: #8fccff !important; }
+.bg-cornflower-blue { background-color: #4b6fcb !important; }
+
+.text-legion-blue { color: #0f296b !important; }
+.text-polo-slate { color: #494949 !important; }
+.text-dark-navy { color: #081436 !important; }
+.text-gold { color: #dbc296 !important; }
+.text-powder-blue { color: #8fccff !important; }
+.text-cornflower-blue { color: #4b6fcb !important; }
+
+.border-legion-blue { border-color: #0f296b !important; }
+.border-polo-slate { border-color: #494949 !important; }
+.border-dark-navy { border-color: #081436 !important; }
+.border-gold { border-color: #dbc296 !important; }
+.border-powder-blue { border-color: #8fccff !important; }
+.border-cornflower-blue { border-color: #4b6fcb !important; }
+
+.font-primary-title { font-family: 'Librebaskerville'; font-weight: bold; }
+.font-primary-heading { font-family: 'Public Sans'; font-weight: bold; }
+.font-primary-body { font-family: 'Public Sans'; font-weight: normal; }
+.font-primary-subheading { font-family: 'Public Sans'; font-weight: 100; }
+
+.font-secondary-heading { font-family: 'Barlow'; font-weight: bold; }
+.font-secondary-body { font-family: 'Barlow'; font-weight: 600; }
+.font-secondary-subheading { font-family: 'Barlow'; font-weight: normal; }
+
+.text-sm-custom { font-size: 0.875rem; }
+.text-md-custom { font-size: 1rem; }
+.text-lg-custom { font-size: 1.25rem; }
+
+.default-border-radius { border-radius: 0 !important; }
+.thick-white-divider { border-top: 6px solid #ffffff !important; }
+
+.visually-hidden {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}
+
+/* Scrollable containers */
+.event-scroll-container,
+.resource-scroll-container {
+  max-height: 1200px; /* choose max height as 1200px */
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.event-scroll-container::-webkit-scrollbar,
+.resource-scroll-container::-webkit-scrollbar { width: 8px; }
+.event-scroll-container::-webkit-scrollbar-thumb,
+.resource-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #dbc296; border-radius: 0;
+}
+.event-scroll-container::-webkit-scrollbar-track,
+.resource-scroll-container::-webkit-scrollbar-track {
+  background-color: #081436;
+}
+
+/* Event & resource cards */
+.event-card,
+.resource-card {
+  background-color: #081436 !important;
+  border: 4px solid #ffffff !important;
+  border-radius: 0 !important;
+  color: white;
+}
+
+/* Buttons */
+.btn-gold {
+  background-color: #dbc296 !important;
+  color: #081436 !important;
+  font-weight: bold;
+  border-radius: 0 !important;
+}
+
+.white-btn {
+  background-color: #ffffff !important;
+  color: #0f296b !important;
+  border: 2px solid #0f296b !important;
+  font-weight: bold;
+  border-radius: 0 !important;
+}
+
+/* Forms */
+.form-dark {
+  background-color: #081436 !important;
+  color: #ffffff !important;
+  border: 1px solid #ffffff !important;
+  border-radius: 0 !important;
+}
+.form-dark::placeholder { color: #cccccc !important; }
+.form-dark option { background-color: #ffffff !important; color: #0f296b !important; }
+
+/* Resource buttons & file containers */
+.resource-link-btn {
+  width: 100%; background-color: white; color: #001f3f;
+  text-align: center; padding: 0.5rem 1rem;
+  display: inline-block; text-decoration: none;
+}
+
+.resource-file-btn { overflow: hidden; }
+.resource-file { background-color: white; flex-grow: 1; display: flex; flex-direction: column; border: none; margin: 0; }
+.resource-file-name {
+  background-color: white; color: #001f3f;
+  padding: 0.5rem; text-align: center;
+  flex: 1; display: flex; align-items: center; justify-content: center;
+}
+.resource-file-actions { display: flex; }
+.resource-view-btn,
+.resource-download-btn,
+.resource-file-action {
+  flex: 1; padding: 0.5rem; background-color: #dbc296; color: white;
+  text-align: center; text-decoration: none;
+}
+.resource-view-btn { border-right: 1px solid white; }
+.resource-file-action { border-left: 1px solid white; }
+.resource-file-action:first-child { border-left: none; }
+
+/* Card container for all resources */
+.resource-card-member { display: flex; flex-direction: column; height: 120px; border: none; margin: 0; }
+
+/* Execs-only badge */
+.execs-badge {
+  background-color: #0f296b;
+  color: white; text-align: center;
+  margin: 0 0 0.25rem 0; flex: 0 0 auto;
+  font-size: 0.75rem; padding: 0.25rem 0;
+}
+
+/* Link button styling */
+.resource-button {
+  background-color: white; color: #001f3f;
+  text-decoration: none; text-align: center;
+  display: flex; align-items: center; justify-content: center;
+  flex-grow: 1; border: none; margin: 0;
+}
+
+/* Not Registered Pop-up Modal */
+.register-info-modal .modal-content {
+  background-color: #081436; 
+  color: white;
+  border: 2px solid #dbc296; 
+  border-radius: 0 !important;
+}
+.register-info-modal .modal-header,
+.register-info-modal .modal-footer {
+  border-color: #dbc296; 
+}
+.register-info-modal .modal-body a {
+  color: #dbc296; 
+  text-decoration: underline;
+}
+
+/* Login flash message (failure) */
+.login-flash {
+  background-color: #dbc296; 
+  color: #001F3F; 
+  border-radius: 0 !important;
+  padding: 1rem 1.25rem;
+  margin: 0; 
+}
