@@ -70,7 +70,7 @@ Rails.application.routes.draw do
   # Gallery management (all exec/president only)
   scope "member_center" do
     post   "upload_gallery",          to: "home#upload_gallery",          as: :upload_gallery
-    delete "delete_gallery_photo/:id", to: "home#delete_gallery_photo",   as: :delete_gallery_photo
+    delete "delete_gallery_photo/:photo_id", to: "home#delete_gallery_photo",   as: :delete_gallery_photo
     post   "update_caption",          to: "users#update_member_center_caption", as: :update_member_center_caption
   end
 
