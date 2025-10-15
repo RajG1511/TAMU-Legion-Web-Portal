@@ -52,6 +52,15 @@ end
   )
 end
 
+# Shared user for gallery photos
+User.find_or_create_by!(email: "shared@domain.com") do |user|
+  user.first_name = "Shared"
+  user.last_name = "User"
+  user.password = ENV.fetch("SHARED_USER_PASSWORD") { "defaultpassword" }
+  user.role = "member"
+  user.status = "active"
+end
+
 # -----------------------------
 # COMMITTEES
 # -----------------------------
