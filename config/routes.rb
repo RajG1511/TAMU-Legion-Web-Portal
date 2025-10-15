@@ -64,13 +64,16 @@ Rails.application.routes.draw do
   # Root
   root "home#index"
 
-  # Member Center gallery actions
-  post '/member_center/upload_gallery', to: 'home#upload_gallery', as: :upload_gallery
-  delete '/member_center/delete_gallery_photo/:photo_id', to: 'home#delete_gallery_photo', as: :delete_gallery_photo
-
+  # Member Center main page
   get "member_center", to: "home#member_center"
-  get "login", to: "home#login"
-  # config/routes.rb
-  post "update_member_center_caption", to: "users#update_member_center_caption"
 
+  # Gallery management (all exec/president only)
+  scope "member_center" do
+    post   "upload_gallery",          to: "home#upload_gallery",          as: :upload_gallery
+    delete "delete_gallery_photo/:id", to: "home#delete_gallery_photo",   as: :delete_gallery_photo
+    post   "update_caption",          to: "users#update_member_center_caption", as: :update_member_center_caption
+  end
+
+  # Login page
+  get "login", to: "home#login"
 end

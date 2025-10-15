@@ -47,6 +47,7 @@ class HomeController < ApplicationController
       @shared_user = User.create!(
         email: "shared@domain.com",
         first_name: "Shared",
+        last_name: "User",
         password: SecureRandom.hex(16),
         role: "exec"
       )
