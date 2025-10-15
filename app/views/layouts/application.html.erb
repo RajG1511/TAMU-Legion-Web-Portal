@@ -21,48 +21,107 @@
     <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", crossorigin: "anonymous" %>
     <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", crossorigin: "anonymous" %>
 
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload"%>
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
 
     <link rel="stylesheet" href="/manual.css" media="all">
-
   </head>
 
-  <body>
-    <nav>
-      <%= link_to "Events Dashboard", dashboard_events_path %> |
-      <%= link_to "Resources Dashboard", dashboard_resources_path %>
-      <% if user_signed_in? && (current_user.exec? || current_user.president?) %>
-        <%= link_to "Resources Dashboard", dashboard_resources_path %> |
-        <%= link_to "Events Dashboard", dashboard_events_path %> 
-      <% end %>
-      <%= link_to "Events", events_path %> |
-      <%= link_to "Resources", resources_path %>
+  <body class="bg-white text-legion-blue">
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark-navy sticky-top">
+      <div class="container">
+        <%= link_to "Legion", root_path, class: "navbar-brand fw-bold" %>
 
-      <% if user_signed_in? && (current_user.exec? || current_user.president?) %>
-        | <%= link_to "Manage Users", users_path %>
-      <% end %>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <!-- Service Hours navigation (visible to everyone) -->
-      | <%= link_to "Submit Service Hours", new_service_path %>
-      | <%= link_to "View Service Hours", services_path %>
-      | <%= link_to "Approve/Reject Service Hours", services_path %>
+        <div class="collapse navbar-collapse" id="mainNav">
+          <!-- Left side -->
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <%= link_to "Home", root_path, class: "nav-link #{'active' if current_page?(root_path)}" %>
+            </li>
+            <li class="nav-item">
+              <%= link_to "Events", events_path, class: "nav-link #{'active' if controller_name=='events'}" %>
+            </li>
+            <li class="nav-item">
+              <%= link_to "Resources", resources_path, class: "nav-link #{'active' if controller_name=='resources'}" %>
+            </li>
+            <li class="nav-item">
+              <%= link_to "Committees", committees_path, class: "nav-link #{'active' if controller_name=='committees'}" %>
+            </li>
+
+            <!-- Service Hours dropdown (visible to everyone) -->
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="servicesMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Service Hours
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="servicesMenu">
+                <li><%= link_to "Submit Service Hours", new_service_path, class: "dropdown-item" %></li>
+                <li><%= link_to "View Service Hours", services_path, class: "dropdown-item" %></li>
+                <li><%= link_to "Approve/Reject Service Hours", services_path, class: "dropdown-item" %></li>
+              </ul>
+            </li>
+
+            <% if user_signed_in? && (current_user.exec? || current_user.president?) %>
+              <!-- Exec/President-only quick links -->
+              <li class="nav-item">
+                <%= link_to "Events Dashboard", dashboard_events_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "Resources Dashboard", dashboard_resources_path, class: "nav-link" %>
+              </li>
+              <li class="nav-item">
+                <%= link_to "Manage Users", users_path, class: "nav-link" %>
+              </li>
+            <% end %>
+          </ul>
+
+          <!-- Right side -->
+          <ul class="navbar-nav ms-auto">
+            <% if user_signed_in? && (current_user.exec? || current_user.president?) %>
+              <li class="nav-item me-2">
+                <%= link_to "Edit Home", edit_home_path, class: "btn btn-outline-light btn-sm" %>
+              </li>
+            <% end %>
+
+            <% if user_signed_in? %>
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <%= current_user.full_name %>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+                  <li><%= link_to "Profile", user_path(current_user), class: "dropdown-item" %></li>
+                  <li><hr class="dropdown-divider"></li>
+                  <!-- Your routes define GET /users/sign_out to Devise#destroy -->
+                  <li><%= link_to "Sign out", destroy_user_session_path, class: "dropdown-item", data: { turbo: false } %></li>
+                </ul>
+              </li>
+            <% else %>
+              <li class="nav-item">
+                <%= link_to "Sign in", new_user_session_path, class: "btn btn-gold btn-sm", data: { turbo: false } %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+      </div>
     </nav>
 
-    <p style="color: red"><%= flash[:error] %></p>
-    <p style="color: blue"><%= flash[:notice] %></p>
-    <p style="color: green"><%= flash[:success] %></p>
-
-    <% if user_signed_in? %>
-      <%= link_to "Sign out", destroy_user_session_path, method: :delete, data: { turbo: false } %>
-    <% else %>
-      <%= link_to "Sign in", new_user_session_path, data: { turbo: false } %>
-    <% end %>
+    <!-- FLASHES -->
+    <div class="container mt-3">
+      <% flash.each do |key, message| %>
+        <%# map rails keys to bootstrap classes %>
+        <% css = { notice: "alert-info", success: "alert-success", error: "alert-danger", alert: "alert-warning" }[key.to_sym] || "alert-info" %>
+        <div class="alert <%= css %> alert-dismissible fade show default-border-radius" role="alert">
+          <%= message %>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      <% end %>
+    </div>
 
     <%= yield %>
-
-    <% flash.each do |key, message| %>
-      <div class="flash <%= key %>"><%= message %></div>
-    <% end %>
   </body>
 </html>
+

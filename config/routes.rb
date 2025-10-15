@@ -49,7 +49,7 @@ Rails.application.routes.draw do
     end
   end
 
-  # Service routes (needed for new_service_path, services_path, approve/reject, etc.)
+  # Service routes
   resources :services do
     collection do
       get :my_services
@@ -60,6 +60,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Home page (public) + exec-only editor
+  get   "/home/edit", to: "home#edit",   as: :edit_home
+  patch "/home",      to: "home#update", as: :home
+
   # Root
   root "home#index"
 end
+

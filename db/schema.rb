@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_09_29_030824) do
+ActiveRecord::Schema[8.0].define(version: 2025_10_15_204346) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -122,6 +122,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_29_030824) do
     t.index ["published"], name: "index_events_on_published"
   end
 
+  create_table "page_versions", force: :cascade do |t|
+    t.bigint "page_id", null: false
+    t.bigint "user_id", null: false
+    t.string "slug"
+    t.string "title"
+    t.string "change_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["page_id"], name: "index_page_versions_on_page_id"
+    t.index ["user_id"], name: "index_page_versions_on_user_id"
+  end
+
+  create_table "pages", force: :cascade do |t|
+    t.string "slug", null: false
+    t.string "title"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["slug"], name: "index_pages_on_slug", unique: true
+  end
+
   create_table "resource_categories", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
@@ -151,6 +171,30 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_29_030824) do
     t.datetime "updated_at", null: false
     t.boolean "published", default: false, null: false
     t.index ["resource_category_id"], name: "index_resources_on_resource_category_id"
+  end
+
+  create_table "section_versions", force: :cascade do |t|
+    t.bigint "section_id", null: false
+    t.bigint "page_version_id", null: false
+    t.bigint "user_id", null: false
+    t.integer "position", null: false
+    t.text "content_html"
+    t.string "change_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["page_version_id"], name: "index_section_versions_on_page_version_id"
+    t.index ["section_id", "id"], name: "index_section_versions_on_section_id_and_id"
+    t.index ["section_id"], name: "index_section_versions_on_section_id"
+    t.index ["user_id"], name: "index_section_versions_on_user_id"
+  end
+
+  create_table "sections", force: :cascade do |t|
+    t.bigint "page_id", null: false
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["page_id", "position"], name: "index_sections_on_page_id_and_position", unique: true
+    t.index ["page_id"], name: "index_sections_on_page_id"
   end
 
   create_table "services", force: :cascade do |t|
@@ -197,7 +241,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_09_29_030824) do
   add_foreign_key "committee_versions", "users"
   add_foreign_key "event_versions", "users"
   add_foreign_key "events", "event_categories"
+  add_foreign_key "page_versions", "pages"
+  add_foreign_key "page_versions", "users"
   add_foreign_key "resource_versions", "users"
   add_foreign_key "resources", "resource_categories"
+  add_foreign_key "section_versions", "page_versions"
+  add_foreign_key "section_versions", "sections"
+  add_foreign_key "section_versions", "users"
+  add_foreign_key "sections", "pages"
   add_foreign_key "services", "users"
 end
