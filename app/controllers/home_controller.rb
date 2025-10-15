@@ -48,7 +48,7 @@ class HomeController < ApplicationController
         email: "shared@domain.com",
         first_name: "Shared",
         password: SecureRandom.hex(16),
-        role: "admin"
+        role: "exec"
       )
     end
   end
