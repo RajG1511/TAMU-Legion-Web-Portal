@@ -15,4 +15,8 @@ class ApplicationController < ActionController::Base
     return if current_user&.president?
     redirect_to new_user_session_path, alert: 'President access only.'
   end
+
+  def after_sign_in_path_for(resource)
+    member_center_path
+  end
 end

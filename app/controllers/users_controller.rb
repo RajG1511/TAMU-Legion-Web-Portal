@@ -75,6 +75,16 @@ class UsersController < ApplicationController
     flash[:success] = "Reset #{inactive_count} inactive members to active status"
     redirect_to users_path
   end
+
+    # app/controllers/users_controller.rb
+    def update_member_center_caption
+      text = params[:text]
+      File.write(Rails.root.join("config", "member_center_caption.yml"), { text: text }.to_yaml)
+      redirect_back(fallback_location: root_path, notice: "Member Center Caption updated!")
+    end
+
+
+
   # ----------------------------------
 
   private
