@@ -1,7 +1,27 @@
 class HomeController < ApplicationController
   before_action :set_shared_user, only: [:member_center, :upload_gallery, :delete_gallery_photo]
+  before_action :require_exec!, only: [:edit, :update]
+
+  def edit
+    @sections = HomePageStore.read
+  end
+
+  # Only exec/president can edit or update the homepage
+  def update
+    inputs = HomePageStore::SECTION_KEYS.to_h { |key| [key, params.dig(:home_page, key)] }
+    HomePageStore.save_all!(inputs: inputs, user: current_user)
+    redirect_to root_path, notice: "Home page updated successfully."
+  rescue ActiveRecord::RecordInvalid => e
+    flash.now[:alert] = e.record.errors.full_messages.to_sentence
+    @sections = HomePageStore.read
+    render :edit, status: :unprocessable_entity
+  end
+end
+  
+  
+  # Public home page (for all users)
   def index
-    @user = current_user
+    @sections = HomePageStore.read
   end
 
   # Member Login Page
@@ -55,3 +75,5 @@ class HomeController < ApplicationController
   end
 
 end
+
+

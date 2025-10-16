@@ -1,0 +1,19 @@
+<!-- app/views/home/edit.html.erb -->
+<% content_for :title, "Edit Home Page" %>
+<div class="container section-pad">
+  <h1 class="mb-4">Edit Home Page</h1>
+  <%= form_with url: home_path, method: :patch, class: "row g-4" do |f| %>
+    <% @sections.each do |s| %>
+      <div class="col-12">
+        <%= label_tag "home_page_#{s[:key]}", s[:key].capitalize, class: "form-label fw-semibold" %>
+        <%= text_area_tag "home_page[#{s[:key]}]", s[:version_html], rows: 10, class: "form-control", placeholder: "HTML for #{s[:key]}" %>
+        <small class="text-muted">HTML accepted. Use headings, links, buttons, images.</small>
+      </div>
+    <% end %>
+    <div class="col-12">
+      <%= f.submit "Save Changes", class: "btn btn-gold" %>
+      <%= link_to "Cancel", root_path, class: "btn btn-outline-secondary ms-2" %>
+    </div>
+  <% end %>
+</div>
+
