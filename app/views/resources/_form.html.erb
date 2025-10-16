@@ -1,52 +1,120 @@
-<% if @resource.errors.any? %>
-  <div class="errors">
-    <h2><%= pluralize(@resource.errors.count, "error") %> prevented this resource from being saved:</h2>
-    <ul>
-        <% @resource.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-        <% end %>
-    </ul>
+<!-- Full Page Wrapper -->
+<div class="container-fluid bg-dark-navy text-white min-vh-100 px-0">
+
+  <!-- Header Strip -->
+  <div class="container-fluid bg-polo-slate text-white py-3">
+    <h2 class="text-center font-primary-title"> <%= @resource.persisted? ? "Update a Resource" : "Create a Resource" %> </h2>
   </div>
-<% end %>
 
-<%= form_with model: @resource, local: true do |f| %>
-    <div>
-        <%= f.label :name %><br>
-        <%= f.text_field :name %>
-    </div>
+  <!-- Gold Divider -->
+  <div class="container-fluid bg-gold" style="height: 12px;"></div>
 
-    <div>
-        <%= f.label :visibility %><br>
-        <%= f.select :visibility, Resource.visibilities.keys.map { |v| [v.humanize, v] } %>
-    </div>
+  <!-- Form Container -->
+  <div class="container my-4 p-4 border border-4 border-white bg-dark-navy text-white default-border-radius">
 
-    <div>
-        <%= f.label :resource_category_id, "Category" %><br>
-        <%= f.collection_select :resource_category_id, ResourceCategory.all, :id, :name %>
-    </div>
+    <%= form_with model: @resource, local: true do |f| %>
 
-    <div>
-        <%= f.label :file, "Upload File" %><br>
-        <%= f.file_field :file %>
+      <!-- Error Messages -->
+      <% if @resource.errors.any? %>
+        <div class="container-fluid bg-gold text-dark-navy py-2 mb-3">
+          <p class="text-center mb-0 h5"> Please fill out all required fields. </p>
+        </div>
+        <div class="visually-hidden">
+          <ul>
+            <% @resource.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
 
+      <!-- Section 1: Name, Category, Visibility -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <%= f.label :name, "Resource Name", class: "form-label font-primary-heading" %>
+          <%= f.text_field :name, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+
+        <div class="col-md-4">
+          <%= f.label :resource_category_id, "Category", class: "form-label font-primary-heading" %>
+          <%= f.collection_select :resource_category_id, ResourceCategory.all, :id, :name, { prompt: "Select a category" }, class: "form-select form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+
+        <div class="col-md-4">
+          <%= f.label :visibility, "Visibility", class: "form-label font-primary-heading" %>
+          <%= f.select :visibility, Resource.visibilities.keys.map { |v| [v.humanize, v] }, { prompt: "Select visibility" }, class: "form-select form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+      </div>
+
+      <hr class="border-white border-4">
+
+      <!-- Section 2: Resource Type -->
+      <div class="mb-4">
+        <%= f.label :resource_type, "Resource Type", class: "form-label d-block font-primary-heading" %>
+        <div class="form-check form-check-inline">
+          <%= f.radio_button :resource_type, "file", id: "file_option", class: "form-check-input" %>
+          <%= f.label :resource_type, "File Upload", for: "file_option", class: "form-check-label font-secondary-subheading" %>
+        </div>
+
+        <div class="form-check form-check-inline">
+          <%= f.radio_button :resource_type, "link", id: "link_option", class: "form-check-input" %>
+          <%= f.label :resource_type, "External Link", for: "link_option", class: "form-check-label font-secondary-subheading" %>
+        </div>
+      </div>
+
+      <!-- Conditional Fields for File or Link -->
+      <div id="file-fields" style="display:none;" class="mb-3">
+        <%= f.label :file, "Upload File", class: "form-label font-secondary-heading" %>
+        <%= f.file_field :file, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
         <% if @resource.file.attached? %>
-            <p>
-                Currently attached:
-                <%= link_to @resource.file.filename.to_s,
-                rails_blob_path(@resource.file, disposition: "attachment") %>
-            </p>
-            <p><em>Uploading a new file will replace the current one.</em></p>
+          <p class = "font-secondary-body">Currently attached:
+            <%= link_to @resource.file.filename.to_s, rails_blob_path(@resource.file, disposition: "attachment") , class: "font-secondary-subheading" %>
+          </p>
         <% end %>
-    </div>
+      </div>
+      
+      <!-- Conditional Fields for File or Link -->
+      <div id="link-fields" style="display:none;" class="mb-3">
+        <%= f.label :content, "External Link", class: "form-label font-secondary-heading" %>
+        <%= f.text_field :content, class: "form-control form-dark default-border-radius font-secondary-subheading", placeholder: "https://example.com" %>
+      </div>
 
-    <div>
-        <%= f.label :content, "Description (optional)" %><br>
-        <%= f.text_area :content, rows: 4, placeholder: "Add an optional description for this resource..." %>
-    </div>
+      <!-- Submit or Back Button -->
+      <div class="d-flex justify-content-start gap-2 mt-4">
+        <%= f.submit (@resource.persisted? ? "Update Resource" : "Create Resource"), class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+        <%= link_to "← Back to Dashboard", dashboard_resources_path, class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+      </div>
 
-    <div>
-        <%= f.submit %>
-    </div>
+    <% end %>
+  </div>
 
-    <p><%= link_to "Back to Dashboard", dashboard_resources_path %></p>
-<% end %>
+  <!-- Gold Footer Strip -->
+  <div class="container-fluid bg-gold" style="height: 12px;"></div>
+</div>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const fileOption = document.getElementById("file_option");
+  const linkOption = document.getElementById("link_option");
+  const fileFields = document.getElementById("file-fields");
+  const linkFields = document.getElementById("link-fields");
+
+  <!-- Function to toggle between file and link fields -->
+  function toggleResourceFields() {
+    if (fileOption.checked) {
+      fileFields.style.display = "block";
+      linkFields.style.display = "none";
+    } else if (linkOption.checked) {
+      fileFields.style.display = "none";
+      linkFields.style.display = "block";
+    } else {
+      fileFields.style.display = "none";
+      linkFields.style.display = "none";
+    }
+  }
+
+  [fileOption, linkOption].forEach(el => el.addEventListener("change", toggleResourceFields));
+  toggleResourceFields(); // initialize
+});
+</script>

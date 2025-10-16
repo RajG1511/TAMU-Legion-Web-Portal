@@ -1,13 +1,14 @@
 Rails.application.routes.draw do
   # User / Auth routes
   devise_for :users, controllers: {
+    sessions: 'users/sessions',
     omniauth_callbacks: "users/omniauth_callbacks"
   }
 
-  devise_scope :user do
-    get "/users/sign_in",  to: "devise/sessions#new",     as: :new_user_session
-    get "/users/sign_out", to: "devise/sessions#destroy", as: :destroy_user_session
-  end
+  #devise_scope :user do
+    #get "/users/sign_in",  to: "devise/sessions#new",     as: :new_user_session
+    #get "/users/sign_out", to: "devise/sessions#destroy", as: :destroy_user_session
+  #end
 
   # Users
   resources :users do
@@ -66,5 +67,17 @@ Rails.application.routes.draw do
 
   # Root
   root "home#index"
-end
 
+  # Member Center main page
+  get "member_center", to: "home#member_center"
+
+  # Gallery management (all exec/president only)
+  scope "member_center" do
+    post   "upload_gallery",          to: "home#upload_gallery",          as: :upload_gallery
+    delete "delete_gallery_photo/:photo_id", to: "home#delete_gallery_photo",   as: :delete_gallery_photo
+    post   "update_caption",          to: "users#update_member_center_caption", as: :update_member_center_caption
+  end
+
+  # Login page
+  get "login", to: "home#login"
+end

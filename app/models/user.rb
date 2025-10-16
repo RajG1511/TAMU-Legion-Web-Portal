@@ -1,7 +1,9 @@
 class User < ApplicationRecord
 
   # Devise
-  devise :omniauthable, omniauth_providers: [:google_oauth2]
+  devise :database_authenticatable, :registerable,
+       :recoverable, :rememberable, :validatable,
+       :omniauthable, omniauth_providers: [:google_oauth2]
 
   # Enums - Updated to include president
   enum :status, { inactive: 0, active: 1 }
@@ -14,6 +16,7 @@ class User < ApplicationRecord
   has_many :committee_versions
   has_many :resource_versions
   has_many :event_versions
+  has_many_attached :gallery_photos, dependent: :destroy
 
   # Validations
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }

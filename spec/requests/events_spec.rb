@@ -1,8 +1,19 @@
 require 'rails_helper'
 
 RSpec.describe "Events", type: :request do
+  include Warden::Test::Helpers
+  before(:each) { Warden.test_mode! }
+  after(:each)  { Warden.test_reset! }
+
+  let(:user) { create(:user, :exec, password: "password123") }
+
+  before do
+    login_as(user, scope: :user)
+  end
+
+
+
   let(:category) { create(:event_category) }
-  let(:user)     { create(:user) }
 
   let(:valid_attributes) do
     attributes_for(:event,
@@ -22,12 +33,9 @@ RSpec.describe "Events", type: :request do
       published: :published
     )
   end
-
-  before { user }
-
   describe "GET /events" do
     it "returns published events regardless of date" do
-      event.update!(starts_at: 3.days.ago, ends_at: 2.days.ago, published: :published)
+      event.update!(starts_at: 3.days.ago, ends_at: 2.days.ago)
       get events_path
       expect(response).to have_http_status(:ok)
       expect(response.body).to include(event.name)
@@ -75,7 +83,7 @@ RSpec.describe "Events", type: :request do
         version = EventVersion.last
         expect(version.change_type).to eq("created")
         expect(version.event).to eq(Event.last)
-        expect(version.user).to eq(User.last)
+        expect(version.user).to eq(user)
       end
     end
 
@@ -85,7 +93,7 @@ RSpec.describe "Events", type: :request do
           post events_path, params: { event: invalid_attributes }
         }.not_to change(Event, :count)
 
-        expect(response).to have_http_status(:ok).or have_http_status(:unprocessable_content)
+        expect(response).to have_http_status(:unprocessable_entity).or have_http_status(:ok)
         expect(flash[:alert]).to eq("Please fill out all required fields.")
         expect(response.body).to include("Please fill out all required fields.")
       end
@@ -105,7 +113,7 @@ RSpec.describe "Events", type: :request do
 
     it "fails with invalid params" do
       patch event_path(event), params: { event: invalid_attributes }
-      expect(response).to have_http_status(:ok).or have_http_status(:unprocessable_content)
+      expect(response).to have_http_status(:unprocessable_entity).or have_http_status(:ok)
       expect(flash[:alert]).to eq("Please fill out all required fields.")
       expect(response.body).to include("Please fill out all required fields.")
     end

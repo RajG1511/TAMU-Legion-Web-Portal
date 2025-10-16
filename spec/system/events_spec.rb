@@ -2,7 +2,17 @@ require 'rails_helper'
 
 RSpec.describe "Events management", type: :system do
   let!(:category) { create(:event_category, name: "Tech") }
-  let!(:user)     { create(:user) } # ensure a user exists for EventVersion logging
+  
+  include Warden::Test::Helpers
+  before(:each) { Warden.test_mode! }
+  after(:each)  { Warden.test_reset! }
+
+  let(:user) { create(:user, :exec, password: "password123") }
+
+  before do
+    login_as(user, scope: :user)
+  end
+
 
   before do
     driven_by(:rack_test) # stays on rack_test, no JS required
