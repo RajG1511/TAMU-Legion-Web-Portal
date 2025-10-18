@@ -2,99 +2,108 @@
 class RecruitmentPageStore
   PAGE_SLUG = "recruitment".freeze
 
-  # order matters (for stable insert)
-  SECTION_KEYS = %i[
-    hero_title
-    hero_tagline_html
-    body_html
-    apply_url
-    groupme_url
-    contact_email
+  # Keys the controller/views expect
+  SECTION_KEYS = [
+    :hero_title,         # text
+    :hero_tagline_html,  # html
+    :body_html,          # html (optional block below flyer)
+    :apply_url,          # text (URL)
+    :groupme_url,        # text (URL)
+    :contact_email       # text (email)
   ].freeze
+
+  # Map logical keys to physical section positions (1..N), exactly like HomePageStore
+  POSITION_MAP = SECTION_KEYS.each_with_index.to_h { |k, i| [k, i + 1] }.freeze
 
   DEFAULTS = {
     hero_title:          "Recruitment for Fall 2025 is open!",
     hero_tagline_html:   "Apply below to be considered for acceptance.<br>Follow us on our social channels for updates on the recruitment cycle.",
-    body_html:           "", # leave empty (the Wix page doesn’t need extra body)
+    body_html:           "",
     apply_url:           "https://forms.gle/your-form-here",
     groupme_url:         "https://groupme.com/join_group/your-groupme-id",
     contact_email:       "proflicter.tamulegion@gmail.com"
-  }.stringify_keys.freeze
+  }.freeze
 
-  # Public API ---------------------------------------------------------------
+  # ---------- Public API used by RecruitmentController ----------
 
+  # Returns a hash { "hero_title" => "...", ... }
   def self.read
     ensure_page_and_sections!
-    latest = latest_content_for(PAGE_SLUG)
-    SECTION_KEYS.each_with_object({}) do |k, h|
-      h[k.to_s] = latest[k.to_s].presence || DEFAULTS[k.to_s]
+    SECTION_KEYS.to_h do |key|
+      s = section_for(key)
+      [key.to_s, latest_content_for(s) || DEFAULTS[key]]
     end
   end
 
+  # inputs: { key_sym/string => html/text }
   def self.save_all!(inputs:, user:)
     ensure_page_and_sections!
-    page = Page.find_by!(slug: PAGE_SLUG)
+    normalized = inputs.to_h { |k, v| [k.to_sym, v.to_s] }
 
-    inputs.slice(*SECTION_KEYS.map(&:to_s)).each do |slug, content|
-      section = page.sections.find_by!(slug: slug)
-      SectionVersion.create!(
-        section: section,
+    # Optional page version, matching style in HomePageStore
+    pv_id = nil
+    if defined?(PageVersion)
+      pv = PageVersion.create!(
+        page_id: page.id,
         user_id: user&.id,
-        content_html: (content || "").to_s.strip
+        slug: page.slug,
+        title: page.title,
+        change_type: "update"
       )
+      pv_id = pv.id
     end
+
+    Section.transaction do
+      SECTION_KEYS.each do |key|
+        new_value = normalized[key]
+        next if new_value.nil?
+
+        s = section_for(key)
+        attrs = {
+          section_id:     s.id,
+          page_version_id: pv_id,
+          user_id:        user&.id,
+          position:       s.position,
+          content_html:   new_value,
+          change_type:    "update"
+        }.compact
+
+        raise "SectionVersion model not found" unless defined?(SectionVersion)
+        SectionVersion.create!(attrs)
+      end
+    end
+    true
   end
 
-  # Helpers (mirror the style of your HomePageStore) ------------------------
+  # ---------- Internals (mirrors HomePageStore) ----------
+
+  def self.page
+    @page ||= Page.find_by(slug: PAGE_SLUG)
+  end
 
   def self.ensure_page_and_sections!
-  ActiveRecord::Base.transaction do
-    page = Page.find_or_create_by!(slug: PAGE_SLUG) { |p| p.title = "Recruitment" }
+    ActiveRecord::Base.transaction do
+      p = page || Page.create!(slug: PAGE_SLUG, title: "Recruitment")
 
-    # Serialize section creation for this page to avoid unique(position) races
-    page.with_lock do
-      SECTION_KEYS.each do |slug|
-        # If it already exists by slug, we're done
-        next if page.sections.find_by(slug: slug)
-
-        # Compute next open position *after* acquiring the lock
-        next_pos = next_open_position_for(page.reload)
-
-        page.sections.create!(
-          slug:     slug,                 # keep your slug approach
-          name:     slug.to_s.titleize,
-          position: next_pos
-        )
+      existing_positions = Section.where(page_id: p.id).pluck(:position)
+      needed_positions   = POSITION_MAP.values
+      (needed_positions - existing_positions).sort.each do |pos|
+        Section.create!(page_id: p.id, position: pos)
       end
     end
   end
-rescue ActiveRecord::RecordNotUnique
-  # In case two threads collided right around the lock boundary, reload and try once more
-  retry
-end
 
-
-  # Returns the first free integer position for this page
-  def self.next_open_position_for(page)
-    used = page.sections.pluck(:position).compact
-    pos  = 1
-    while used.include?(pos)
-      pos += 1
-    end
-    pos
+  def self.section_for(key)
+    pos = POSITION_MAP.fetch(key)
+    Section.find_by!(page_id: page.id, position: pos)
   end
 
-
-  def self.latest_content_for(page_slug)
-    page = Page.find_by!(slug: page_slug)
-    sections = page.sections.order(:position)
-
-    sections.each_with_object({}) do |section, h|
-      content = SectionVersion.where(section_id: section.id)
-                              .order(created_at: :desc, id: :desc)
-                              .limit(1)
-                              .pick(:content_html)
-      h[section.slug] = content.to_s
-    end
+  def self.latest_content_for(section)
+    return nil unless defined?(SectionVersion)
+    SectionVersion.where(section_id: section.id)
+                  .order(created_at: :desc, id: :desc)
+                  .limit(1)
+                  .pick(:content_html)
   end
 end
+
