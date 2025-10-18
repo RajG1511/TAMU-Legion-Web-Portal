@@ -1,64 +1,94 @@
 # app/services/recruitment_page_store.rb
-# NOTE: Works without sections.slug — uses page_id + position only.
-
 class RecruitmentPageStore
   PAGE_SLUG = "recruitment".freeze
 
-  # ORDER MATTERS. Position = index + 1
+  # order matters (for stable insert)
   SECTION_KEYS = %i[
-    hero_badge_html          # position 1
-    hero_subtitle_html       # position 2
-    cta_buttons_html         # position 3
-    body_lead_html           # position 4
-    contact_html             # position 5
+    hero_title
+    hero_tagline_html
+    body_html
+    apply_url
+    groupme_url
+    contact_email
   ].freeze
+
+  DEFAULTS = {
+    hero_title:          "Recruitment for Fall 2025 is open!",
+    hero_tagline_html:   "Apply below to be considered for acceptance.<br>Follow us on our social channels for updates on the recruitment cycle.",
+    body_html:           "", # leave empty (the Wix page doesn’t need extra body)
+    apply_url:           "https://forms.gle/your-form-here",
+    groupme_url:         "https://groupme.com/join_group/your-groupme-id",
+    contact_email:       "proflicter.tamulegion@gmail.com"
+  }.stringify_keys.freeze
+
+  # Public API ---------------------------------------------------------------
 
   def self.read
     ensure_page_and_sections!
-
-    page = Page.find_by!(slug: PAGE_SLUG)
-    latest = latest_content_map_for(page)
-
+    latest = latest_content_for(PAGE_SLUG)
     SECTION_KEYS.each_with_object({}) do |k, h|
-      h[k.to_s] = latest[k.to_s] || ""
+      h[k.to_s] = latest[k.to_s].presence || DEFAULTS[k.to_s]
     end
   end
 
-  # ----------------------------------------------------------------
-  # INTERNALS
-  # ----------------------------------------------------------------
+  def self.save_all!(inputs:, user:)
+    ensure_page_and_sections!
+    page = Page.find_by!(slug: PAGE_SLUG)
+
+    inputs.slice(*SECTION_KEYS.map(&:to_s)).each do |slug, content|
+      section = page.sections.find_by!(slug: slug)
+      SectionVersion.create!(
+        section: section,
+        user_id: user&.id,
+        content_html: (content || "").to_s.strip
+      )
+    end
+  end
+
+  # Helpers (mirror the style of your HomePageStore) ------------------------
+
   def self.ensure_page_and_sections!
     ActiveRecord::Base.transaction do
       page = Page.find_or_create_by!(slug: PAGE_SLUG) { |p| p.title = "Recruitment" }
 
-      SECTION_KEYS.each_with_index do |key, idx|
-        position = idx + 1
-        Section.where(page_id: page.id, position: position).first_or_create! do |s|
-          # If your schema has :name, this will set it; otherwise it’s ignored.
-          s.name = key.to_s.titleize if s.respond_to?(:name)
-        end
+      SECTION_KEYS.each do |slug|
+        # Find by slug (idempotent). If it exists, do not change position.
+        section = page.sections.find_by(slug: slug)
+        next if section.present?
+
+        # Create a brand new section at the next free position.
+        # This avoids violating the unique (page_id, position) index.
+        next_pos = next_open_position_for(page)
+        page.sections.create!(
+          slug: slug,
+          name: slug.to_s.titleize,
+          position: next_pos
+        )
       end
     end
   end
-  private_class_method :ensure_page_and_sections!
 
-  # Build a hash { "hero_badge_html" => "...", ... } with the latest content_html per position.
-  def self.latest_content_map_for(page)
-    map = {}
-    SECTION_KEYS.each_with_index do |key, idx|
-      pos = idx + 1
-
-      html = SectionVersion
-        .joins(:section)
-        .where(sections: { page_id: page.id, position: pos })
-        .order(created_at: :desc, id: :desc)
-        .limit(1)
-        .pick(:content_html)
-
-      map[key.to_s] = html.to_s
+  # Returns the first free integer position for this page
+  def self.next_open_position_for(page)
+    used = page.sections.pluck(:position).compact
+    pos  = 1
+    while used.include?(pos)
+      pos += 1
     end
-    map
+    pos
   end
-  private_class_method :latest_content_map_for
-end
 
+
+  def self.latest_content_for(page_slug)
+    page = Page.find_by!(slug: page_slug)
+    sections = page.sections.order(:position)
+
+    sections.each_with_object({}) do |section, h|
+      content = SectionVersion.where(section_id: section.id)
+                              .order(created_at: :desc, id: :desc)
+                              .limit(1)
+                              .pick(:content_html)
+      h[section.slug] = content.to_s
+    end
+  end
+end

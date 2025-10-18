@@ -70,7 +70,7 @@ Rails.application.routes.draw do
   # 📄 Recruitment page (public) + exec-only editor
   get  '/recruitment',       to: 'recruitment#index',  as: :recruitment
   get  '/recruitment/edit',  to: 'recruitment#edit',   as: :edit_recruitment
-  patch '/recruitment',      to: 'recruitment#update'
+  patch '/recruitment',      to: 'recruitment#update', as: :update_recruitment
 
   # Root
   root 'home#index'
