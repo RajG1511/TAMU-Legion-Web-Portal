@@ -1,0 +1,42 @@
+<% content_for :title, "Edit Recruitment" %>
+
+<div class="container my-4">
+  <h1 class="mb-3">Edit Recruitment Page</h1>
+
+  <%= form_with url: recruitment_path, method: :patch, local: true do |f| %>
+    <div class="mb-3">
+      <label class="form-label">Hero Title (HTML)</label>
+      <%= text_area_tag "recruitment_page[hero_title_html]", @sections["hero_title_html"], rows: 3, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Hero Subtitle (HTML)</label>
+      <%= text_area_tag "recruitment_page[hero_subtitle_html]", @sections["hero_subtitle_html"], rows: 3, class: "form-control" %>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-md-6">
+        <label class="form-label">Apply Button URL</label>
+        <%= text_field_tag "recruitment_page[apply_button_url]", @sections["apply_button_url"], class: "form-control", placeholder: "https://..." %>
+      </div>
+      <div class="col-md-6">
+        <label class="form-label">GroupMe URL</label>
+        <%= text_field_tag "recruitment_page[groupme_url]", @sections["groupme_url"], class: "form-control", placeholder: "https://..." %>
+      </div>
+    </div>
+
+    <div class="mb-3 mt-3">
+      <label class="form-label">Schedule Image URL</label>
+      <%= text_field_tag "recruitment_page[schedule_image_url]", @sections["schedule_image_url"], class: "form-control", placeholder: "/Images/schedule.png or https://..." %>
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Contact Block (HTML)</label>
+      <%= text_area_tag "recruitment_page[contact_block_html]", @sections["contact_block_html"], rows: 3, class: "form-control", placeholder: 'For questions email <a href="mailto:...">...</a>' %>
+    </div>
+
+    <%= f.submit "Save", class: "btn btn-primary" %>
+    <%= link_to "Cancel", recruitment_path, class: "btn btn-link" %>
+  <% end %>
+</div>
+
