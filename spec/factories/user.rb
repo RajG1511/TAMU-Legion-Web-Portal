@@ -10,6 +10,8 @@ FactoryBot.define do
     t_shirt_size          { "M" }
     position              { nil }
     image_url             { "https://example.com/avatar.png" }
+    password              { "password123" }
+    password_confirmation { "password123" }
 
     trait :inactive do
       status { :inactive }

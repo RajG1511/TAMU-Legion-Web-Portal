@@ -1,23 +1,47 @@
 class EventsController < ApplicationController
-    before_action :set_event,  only: [:edit, :update, :destroy, :toggle_publish]
+    before_action :require_exec!, except: [ :index ]
+    before_action :set_event,  only: [ :edit, :update, :destroy, :toggle_publish ]
 
     # Member view index controller
     def index
-        if params[:category_id].present?
-            @events = Event.where(event_category_id: params[:category_id], published: :published).order(:starts_at)
-        else
-            @events = Event.where(published: :published).order(:starts_at)
+        # Start with published events, optionally filtered by category
+        @events = if params[:category_id].present?
+                    Event.where(event_category_id: params[:category_id], published: :published)
+                    else
+                    Event.where(published: :published)
+                    end
+
+        # Apply role-based visibility filtering
+        if user_signed_in?
+            case current_user.role
+                when "exec", "president"
+                    @events = @events.where(visibility: ["public_event", "members_only", "execs_only"])
+                when "member"
+                    @events = @events.where(visibility: ["public_event", "members_only"])
+                else
+                    @events = @events.where(visibility: ["public_event"])
+                end
+            else
+                @events = @events.where(visibility: ["public_event"])
         end
+
+        @events = @events.order(:starts_at)
     end
 
-    # Admin view dashboard controller
+
+    # Admin dashboard controller
     def dashboard
+        @events = Event.all
+
         if params[:category_id].present?
-            @events = Event.where(event_category_id: params[:category_id]).order(:starts_at)
-        else
-            @events = Event.all.order(:starts_at)
+            @events = @events.where(event_category_id: params[:category_id])
         end
-        
+
+        if params[:visibility].present?
+            @events = @events.where(visibility: params[:visibility])
+        end
+
+        @events = @events.order(:starts_at)
         @event_versions = EventVersion.includes(:event, :user).order(created_at: :desc).limit(20)
     end
 
@@ -30,7 +54,7 @@ class EventsController < ApplicationController
     # Create event controller | creates events and saves/logs or creates an exception
     def create
         @event = Event.new(event_params)
-        
+
         if @event.save
             log_event_version("created")
             redirect_to dashboard_events_path, notice: "Event created successfully."
@@ -38,7 +62,7 @@ class EventsController < ApplicationController
             flash.now[:alert] = "Please fill out all required fields."
             @categories = EventCategory.all
             render :new, status: :unprocessable_entity
-    end
+        end
   end
 
     # Edit event form
@@ -62,7 +86,7 @@ class EventsController < ApplicationController
     def destroy
         log_event_version("deleted")
         @event.destroy
-        redirect_to dashboard_events_path , notice: "Event deleted successfully."
+        redirect_to dashboard_events_path, notice: "Event deleted successfully."
     end
 
     # Toggle publish status | publishes/unpublishes events to member view and logs
@@ -93,21 +117,20 @@ class EventsController < ApplicationController
     def log_event_version(change_type)
     EventVersion.create!(
         event: @event,
-        user: User.last,
+        user: current_user,
         
         name: @event.name, description: @event.description,
         starts_at: @event.starts_at, ends_at: @event.ends_at,
         visibility: @event.visibility, published: @event.published,
-        
+
         location: @event.location,
         location_type: @event.location_type,
         campus_code: @event.campus_code, campus_number: @event.campus_number,
         location_name: @event.location_name, address: @event.address,
         location_text: @event.location_text,
-        
+
         image: @event.image,
         change_type: change_type
     )
     end
-
 end

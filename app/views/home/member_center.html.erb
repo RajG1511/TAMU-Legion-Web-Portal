@@ -1,0 +1,224 @@
+<!-- Flash Message -->
+<% flash.each do |key, message| %>
+  <div class="login-flash alert alert-dismissible fade show font-primary-heading w-100 text-center mb-0" role="alert">
+    <%= message %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+<% end %>
+
+
+<!-- Top Header -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-left font-primary-title"> Member Center | Welcome <%= @user.first_name %>! </h1>
+</div>
+
+
+<!-- Main Body Split -->
+<div class="container-fluid bg-gold py-2 min-vh-100 d-flex flex-column">
+  <div class="row flex-grow-1">
+
+    <!-- Left Column Containing Photo Gallery, Caption, Sign Out, Exec Buttons -->
+    <div class="col-md-5 bg-legion-blue py-4 px-4">
+
+      <!-- Sign Out Button -->
+      <div class="d-grid mb-4">
+        <%= link_to "Sign out", destroy_user_session_path,
+          method: :delete, data: { turbo: false },
+          class: "btn bg-white text-legion-blue btn-lg w-100 font-primary-heading default-border-radius" %>
+      </div>
+
+      <!-- Photo Gallery Carousel -->
+      <div id="memberPhotoCarousel" class="carousel slide mb-4" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <% @shared_user.gallery_photos.each_with_index do |photo, index| %>
+            <div class="carousel-item <%= 'active' if index == 0 %> text-center">
+              <%= image_tag(url_for(photo.variant(resize_to_limit: [1600, 1600], sharpen: "0x1.5").processed),
+                  class: "d-block mx-auto img-fluid shadow-sm", alt: "Gallery Photo") %>
+              
+              <!-- Delete Button for Exec/President -->
+              <% if @user.exec? || @user.president? %>
+                <%= button_to "×",
+                    delete_gallery_photo_path(photo_id: photo.id),
+                    method: :delete, data: { confirm: "Are you sure you want to delete this photo?" },
+                    class: "position-absolute top-0 end-0 btn btn-sm btn-gold text-dark-navy p-1" %>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- PhotoCarousel Controls -->
+        <button class="carousel-control-prev" type="button" data-bs-target="#memberPhotoCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#memberPhotoCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+
+      <!-- Legion Photo Gallery Caption Container -->
+      <div class="bg-gold text-legion-blue py-2 px-3 mb-3 text-center font-secondary-subheading">
+        <%= member_center_caption_text %>
+      </div>
+
+      <!-- Exec-Only Action Buttons -->
+      <% if @user.exec? || @user.president? %>
+        <div class="d-grid gap-2">
+          <%= link_to "Modify Photo Gallery", "#",
+              class: "btn bg-white text-legion-blue w-100 font-secondary-body default-border-radius",
+              data: { bs_toggle: "modal", bs_target: "#uploadGalleryModal" } %>
+
+          <%= link_to "Edit Photo Gallery Caption", "#",
+              class: "btn bg-white text-legion-blue w-100 font-secondary-body default-border-radius",
+              data: { bs_toggle: "modal", bs_target: "#editMemberCenterCaptionModal" } %>
+        </div>
+      <% end %>
+    </div>
+
+
+    <!-- Right Column Containg Quick Links and Admin Access -->
+    <div class="col-md-7 bg-dark-navy text-white py-4 px-4">
+      <div class="mb-5">
+
+        <!-- Quick Links Section -->
+        <h2 class="mb-2 font-primary-title">Quick Links</h2>
+        <hr class="thick-white-divider mb-4">
+
+        <% quick_links = [
+            ["Resources", resources_path],
+            ["View Service Hours", services_path],
+            ["Submit Service Hours", new_service_path],
+            ["Google Photos", "#"],
+            ["Upcoming Events", events_path],
+            ["Member Directory", "#"]
+          ] %>
+
+        <div class="row g-3 mb-4">
+          <% quick_links.each do |name, path| %>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+              <%= link_to name, path, class: "btn white-btn-member-center font-primary-heading uniform-btn w-100" %>
+            </div>
+          <% end %>
+        </div>
+
+        <!-- Admin Access Section (Exec/President Only) -->
+        <% if @user.exec? || @user.president? %>
+          <h2 class="mb-2 font-primary-title">Admin Access</h2>
+          <hr class="thick-white-divider mb-3">
+
+          <% admin_links = [
+              ["Events Dashboard", dashboard_events_path],
+              ["Resources Dashboard", dashboard_resources_path],
+              ["Service Dashboard", services_path],
+              ["Members Dashboard", users_path],
+              ["Page Management", "#"]
+            ] %>
+
+          <div class="row g-3">
+            <% admin_links.each do |name, path| %>
+              <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <%= link_to name, path,
+                    class: "btn white-btn-member-center font-primary-heading uniform-btn w-100",
+                    data: (name == "Page Management" ? { bs_toggle: "modal", bs_target: "#pageManagementModal" } : {}) %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--  Pop-up Modals -->
+<% if @user.exec? || @user.president? %>
+
+  <!-- Edit Member Center Caption Modal -->
+  <div class="modal fade" id="editMemberCenterCaptionModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark-navy text-white">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Edit Member Center Caption</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <%= form_with url: update_member_center_caption_path, method: :post, local: true do |f| %>
+            <div class="mb-3">
+              <%= f.label :text, "Member Center Caption (HTML allowed)" %>
+              <%= f.text_area :text, value: member_center_caption_text, class: "form-control bg-dark-navy text-white", rows: 3 %>
+            </div>
+            <div class="text-end">
+              <%= f.submit "Save", class: "btn btn-gold text-dark-navy" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Upload Gallery Modal -->
+  <div class="modal fade" id="uploadGalleryModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content p-3 bg-dark-navy" style="border: 1px solid white; color: white;">
+        <div class="modal-header border-0">
+          <h5 class="modal-title">Modify Photo Gallery</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body">
+          <%= form_with url: upload_gallery_path, method: :post, local: true, html: { multipart: true } do |f| %>
+
+            <%# File Input %>
+            <div class="mb-3">
+              <%= f.file_field :gallery_photos, multiple: true, class: "form-control bg-dark-navy text-white" %>
+            </div>
+
+            <!-- Current Uploaded Photos List -->
+            <div class="current-photos mt-3">
+              <h6>Current Uploaded Photos:</h6>
+              <ul class="list-group list-group-flush">
+                <% @user.gallery_photos.each do |photo| %>
+                  <li class="list-group-item bg-dark-navy text-white d-flex justify-content-between align-items-center" style="border: 1px solid white;">
+                    <span><%= photo.filename.to_s %></span>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+
+            <div class="text-end mt-3">
+              <%= f.submit "Upload", class: "btn btn-gold text-dark-navy" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Page Management Modal -->
+  <div class="modal fade" id="pageManagementModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content bg-dark-navy text-white border-1 default-border-radius", style="border: 1px solid white;">
+        <div class="modal-header border-1">
+          <h5 class="modal-title">Page Management</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>This is placeholder text for Page Management. You can add instructions, controls, or links here to manage pages within the app.</p>
+          <ul>
+            <li>Edit homepage content</li>
+            <li>Update gallery images</li>
+            <li>Manage text blocks</li>
+          </ul>
+          <p>More features coming soon...</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-gold text-dark-navy" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<% end %>

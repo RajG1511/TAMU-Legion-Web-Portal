@@ -1,62 +1,121 @@
-<h1>All Resources (Admin View)</h1>
-
-<%= form_with url: dashboard_resources_path, method: :get, local: true do %>
-    <label for="category_filter">Filter by Category:</label>
-    <%= select_tag :category_id,
-        options_for_select([["All", ""]] + ResourceCategory.pluck(:name, :id), params[:category_id]),
-        include_blank: false %>
-    <%= submit_tag "Filter" %>
+<!-- Flash Messages -->
+<% flash.each do |key, message| %>
+    <div class="container-fluid bg-gold text-dark-navy py-0">
+        <div class="alert alert-dismissible fade show mb-0 text-center" role="alert" style="background-color: transparent; border: none;">
+            <strong><%= message %></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    </div>
 <% end %>
 
-<%= link_to "Create New Resource", new_resource_path %>
+<!-- Top Heading -->
+<div class="container-fluid bg-polo-slate text-white py-3">
+    <h1 class="text-center font-primary-title">Resources Dashboard</h1>
+</div>
 
-<ul>
-    <% @resources.each do |resource| %>
-        <li>
-            <h2><%= resource.name %></h2>
-            <p>Category: <%= resource.resource_category&.name %></p>
-            <% if resource.content.present? %>
-                <p>Description: <%= resource.content %></p>
+<!-- Main Body Section -->
+<div class="container-fluid bg-gold py-2">
+    <div class="row">
+
+        <!-- Left Column Contains Log and Buttons -->
+        <div class="col-md-4 bg-legion-blue py-4">
+        
+            <!-- Full-width Create and Member View Buttons -->
+            <div class="d-grid gap-3 px-4 mt-4 mb-4">
+                <%= link_to "Create New Resource", new_resource_path, class: "btn bg-white text-legion-blue default-border-radius btn-lg w-100 font-primary-heading" %>
+                <%= link_to "View Member Resources", resources_path, class: "btn bg-white text-legion-blue default-border-radius btn-lg w-100 font-primary-heading" %>
+            </div>
+
+            <!-- Resource Update Log Table -->
+            <div class="table-responsive" style="max-height: 1200px; overflow-y: auto;">
+                <table class="table table-bordered table-striped border-primary border-legion-blue">
+                    <thead>
+                        <tr><th colspan="4" class="bg-white text-black border-white text-center h4 font-secondary-heading">Resource Update Log</th></tr>
+                        <tr>
+                            <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Resource</th>
+                            <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Updated By</th>
+                            <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Timestamp</th>
+                            <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Change Type</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% @resource_versions.each do |version| %>
+                            <tr class="border border-legion-blue">
+                                <td class="font-secondary-subheading"><%= version.name %></td>
+                                <td class="font-secondary-subheading"><%= version.user.first_name %> <%= version.user.last_name %></td>
+                                <td class="font-secondary-subheading"><%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
+                                <td class="font-secondary-subheading"><%= version.change_type.capitalize %></td>
+                            </tr>
+                        <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Right Column Contains All Resource Cards and Filter Bar -->
+        <div class="col-md-8 bg-dark-navy text-white py-4">
+
+            <!-- Section Heading with Divider -->
+            <h2 class="mb-2 font-primary-heading">All Resources</h2>
+            <hr class="thick-white-divider mb-4">
+
+            <!-- Filter Bar -->
+            <div class="bg-white p-3 mb-4 default-border-radius">
+                <%= form_with url: dashboard_resources_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue" do %>
+                <div class="col-auto"> <span class="fw-bold font-secondary-body">Filter By</span> </div>
+
+                <!-- Category Label + Dropdown -->
+                <div class="col-auto"> <label for="category_filter" class="form-label mb-0 font-secondary-subheading">Category:</label> </div>
+                <div class="col">
+                    <%= select_tag :category_id, options_for_select([["All", ""]] + ResourceCategory.pluck(:name, :id), params[:category_id]),
+                    include_blank: false, class: "form-select default-border-radius text-legion-blue" %>
+                </div>
+
+                <!-- Visibility Label + Dropdown -->
+                <div class="col-auto"> <label for="visibility_filter" class="form-label mb-0 font-secondary-subheading">Visibility:</label> </div>
+                <div class="col">
+                    <%= select_tag :visibility, options_for_select([["All", ""]] + Resource.visibilities.keys.map { |v| [v.titleize, v] }, params[:visibility]),
+                    include_blank: false, class: "form-select default-border-radius text-legion-blue" %>
+                </div>
+
+                <div class="col-auto"> <%= submit_tag "Filter", class: "btn btn-gold text-dark-navy default-border-radius font-secondary-body" %> </div>
             <% end %>
-            <% if resource.file.attached? %>
-                <p>
-                    <p><strong>File:</strong> <%= resource.file.filename.to_s %></p>
-                    <%= link_to "View File", rails_blob_path(resource.file, disposition: "inline"), target: "_blank" %> |
-                    <%= link_to "Download File", rails_blob_path(resource.file, disposition: "attachment") %>
-                </p>
-            <% end %>
+            </div>
 
-            <%= link_to "Edit", edit_resource_path(resource) %> |
-            <%= button_to "Delete", resource_path(resource), method: :delete, data: { confirm: "Are you sure?" }, form_class: "inline-button" %> |
-            <%= button_to (resource.published? ? "Unpublish" : "Publish"),
-                toggle_publish_resource_path(resource),
-                method: :patch,
-                data: { confirm: "Are you sure you want to #{ resource.published? ? 'unpublish' : 'publish' } this resource?" },
-                form_class: "inline-button" %>
-        </li>
-    <% end %>
-</ul>
+            <!-- Scrollable Resource Cards -->
+            <div class="resource-scroll-container">
+                <ul class="list-unstyled">
+                    <% @resources.each do |resource| %>
+                    <li class="resource-card mb-4 p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h3 class="mb-0 text-white font-primary-title"><%= resource.name %></h3>
+                        
+                        <!-- Action Buttons: Edit, Delete, Publish/Unpublish -->
+                        <div class="d-flex gap-2">
+                            <%= link_to "Edit", edit_resource_path(resource), class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
+                            <%= button_to "Delete", resource_path(resource), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
+                            <%= button_to (resource.published? ? "Unpublish" : "Publish"),
+                                toggle_publish_resource_path(resource), method: :patch, data: { confirm: "Are you sure you want to #{ resource.published? ? 'unpublish' : 'publish' } this resource?" },
+                                class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
+                        </div>
+                    </div>
 
-<h2>Resource Update Log</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Resource</th>
-      <th>Updated By</th>
-      <th>Timestamp</th>
-      <th>Change Type</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @resource_versions.each do |version| %>
-        <tr>
-            <td><%= version.name %></td>
-            <td><%= version.user.first_name %> <%= version.user.last_name %></td>
-            <td><%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
-            <td><%= version.change_type.capitalize %></td>
-        </tr>
-    <% end %>
-  </tbody>
-</table>
+                    <p class="text-white mb-2 font-primary-heading"> <strong>Category:</strong> <%= resource.resource_category&.name %> | <strong>Visibility:</strong> <%= resource.visibility.titleize %> </p>
+                    
+                    <!-- Resource Type Specific Actions -->
+                    <% if resource.resource_type == "link" %>
+                        <%= link_to "Link to Resource", resource.content, class: "btn btn-gold text-legion-blue w-100 mb-2", target: "_blank" %>
+                    <% elsif resource.resource_type == "file" && resource.file.attached? %>
+                        <div class="d-flex gap-2">
+                            <%= link_to "View File", rails_blob_path(resource.file, disposition: "inline"), target: "_blank", class: "btn btn-gold text-legion-blue w-50" %>
+                            <%= link_to "Download File", rails_blob_path(resource.file, disposition: "attachment"), class: "btn btn-gold text-legion-blue w-50" %>
+                        </div>
+                    <% end %>
 
-<p><%= link_to "View Member Resources", resources_path %></p>
+                    </li>
+                    <% end %>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

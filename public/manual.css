@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Manual CSS for TAMU Legion Branding */
 .bg-legion-blue {
   background-color: #0f296b !important;
@@ -105,3 +106,455 @@
 .default-border-radius {
   border-radius: 0 !important;
 }
+=======
+/* =========================================================
+   TAMU LEGION BRANDING — CUSTOM STYLESHEET
+   ========================================================= */
+
+/* ------------------------------
+   COLOR UTILITIES
+   ------------------------------ */
+
+/* Backgrounds */
+.bg-legion-blue      { background-color: #0f296b !important; }
+.bg-polo-slate       { background-color: #494949 !important; }
+.bg-white            { background-color: #ffffff !important; }
+.bg-black            { background-color: #000000 !important; }
+.bg-dark-navy        { background-color: #081436 !important; }
+.bg-gold             { background-color: #dbc296 !important; }
+.bg-powder-blue      { background-color: #8fccff !important; }
+.bg-cornflower-blue  { background-color: #4b6fcb !important; }
+.bg-dark-gray-blue   { background-color: #324158 !important; }
+
+/* Text colors */
+.text-legion-blue     { color: #0f296b !important; }
+.text-polo-slate      { color: #494949 !important; }
+.text-dark-navy       { color: #081436 !important; }
+.text-gold            { color: #dbc296 !important; }
+.text-powder-blue     { color: #8fccff !important; }
+.text-cornflower-blue { color: #4b6fcb !important; }
+
+/* Borders */
+.border-legion-blue     { border-color: #0f296b !important; }
+.border-polo-slate      { border-color: #494949 !important; }
+.border-dark-navy       { border-color: #081436 !important; }
+.border-gold            { border-color: #dbc296 !important; }
+.border-powder-blue     { border-color: #8fccff !important; }
+.border-cornflower-blue { border-color: #4b6fcb !important; }
+
+/* ------------------------------
+   TYPOGRAPHY
+   ------------------------------ */
+
+/* Primary fonts */
+.font-primary-title       { font-family: 'Librebaskerville'; font-weight: bold; }
+.font-primary-heading     { font-family: 'Public Sans'; font-weight: bold; }
+.font-primary-body        { font-family: 'Public Sans'; font-weight: normal; }
+.font-primary-subheading  { font-family: 'Public Sans'; font-weight: 100; }
+
+/* Secondary fonts */
+.font-secondary-heading    { font-family: 'Barlow'; font-weight: bold; }
+.font-secondary-body       { font-family: 'Barlow'; font-weight: 600; }
+.font-secondary-subheading { font-family: 'Barlow'; font-weight: normal; }
+
+/* Font sizes */
+.text-sm-custom { font-size: 0.875rem; }
+.text-md-custom { font-size: 1rem; }
+.text-lg-custom { font-size: 1.25rem; }
+
+/* ------------------------------
+   GENERAL UTILITIES
+   ------------------------------ */
+
+.default-border-radius { border-radius: 0 !important; }
+.thick-white-divider   { border-top: 6px solid #ffffff !important; }
+
+/* Accessibility helper */
+.visually-hidden {
+  position: absolute !important;
+  height: 1px; width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+  white-space: nowrap;
+}
+
+/* ------------------------------
+   SCROLLABLE CONTAINERS
+   ------------------------------ */
+
+.event-scroll-container,
+.resource-scroll-container {
+  max-height: 1200px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.event-scroll-container::-webkit-scrollbar,
+.resource-scroll-container::-webkit-scrollbar { width: 8px; }
+
+.event-scroll-container::-webkit-scrollbar-thumb,
+.resource-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #dbc296;
+  border-radius: 0;
+}
+
+.event-scroll-container::-webkit-scrollbar-track,
+.resource-scroll-container::-webkit-scrollbar-track {
+  background-color: #081436;
+}
+
+/* ------------------------------
+   CARDS
+   ------------------------------ */
+
+.event-card,
+.resource-card {
+  background-color: #081436 !important;
+  border: 4px solid #ffffff !important;
+  border-radius: 0 !important;
+  color: white;
+}
+
+/* Member resource card */
+.resource-card-member {
+  display: flex;
+  flex-direction: column;
+  height: 120px;
+  border: none;
+  margin: 0;
+}
+
+/* ------------------------------
+   BUTTONS
+   ------------------------------ */
+
+.btn-gold {
+  background-color: #dbc296 !important;
+  color: #081436 !important;
+  font-weight: bold;
+  border-radius: 0 !important;
+}
+
+.white-btn,
+.white-btn-member-center {
+  background-color: #ffffff !important;
+  font-weight: bold;
+  border-radius: 0 !important;
+}
+
+.white-btn {
+  color: #0f296b !important;
+  border: 2px solid #0f296b !important;
+}
+
+.white-btn-member-center {
+  color: #081436 !important;
+  border: 2px solid #081436 !important;
+}
+
+/* Uniform button height grid */
+.uniform-btn {
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  white-space: normal;
+}
+
+/* ------------------------------
+   FORMS
+   ------------------------------ */
+
+.form-dark {
+  background-color: #081436 !important;
+  color: #ffffff !important;
+  border: 1px solid #ffffff !important;
+  border-radius: 0 !important;
+}
+
+.form-dark::placeholder { color: #cccccc !important; }
+.form-dark option { background-color: #ffffff !important; color: #0f296b !important; }
+
+/* ------------------------------
+   RESOURCE ELEMENTS
+   ------------------------------ */
+
+.resource-link-btn {
+  width: 100%;
+  background-color: white;
+  color: #001f3f;
+  text-align: center;
+  padding: 0.5rem 1rem;
+  display: inline-block;
+  text-decoration: none;
+}
+
+.resource-file-btn    { overflow: hidden; }
+.resource-file        { background-color: white; flex-grow: 1; display: flex; flex-direction: column; border: none; margin: 0; }
+
+.resource-file-name {
+  background-color: white;
+  color: #001f3f;
+  padding: 0.5rem;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resource-file-actions { display: flex; }
+
+.resource-view-btn,
+.resource-download-btn,
+.resource-file-action {
+  flex: 1;
+  padding: 0.5rem;
+  background-color: #dbc296;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+}
+
+.resource-view-btn       { border-right: 1px solid white; }
+.resource-file-action    { border-left: 1px solid white; }
+.resource-file-action:first-child { border-left: none; }
+
+/* Execs-only badge */
+.execs-badge {
+  background-color: #0f296b;
+  color: white;
+  text-align: center;
+  margin: 0 0 0.25rem 0;
+  flex: 0 0 auto;
+  font-size: 0.75rem;
+  padding: 0.25rem 0;
+}
+
+/* ------------------------------
+   MODALS
+   ------------------------------ */
+
+/* Base modal style */
+.register-info-modal .modal-content,
+.management-info-modal .modal-content {
+  background-color: #081436;
+  color: white;
+  border: 2px solid #dbc296;
+  border-radius: 0 !important;
+}
+
+.register-info-modal .modal-header,
+.register-info-modal .modal-footer,
+.management-info-modal .modal-header,
+.management-info-modal .modal-footer {
+  border-color: #dbc296;
+}
+
+.register-info-modal .modal-body a,
+.management-info-modal .modal-body a {
+  color: #dbc296;
+  text-decoration: underline;
+}
+
+/* Login flash message */
+.login-flash {
+  background-color: #dbc296;
+  color: #001F3F;
+  border-radius: 0 !important;
+  padding: 1rem 1.25rem;
+  margin: 0;
+}
+
+/* ------------------------------
+   MEMBER PHOTO CAROUSEL
+   ------------------------------ */
+
+#memberPhotoCarousel,
+#memberPhotoCarousel .carousel-inner,
+#memberPhotoCarousel .carousel-item img {
+  border-radius: 0 !important;
+}
+
+/* Carousel delete button */
+#memberPhotoCarousel .btn-danger {
+  background-color: #dbc296 !important;
+  border: none !important;
+  color: #000;
+  z-index: 10;
+}
+
+/* Carousel controls */
+#memberPhotoCarousel .carousel-control-prev,
+#memberPhotoCarousel .carousel-control-next {
+  width: 50px;
+  border-radius: 50%;
+}
+
+#memberPhotoCarousel .carousel-control-prev-icon,
+#memberPhotoCarousel .carousel-control-next-icon {
+  filter: invert(100%);
+}
+
+/* ------------------------------
+   UPLOAD GALLERY MODAL
+   ------------------------------ */
+
+#uploadGalleryModal .modal-content {
+  background-color: #081436;
+  border-radius: 0;
+  color: white;
+}
+
+#uploadGalleryModal .form-control[type="file"] {
+  background-color: #081436;
+  color: white;
+  border: 1px solid white;
+  border-radius: 0;
+}
+
+/* File input buttons */
+#uploadGalleryModal .form-control[type="file"]::-webkit-file-upload-button,
+#uploadGalleryModal .form-control[type="file"]::-ms-browse {
+  background-color: #081436;
+  color: white;
+  border: 1px solid white;
+}
+
+/* Submit button */
+#uploadGalleryModal .btn {
+  background-color: #dbc296;
+  color: #081436;
+  border: none;
+}
+
+/* ------------------------------
+   EDIT MEMBER CENTER CAPTION MODAL
+   ------------------------------ */
+
+#editMemberCenterCaptionModal .modal-content {
+  background-color: #081436;
+  color: white;
+  border: 2px solid white;
+  border-radius: 0;
+}
+
+#editMemberCenterCaptionModal .modal-header { border-bottom: 1px solid white; }
+#editMemberCenterCaptionModal .modal-body   { border-top: 1px solid white; border-bottom: 1px solid white; padding: 1.5rem; }
+#editMemberCenterCaptionModal .text-end     { margin-top: 1rem; }
+
+#editMemberCenterCaptionModal .form-control {
+  background-color: #081436;
+  color: white;
+  border: 1px solid white;
+  border-radius: 0;
+}
+
+/* Save button */
+#editMemberCenterCaptionModal .btn-gold {
+  background-color: #dbc296;
+  color: #081436;
+  font-weight: 600;
+  border-radius: 0;
+  transition: all 0.2s ease-in-out;
+}
+
+#editMemberCenterCaptionModal .btn-gold:hover {
+  transform: scale(1.03);
+}
+
+
+/* ------------------------------
+   NAVBAR
+------------------------------ */
+  .nav {
+    display: flex;
+    flex-wrap: nowrap; /* prevent wrapping */
+    overflow-x: auto;  /* horizontal scroll on small screens */
+  }
+  
+  .nav-link {
+    margin-right: 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .nav-link:hover {
+    background-color: #324158 !important;
+    color: white !important; /* optional if you want text to invert */
+  }
+
+
+  .nav-link.active-link {
+    background-color: #0f296b !important;
+    color: white !important;
+  }
+
+  .border-bottom-dark-navy {
+    border-bottom: 4px solid #0f296b !important; /* adjust thickness */
+  }
+
+  .navbar-logo {
+    max-height: 50px;
+  }
+
+  /* Horizontal scrollbar for navbar */
+.nav::-webkit-scrollbar {
+  height: 8px; /* thickness of scrollbar */
+}
+
+.nav::-webkit-scrollbar-track {
+  background: white; /* optional track color */
+  border-radius: 0;
+}
+
+.nav::-webkit-scrollbar-thumb {
+  background-color: #0f296b ; /* Legion Blue */
+  border-radius: 0;
+  border: 2px solid white; /* space around thumb */
+}
+
+/* ------------------------------
+   FOOTER
+   ------------------------------ */
+/* Footer */
+.footer {
+  background-color: #081436; 
+  color: white;
+  font-size: 0.9rem;
+}
+
+.footer a {
+  color: white;
+}
+
+.footer a:hover {
+  color: #0f296b; 
+  text-decoration: none;
+}
+
+.footer-icon {
+  width: 36px;
+  height: 36px;
+  border: 1px solid white;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 36px;
+  transition: all 0.3s ease;
+}
+
+.footer-icon i {
+  font-size: 18px;
+}
+
+.footer-icon:hover {
+  background-color: white;
+  color: #081436; 
+}
+
+
+
+>>>>>>> origin/test
