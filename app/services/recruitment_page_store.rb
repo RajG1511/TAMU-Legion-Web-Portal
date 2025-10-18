@@ -48,25 +48,31 @@ class RecruitmentPageStore
   # Helpers (mirror the style of your HomePageStore) ------------------------
 
   def self.ensure_page_and_sections!
-    ActiveRecord::Base.transaction do
-      page = Page.find_or_create_by!(slug: PAGE_SLUG) { |p| p.title = "Recruitment" }
+  ActiveRecord::Base.transaction do
+    page = Page.find_or_create_by!(slug: PAGE_SLUG) { |p| p.title = "Recruitment" }
 
+    # Serialize section creation for this page to avoid unique(position) races
+    page.with_lock do
       SECTION_KEYS.each do |slug|
-        # Find by slug (idempotent). If it exists, do not change position.
-        section = page.sections.find_by(slug: slug)
-        next if section.present?
+        # If it already exists by slug, we're done
+        next if page.sections.find_by(slug: slug)
 
-        # Create a brand new section at the next free position.
-        # This avoids violating the unique (page_id, position) index.
-        next_pos = next_open_position_for(page)
+        # Compute next open position *after* acquiring the lock
+        next_pos = next_open_position_for(page.reload)
+
         page.sections.create!(
-          slug: slug,
-          name: slug.to_s.titleize,
+          slug:     slug,                 # keep your slug approach
+          name:     slug.to_s.titleize,
           position: next_pos
         )
       end
     end
   end
+rescue ActiveRecord::RecordNotUnique
+  # In case two threads collided right around the lock boundary, reload and try once more
+  retry
+end
+
 
   # Returns the first free integer position for this page
   def self.next_open_position_for(page)
