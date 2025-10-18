@@ -8,6 +8,9 @@ class Service < ApplicationRecord
   validates :name, presence: true
   validates :date_performed, presence: true
 
+  # Require rejection_reason only if status is rejected
+  validates :rejection_reason, presence: true, if: -> { rejected? }
+
   scope :approved, -> { where(status: :approved) }
   scope :pending,  -> { where(status: :pending) }
   scope :recent,   -> { order(date_performed: :desc) }

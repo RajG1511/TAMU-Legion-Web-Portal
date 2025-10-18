@@ -1,4 +1,4 @@
-<h1>Pending Service Requests</h1>
+<h1>My Service Requests</h1>
 
 <% if notice.present? %>
   <p style="color: green;"><%= notice %></p>
@@ -8,42 +8,38 @@
 <% end %>
 
 <% if @services.blank? %>
-  <p>No pending service requests.</p>
+  <p>You have no service requests.</p>
 <% else %>
   <table>
     <thead>
       <tr>
-        <th>Submitter</th>
         <th>Name</th>
         <th>Description</th>
         <th>Hours</th>
         <th>Date performed</th>
         <th>Status</th>
-        <th>Actions</th>
+        <th>Rejection Reason</th>
       </tr>
     </thead>
     <tbody>
       <% @services.each do |service| %>
         <tr>
-          <td><%= service.user&.email || "Unknown" %></td>
           <td><%= service.name %></td>
           <td><%= service.description %></td>
           <td><%= service.hours %></td>
           <td><%= service.date_performed %></td>
           <td><%= service.status %></td>
           <td>
-            <%= button_to "Approve",
-                          approve_service_path(service),
-                          method: :patch,
-                          form: { data: { turbo_confirm: "Approve this request?" } } %>
-            <%= button_to "Reject",
-                          reject_service_path(service),
-                          method: :patch,
-                          form: { data: { turbo_confirm: "Reject this request?" } },
-                          class: "danger" %>
+            <% if service.rejected? %>
+              <%= service.rejection_reason.presence || "No reason provided" %>
+            <% else %>
+              —
+            <% end %>
           </td>
         </tr>
       <% end %>
     </tbody>
   </table>
 <% end %>
+
+<%= link_to "Submit New Service Request", new_service_path %>

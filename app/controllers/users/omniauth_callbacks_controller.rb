@@ -1,10 +1,12 @@
+# app/controllers/users/omniauth_callbacks_controller.rb
 module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     def google_oauth2
       user = User.from_google(**from_google_params)
+
       if user.present?
         sign_out_all_scopes
-        flash[:success] = t 'devise.omniauth_callbacks.success', kind: 'Google'
+        flash[:success] = t('devise.omniauth_callbacks.success', kind: 'Google')
         sign_in_and_redirect user, event: :authentication
       else
         flash[:alert] = "You are not authorized. Please contact an executive."

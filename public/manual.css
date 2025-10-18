@@ -1,0 +1,107 @@
+/* Manual CSS for TAMU Legion Branding */
+.bg-legion-blue {
+  background-color: #0f296b !important;
+}
+.bg-polo-slate {
+  background-color: #494949 !important;
+}
+.bg-white {
+  background-color: #ffffff !important;
+}
+.bg-black {
+  background-color: #000000 !important;
+}
+.bg-dark-navy {
+  background-color: #081436 !important;
+}
+.bg-gold {
+  background-color: #dbc296 !important;
+}
+.bg-powder-blue {
+  background-color: #8fccff !important;
+}
+.bg-cornflower-blue {
+  background-color: #4b6fcb !important;
+}
+
+.text-legion-blue {
+  color: #0f296b !important;
+}
+.text-polo-slate {
+  color: #494949 !important;
+}
+.text-dark-navy {
+  color: #081436 !important;
+}
+.text-gold {
+  color: #dbc296 !important;
+}
+.text-powder-blue {
+  color: #8fccff !important;
+}
+.text-cornflower-blue {
+  color: #4b6fcb !important;
+}
+
+.border-legion-blue {
+  border-color: #0f296b !important;
+}
+.border-polo-slate {
+  border-color: #494949 !important;
+}
+.border-dark-navy {
+  border-color: #081436 !important;
+}
+.border-gold {
+  border-color: #dbc296 !important;
+}
+.border-powder-blue {
+  border-color: #8fccff !important;
+}
+.border-cornflower-blue {
+  border-color: #4b6fcb !important;
+}
+
+.font-primary-title {
+  font-family: 'Librebaskerville';
+  font-weight: bold;
+}
+.font-primary-heading {
+  font-family: 'Public Sans';
+  font-weight: bold;
+}
+.font-primary-body {
+  font-family: 'Public Sans';
+  font-weight: normal;
+}
+.font-primary-subheading {
+  font-family: 'Public Sans';
+  font-weight: 100;
+}
+
+.font-secondary-heading {
+  font-family: 'Barlow';
+  font-weight: bold;
+}
+.font-secondary-body {
+  font-family: 'Barlow';
+  font-weight: 600;
+}
+.font-secondary-subheading {
+  font-family: 'Barlow';
+  font-weight: normal;
+}
+
+.text-sm-custom {
+  font-size: 0.875rem;
+}
+.text-md-custom {
+  font-size: 1rem;
+}
+.text-lg-custom {
+  font-size: 1.25rem;
+}
+
+.default-border-radius {
+  border-radius: 0 !important;
+}
