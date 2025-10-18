@@ -1,0 +1,51 @@
+<% content_for :title, "Recruitment" %>
+
+<section class="recruit-hero bg-legion-blue">
+  <div class="container-xl recruit-hero__grid">
+
+    <div class="recruit-hero__left">
+      <h1 class="recruit-title font-primary-title"><%= @sections["hero_title"] %></h1>
+      <p class="recruit-tagline font-primary-body">
+        <%= raw @sections["hero_tagline_html"] %>
+      </p>
+
+      <div class="recruit-cta">
+        <% if @sections["apply_url"].present? %>
+          <a class="btn btn-gold" href="<%= @sections["apply_url"] %>" target="_blank" rel="noopener">Apply Now</a>
+        <% end %>
+        <% if @sections["groupme_url"].present? %>
+          <a class="btn white-btn" href="<%= @sections["groupme_url"] %>" target="_blank" rel="noopener">Join the GroupMe</a>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="recruit-hero__right">
+      <!-- schedule flyer -->
+      <figure class="recruit-flyer">
+        <img src="/Flyers/Calendar_FA25.png" alt="Fall ’25 Recruitment Schedule">
+      </figure>
+    </div>
+
+  </div>
+</section>
+
+<section class="recruit-body bg-dark-navy">
+  <div class="container-xl">
+    <div class="recruit-body__content">
+      <%= raw @sections["body_html"] %>
+    </div>
+
+    <div class="recruit-contact">
+      <% email = @sections["contact_email"].presence || "proflicter.tamulegion@gmail.com" %>
+      For questions about recruitment, please contact
+      <a class="recruit-contact__link" href="mailto:<%= email %>"><%= email %></a>
+    </div>
+
+    <% if current_user&.exec? || current_user&.president? %>
+      <div class="text-center mt-4">
+        <%= link_to "Edit Recruitment", edit_recruitment_path, class: "btn btn-outline-light" %>
+      </div>
+    <% end %>
+  </div>
+</section>
+

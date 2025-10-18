@@ -1,23 +1,25 @@
 class HomeController < ApplicationController
+  # Make sure only signed-in members can hit these, then fetch the shared user
+  before_action :require_member!, only: [:member_center, :upload_gallery, :delete_gallery_photo]
   before_action :set_shared_user, only: [:member_center, :upload_gallery, :delete_gallery_photo]
+
+  # Only exec/president can edit or update the homepage
   before_action :require_exec!, only: [:edit, :update]
 
   def edit
     @sections = HomePageStore.read
   end
 
-  # Only exec/president can edit or update the homepage
   def update
     inputs = HomePageStore::SECTION_KEYS.to_h { |key| [key, params.dig(:home_page, key)] }
     HomePageStore.save_all!(inputs: inputs, user: current_user)
     redirect_to root_path, notice: "Home page updated successfully."
-    rescue ActiveRecord::RecordInvalid => e
-      flash.now[:alert] = e.record.errors.full_messages.to_sentence
-      @sections = HomePageStore.read
-      render :edit, status: :unprocessable_entity
+  rescue ActiveRecord::RecordInvalid => e
+    flash.now[:alert] = e.record.errors.full_messages.to_sentence
+    @sections = HomePageStore.read
+    render :edit, status: :unprocessable_entity
   end
-  
-  
+
   # Public home page (for all users)
   def index
     @sections = HomePageStore.read
@@ -29,10 +31,7 @@ class HomeController < ApplicationController
   end
 
   def member_center
-    unless user_signed_in?
-      redirect_to login_path, alert: "Please sign in to continue."
-      return
-    end
+    # require_member! above already guarantees a signed-in member
     @user = current_user
     @shared_user.gallery_photos.load
   end
@@ -62,17 +61,20 @@ class HomeController < ApplicationController
 
   def set_shared_user
     @shared_user = User.find_by(email: "shared@domain.com")
-    unless @shared_user
-      @shared_user = User.create!(
-        email: "shared@domain.com",
-        first_name: "Shared",
-        last_name: "User",
-        password: SecureRandom.hex(16),
-        role: "exec"
-      )
-    end
+    return if @shared_user
+
+    @shared_user = User.new(
+      email:      "shared@domain.com",
+      first_name: "Shared",
+      last_name:  "User",
+      role:       :exec,   # enum -> valid value
+      status:     :active, # enum -> valid value
+      position:   nil
+    )
+
+    # Some setups ignore password (omniauth-only). Set it only if supported.
+    @shared_user.password = SecureRandom.hex(16) if @shared_user.respond_to?(:password=)
+
+    @shared_user.save!
   end
-
 end
-
-
