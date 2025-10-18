@@ -22,8 +22,8 @@
 
       <!-- Sign Out Button -->
       <div class="d-grid mb-4">
-        <%= link_to "Sign out", destroy_user_session_path,
-          method: :delete, data: { turbo: false },
+        <%= button_to "Sign out", destroy_user_session_path,
+          method: :delete, form: { "data-turbo": "false" },
           class: "btn bg-white text-legion-blue btn-lg w-100 font-primary-heading default-border-radius" %>
       </div>
 
