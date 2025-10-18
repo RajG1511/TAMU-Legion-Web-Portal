@@ -31,7 +31,7 @@
           <td><%= service.description %></td>
           <td><%= service.hours %></td>
           <td><%= service.date_performed %></td>
-          <td><%= service.committee.titleize %></td>
+          <td><%= service.committee.present? ? service.committee.titleize : "—" %>
           <td><%= service.status %></td>
           <td>
             <%= button_to "Approve",
