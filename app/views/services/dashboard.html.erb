@@ -18,6 +18,7 @@
         <th>Description</th>
         <th>Hours</th>
         <th>Date performed</th>
+        <th>Committee</th>
         <th>Status</th>
         <th>Actions</th>
       </tr>
@@ -30,6 +31,7 @@
           <td><%= service.description %></td>
           <td><%= service.hours %></td>
           <td><%= service.date_performed %></td>
+          <td><%= service.committee.titleize %></td>
           <td><%= service.status %></td>
           <td>
             <%= button_to "Approve",
@@ -51,3 +53,21 @@
     </tbody>
   </table>
 <% end %>
+
+<h2>Approved Hours by Committee</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Committee</th>
+      <th>Total Approved Hours</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% Service::COMMITTEES.each do |committee| %>
+      <tr>
+        <td><%= committee.titleize %></td>
+        <td><%= @committee_totals[committee] || 0 %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -21,5 +21,11 @@
     <%= form.date_field :date_performed %>
   </div>
 
+  <div>
+    <%= form.label :committee %><br>
+    <%= form.select :committee, Service::COMMITTEES.map { |c| [c.titleize, c] },
+                    prompt: "Select a committee" %>
+  </div>
+
   <%= form.submit "Submit Service" %>
 <% end %>

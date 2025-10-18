@@ -60,6 +60,8 @@ Rails.application.routes.draw do
       get :dashboard
     end
   end
+  get "services/dashboard", to: "services#dashboard", as: :services_dashboard
+
   # Home page (public) + exec-only editor
   get   "/home/edit", to: "home#edit",   as: :edit_home
   patch "/home",      to: "home#update", as: :home

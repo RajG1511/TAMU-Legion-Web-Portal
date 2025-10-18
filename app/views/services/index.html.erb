@@ -17,6 +17,7 @@
         <th>Description</th>
         <th>Hours</th>
         <th>Date performed</th>
+        <th>Committee</th>
         <th>Status</th>
         <th>Rejection Reason</th>
       </tr>
@@ -28,6 +29,7 @@
           <td><%= service.description %></td>
           <td><%= service.hours %></td>
           <td><%= service.date_performed %></td>
+          <td><%= service.committee.titleize %></td>
           <td><%= service.status %></td>
           <td>
             <% if service.rejected? %>

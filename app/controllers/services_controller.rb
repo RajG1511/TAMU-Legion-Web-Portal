@@ -12,8 +12,13 @@ class ServicesController < ApplicationController
   end
 
   def dashboard
-    # Execs/president see all pending requests
+  # Execs/president see all pending requests
     @services = Service.pending.recent
+
+    # Totals of approved hours grouped by committee
+    @committee_totals = Service.approved
+                              .group(:committee)
+                              .sum(:hours)
   end
 
   def new
@@ -49,7 +54,7 @@ class ServicesController < ApplicationController
 
 
   def service_params
-    params.require(:service).permit(:name, :description, :hours, :date_performed, :status, :rejection_reason)
+    params.require(:service).permit(:name, :description, :hours, :date_performed, :committee)
   end
 
   def require_exec_or_president
