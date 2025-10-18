@@ -52,14 +52,15 @@ Rails.application.routes.draw do
 
   # Service routes
   resources :services do
-    collection do
-      get :my_services
-    end
     member do
       patch :approve
       patch :reject
     end
+    collection do
+      get :dashboard
+    end
   end
+  get "services/dashboard", to: "services#dashboard", as: :services_dashboard
 
   # Home page (public) + exec-only editor
   get   "/home/edit", to: "home#edit",   as: :edit_home

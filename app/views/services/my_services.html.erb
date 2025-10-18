@@ -7,6 +7,7 @@
       <th>Description</th>
       <th>Hours</th>
       <th>Date Performed</th>
+      <th>Committee</th>
       <th>Status</th>
     </tr>
   </thead>
@@ -17,6 +18,7 @@
         <td><%= service.description %></td>
         <td><%= service.hours %></td>
         <td><%= service.date_performed %></td>
+        <td><%= service.committee.titleize %></td>
         <td><%= service.status %></td>
       </tr>
     <% end %>
