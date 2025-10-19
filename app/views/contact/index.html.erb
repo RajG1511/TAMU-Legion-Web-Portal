@@ -1,0 +1,44 @@
+<% content_for :title, "Contact" %>
+
+<div class="wix-top-line"></div>
+
+<!-- HERO -->
+<section class="contact-hero">
+    <h1 class="contact-hero__title"><%= cms_text(:hero_title, page: :contact) %></h1>
+</section>
+
+<!-- MEETING INFO -->
+<section class="contact-meetings">
+    <div class="contact-meetings__content">
+        <h2 class="contact-meetings__title"><%= cms_text(:meetings_title, page: :contact) %></h2>
+        <p class="contact-meetings__body"><%= cms_html(:meetings_body_html, page: :contact) %></p>
+        <p class="contact-meetings__location"><%= cms_text(:meetings_location, page: :contact) %></p>
+        <a class="contact-meetings__location-link" href="<%= cms_text(:meetings_location_url, page: :contact) %>">View Location on an Interactive Map</a>
+        <p class="contact-meetings__additional"><%= cms_html(:meetings_additional_html, page: :contact) %></p>
+    </div>
+</section>
+
+<!-- GENERAL QUESTIONS -->
+<section class="contact-questions">
+    <div class="contact-questions__content">
+        <h2 class="contact-questions__title"><%= cms_text(:questions_title, page: :contact) %></h2>
+        <p class="contact-questions__body"><%= cms_html(:questions_body_html, page: :contact) %></p>
+        <a class="contact-questions__button" href="<%= cms_text(:questions_button_url, page: :contact) %>"><%= cms_text(:questions_button_label, page: :contact) %></a>
+    </div>
+</section>
+
+<!-- EMAIL LIST -->
+<section class="contact-list">
+    <div class="contact-list__content">
+        <h2 class="contact-list__title"><%= cms_text(:email_list_title, page: :contact) %></h2>
+        <p class="contact-list__body"><%= cms_html(:email_list_body_html, page: :contact) %></p>
+        <a class="contact-list__button" href="<%= cms_text(:email_list_button_url, page: :contact) %>"><%= cms_text(:email_list_button_label, page: :contact) %></a>
+    </div>
+</section>
+
+<!-- EDIT BUTTON -->
+<% if current_user&.exec? %>
+    <section class="contact-edit">
+        <%= link_to "Edit Contact Page", edit_contact_path, class: "btn btn-outline-light" %>
+    </section>
+<% end %>

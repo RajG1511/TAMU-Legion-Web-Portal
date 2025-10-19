@@ -5,7 +5,25 @@
     <div><%= link_to "Delete Committee", delete_committee_path(@committee) %></div>
 <% end %>
 
-<p><%= @committee.description %></p>
+<section>
+    <p><%= @committee.description %></p>
+</section>
+
+<section>
+    <h2><%= @committee.section1_heading %></h2>
+    <p><%= @committee.section1_body %></p>
+    <% if @committee.primary_image.present? %>
+        <%= image_tag @committee.primary_image.variant(resize_to_limit: [500, 500]) %>
+    <% end %>
+</section>
+
+<section>
+    <h2><%= @committee.section2_heading %></h2>
+    <p><%= @committee.section2_body %></p>
+    <% if @committee.secondary_image.present? %>
+        <%= image_tag @committee.secondary_image.variant(resize_to_limit: [500, 500]) %>
+    <% end %>
+</section>
 
 <p>
     <strong>Members:</strong>

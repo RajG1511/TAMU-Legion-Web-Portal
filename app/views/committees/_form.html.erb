@@ -10,6 +10,28 @@
     </div>
 
     <div>
+        <%= f.label :section1_heading, "Section 1 Heading" %><br>  
+        <%= f.text_field :section1_heading %><br>
+        <%= f.label :section1_body, "Section 1 Body" %><br>
+        <%= f.text_area :section1_body %>  
+    </div>
+
+
+    <div>
+        <%= f.label :section2_heading, "Section 2 Heading" %><br>  
+        <%= f.text_field :section2_heading %><br>
+        <%= f.label :section2_body, "Section 2 Body" %><br>
+        <%= f.text_area :section2_body %>  
+    </div>
+
+    <div>
+        <%= f.label :primary_image %><br>
+        <%= f.file_field :primary_image %><br>
+        <%= f.label :secondary_image %><br>
+        <%= f.file_field :secondary_image %>
+    </div>
+
+    <div>
         <%= f.submit %>
     </div>
 <% end %>
