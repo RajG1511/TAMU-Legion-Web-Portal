@@ -70,7 +70,7 @@ RSpec.describe "Events management", type: :system do
 
       expect(page).to have_content("Event deleted successfully.")
       # Only check the event list, not the audit log
-      within("ul") do
+      within(".event-scroll-container ul") do
         expect(page).not_to have_content("Delete Me")
       end
     end
