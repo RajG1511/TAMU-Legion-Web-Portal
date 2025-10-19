@@ -24,6 +24,7 @@ class UsersController < ApplicationController
       flash[:success] = "User created."
       redirect_to users_path
     else
+      Rails.logger.error(@user.errors.full_messages.to_sentence)
       flash.now[:error] = "User not created."
       render :new, status: :unprocessable_entity
     end
@@ -106,9 +107,8 @@ class UsersController < ApplicationController
   # execs can also set status
 
   def exec_permitted_params
-    base_permitted_params + [ :status]
+    base_permitted_params + [ :status ]
   end
-
 
   # president can also set position/role
 
@@ -116,13 +116,23 @@ class UsersController < ApplicationController
     exec_permitted_params + [ :position, :role ]
   end
 
+  def create_permitted_params
+    [ :password, :password_confirmation ]
+  end
+
   def user_params
     if current_user&.president?
-      params.require(:user).permit(pres_permitted_params)
+      permitted_params = pres_permitted_params
     elsif current_user&.exec?
-      params.require(:user).permit(exec_permitted_params)
+      permitted_params = exec_permitted_params
     else
-      params.require(:user).permit(base_permitted_params)
+      permitted_params = base_permitted_params
     end
+
+    if action_name == "create"
+      permitted_params += create_permitted_params
+    end
+
+    params.require(:user).permit(permitted_params)
   end
 end
