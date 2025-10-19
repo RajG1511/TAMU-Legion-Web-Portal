@@ -2,11 +2,11 @@ class AboutController < ApplicationController
   before_action :require_exec!, only: [ :edit, :update ]
 
   def index
-    @about = AboutPageStore.read
+    @sections = AboutPageStore.read
   end
 
   def edit
-    @about = AboutPageStore.read
+    @sections = AboutPageStore.read
   end
 
   def update

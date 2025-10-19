@@ -1,0 +1,33 @@
+<% content_for :title, "Edit About" %>
+
+<h1>Edit About Page</h1>
+
+<%= form_with url: about_path, method: :patch, local: true do |f| %>
+    <div class="card p-3 mb-3">
+        <h3>What is LEGION - Title</h3>
+        <%= text_field_tag "about_page[what_is_title]", @sections["what_is_title"], class: "form-control" %>
+        <h3 class="mt-3">What is LEGION - Body (HTML)</h3>
+        <%= text_area_tag "about_page[what_is_body_html]", @sections["what_is_body_html"], rows: 6, class: "form-control" %>
+    </div>
+
+    <div class="card p-3 mb-3">
+        <h3>Facts - Title</h3>
+        <%= text_field_tag "about_page[facts_title]", @sections["facts_title"], class: "form-control" %>
+        <h3 class="mt-3">Facts</h3>
+        <%= text_field_tag "about_page[fact_1]", @sections["fact_1"], class: "form-control" %>
+        <%= text_field_tag "about_page[fact_2]", @sections["fact_2"], class: "form-control" %>
+        <%= text_field_tag "about_page[fact_3]", @sections["fact_3"], class: "form-control" %>
+    </div>
+
+    <div class="card p-3 mb-3">
+        <h3>Pillars - Title</h3>
+        <%= text_field_tag "about_page[pillars_title]", @sections["pillars_title"], class: "form-control" %>
+        <h3 class="mt-3">Pillars</h3>
+        <%= text_field_tag "about_page[pillar_1]", @sections["pillar_1"], class: "form-control" %>
+        <%= text_field_tag "about_page[pillar_2]", @sections["pillar_2"], class: "form-control" %>
+        <%= text_field_tag "about_page[pillar_3]", @sections["pillar_3"], class: "form-control" %>
+    </div>
+
+    <%= f.submit "Save", class: "btn btn-navy" %>
+    <%= link_to "Cancel", root_path, class: "btn btn-outline-light", style: "margin-left:8px" %>    
+<% end %>
