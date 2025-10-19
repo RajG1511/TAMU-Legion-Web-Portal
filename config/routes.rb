@@ -38,16 +38,12 @@ Rails.application.routes.draw do
   end
 
   # Committee routes
-  resources :committee_memberships, only: [ :create, :destroy ] do
-    member do
-      get :delete
-    end
-  end
-
   resources :committees do
     member do
       get :delete
     end
+
+    resources :committee_memberships, only: [ :create, :destroy ]
   end
 
   # Service routes

@@ -60,7 +60,16 @@ class CommitteesController < ApplicationController
   end
 
   def committee_params
-    params.require(:committee).permit(:name, :description)
+    params.require(:committee).permit(
+      :name,
+      :description,
+      :section1_heading,
+      :section1_body,
+      :section2_heading,
+      :section2_body,
+      :primary_image,
+      :secondary_image
+    )
   end
 
 
