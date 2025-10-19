@@ -20,7 +20,9 @@ RSpec.describe "Users bulk actions auth", type: :request do
       first_name: "Mem",
       last_name: "One",
       status: :inactive,
-      role: :member
+      role: :member,
+      password: "password123",
+      password_confirmation: "password123"
     )
   end
 
@@ -30,7 +32,9 @@ RSpec.describe "Users bulk actions auth", type: :request do
       first_name: "Mem",
       last_name: "Two",
       status: :inactive,
-      role: :member
+      role: :member,
+      password: "password123",
+      password_confirmation: "password123"
     )
   end
 
@@ -40,7 +44,9 @@ RSpec.describe "Users bulk actions auth", type: :request do
       first_name: "Plain",
       last_name: "User",
       status: :active,
-      role: :member
+      role: :member,
+      password: "password123",
+      password_confirmation: "password123"
     )
   end
 
@@ -48,13 +54,13 @@ RSpec.describe "Users bulk actions auth", type: :request do
     it "renders bulk_edit (no redirect currently)" do
       get bulk_edit_users_path, params: { user_ids: [u1.id, u2.id] }
       expect(response).to have_http_status(200)
-      expect(response.body).to include("Bulk Edit Users")        # <- updated
-      expect(response.body).to include(%(name="user_ids[]"))     # sanity check
+      expect(response.body).to include("Bulk Edit Users")        
+      expect(response.body).to include(%(name="user_ids[]"))    
       expect(response.body).to include(%(action="/users/bulk_update"))
     end
 
     it "allows bulk_update (updates happen)" do
-      post bulk_update_users_path, params: {
+      patch bulk_update_users_path, params: { 
         user_ids: [u1.id, u2.id],
         bulk_update: { status: "active" }
       }
@@ -77,13 +83,13 @@ RSpec.describe "Users bulk actions auth", type: :request do
     it "can access bulk_edit" do
       get bulk_edit_users_path, params: { user_ids: [u1.id] }
       expect(response).to have_http_status(200)
-      expect(response.body).to include("Bulk Edit Users")        # <- updated
+      expect(response.body).to include("Bulk Edit Users")       
       expect(response.body).to include(%(name="user_ids[]"))
       expect(response.body).to include(%(action="/users/bulk_update"))
     end
 
     it "can perform bulk_update" do
-      post bulk_update_users_path, params: {
+      patch bulk_update_users_path, params: { 
         user_ids: [u1.id],
         bulk_update: { status: "active" }
       }
@@ -99,4 +105,3 @@ RSpec.describe "Users bulk actions auth", type: :request do
     end
   end
 end
-

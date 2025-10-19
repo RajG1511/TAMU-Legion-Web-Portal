@@ -6,15 +6,31 @@ RSpec.describe "Users bulk actions edge cases", type: :request do
 
   let!(:u1) do
     User.create!(
-      email: "edge1@example.org", first_name: "Edge", last_name: "One",
-      status: :inactive, role: :member, graduation_year: 2025, major: "Math", t_shirt_size: "M"
+      email: "edge1@example.org",
+      first_name: "Edge",
+      last_name: "One",
+      status: :inactive,
+      role: :member,
+      graduation_year: 2025,
+      major: "Math",
+      t_shirt_size: "M",
+      password: "password123",
+      password_confirmation: "password123"
     )
   end
 
   let!(:u2) do
     User.create!(
-      email: "edge2@example.org", first_name: "Edge", last_name: "Two",
-      status: :inactive, role: :member, graduation_year: 2026, major: "Chem", t_shirt_size: "L"
+      email: "edge2@example.org",
+      first_name: "Edge",
+      last_name: "Two",
+      status: :inactive,
+      role: :member,
+      graduation_year: 2026,
+      major: "Chem",
+      t_shirt_size: "L",
+      password: "password123",
+      password_confirmation: "password123"
     )
   end
 
@@ -32,15 +48,15 @@ RSpec.describe "Users bulk actions edge cases", type: :request do
     end
   end
 
-  describe "POST /users/bulk_update" do
+  describe "PATCH /users/bulk_update" do
     it "ignores BLANK strings (''), leaving fields unchanged" do
-      post bulk_update_users_path, params: {
+      patch bulk_update_users_path, params: {  # <-- changed POST to PATCH
         user_ids: [u1.id, u2.id],
         bulk_update: {
-          status: "",                # ignored
-          graduation_year: "",       # ignored
-          major: "",                 # ignored
-          t_shirt_size: ""           # ignored
+          status: "",
+          graduation_year: "",
+          major: "",
+          t_shirt_size: ""
         }
       }
       expect(response).to redirect_to(users_path)
@@ -55,10 +71,10 @@ RSpec.describe "Users bulk actions edge cases", type: :request do
     end
 
     it "also ignores whitespace-only values (present? is false for blank?)" do
-      post bulk_update_users_path, params: {
+      patch bulk_update_users_path, params: {
         user_ids: [u1.id],
         bulk_update: {
-          status: "   ",            # whitespace -> ignored
+          status: "   ",
           major: "   "
         }
       }
@@ -68,13 +84,12 @@ RSpec.describe "Users bulk actions edge cases", type: :request do
     end
 
     it "updates multiple provided fields at once (happy path, again)" do
-      post bulk_update_users_path, params: {
+      patch bulk_update_users_path, params: {
         user_ids: [u1.id, u2.id],
         bulk_update: {
           status: "active",
-          major:  "Physics",
-          # graduation_year omitted -> unchanged
-          # t_shirt_size omitted     -> unchanged
+          major: "Physics"
+          # graduation_year & t_shirt_size omitted -> unchanged
         }
       }
       expect(response).to redirect_to(users_path)
@@ -99,4 +114,3 @@ RSpec.describe "Users bulk actions edge cases", type: :request do
     end
   end
 end
-

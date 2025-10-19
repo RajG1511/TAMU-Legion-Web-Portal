@@ -6,6 +6,7 @@ RSpec.describe "Users bulk actions (extra)", type: :request do
   let!(:exec) do
     User.create!(
       email: "extra_exec@example.org",
+      password: "password123",      # Devise requires password for sign_in
       first_name: "Exec",
       last_name:  "User",
       status: :active,
@@ -16,6 +17,7 @@ RSpec.describe "Users bulk actions (extra)", type: :request do
   let!(:m1) do
     User.create!(
       email: "extra_member1@example.org",
+      password: "password123",
       first_name: "Alpha",
       last_name:  "One",
       status: :inactive,
@@ -29,6 +31,7 @@ RSpec.describe "Users bulk actions (extra)", type: :request do
   let!(:m2) do
     User.create!(
       email: "extra_member2@example.org",
+      password: "password123",
       first_name: "Beta",
       last_name:  "Two",
       status: :active,
@@ -41,19 +44,18 @@ RSpec.describe "Users bulk actions (extra)", type: :request do
 
   describe "GET /users/bulk_edit" do
     it "renders when ids are provided" do
-      sign_in exec
+      sign_in exec, scope: :user
 
       get bulk_edit_users_path, params: { user_ids: [m1.id, m2.id] }
 
       expect(response).to have_http_status(:ok)
-      # Light assertions that don’t couple tightly to the view
       expect(response.body).to include('name="user_ids[]"')
       expect(response.body).to include(m1.id.to_s)
       expect(response.body).to include(m2.id.to_s)
     end
 
     it "redirects back to index when no ids given" do
-      sign_in exec
+      sign_in exec, scope: :user
 
       get bulk_edit_users_path
 
@@ -65,7 +67,7 @@ RSpec.describe "Users bulk actions (extra)", type: :request do
     it "updates multiple provided fields and leaves others unchanged" do
       sign_in exec
 
-      post bulk_update_users_path, params: {
+      patch bulk_update_users_path, params: {
         user_ids: [m1.id, m2.id],
         bulk_update: {
           status: "active",
@@ -93,7 +95,7 @@ RSpec.describe "Users bulk actions (extra)", type: :request do
 
       original = [m1.attributes, m2.attributes]
 
-      post bulk_update_users_path, params: {
+      patch bulk_update_users_path, params: {
         # user_ids omitted on purpose
         bulk_update: { status: "active" }
       }
@@ -101,7 +103,6 @@ RSpec.describe "Users bulk actions (extra)", type: :request do
       expect(response).to redirect_to(users_path)
 
       [m1.reload, m2.reload]
-      # unchanged because nothing was targeted
       expect(m1.status).to eq(original[0]["status"])
       expect(m2.status).to eq(original[1]["status"])
     end
@@ -109,7 +110,7 @@ RSpec.describe "Users bulk actions (extra)", type: :request do
     it "ignores blank fields (does not overwrite existing data with blanks)" do
       sign_in exec
 
-      post bulk_update_users_path, params: {
+      patch bulk_update_users_path, params: {
         user_ids: [m1.id],
         bulk_update: {
           status: "",                # blank
@@ -128,9 +129,10 @@ RSpec.describe "Users bulk actions (extra)", type: :request do
     end
   end
 
+
   describe "POST /users/reset_inactive" do
     it "activates any inactive users" do
-      sign_in exec
+      sign_in exec, scope: :user
       expect(User.where(status: :inactive).count).to be >= 1
 
       post reset_inactive_users_path
@@ -140,16 +142,14 @@ RSpec.describe "Users bulk actions (extra)", type: :request do
     end
 
     it "is a no-op when there are no inactive users" do
-      sign_in exec
+      sign_in exec, scope: :user
       User.update_all(status: :active)
 
       post reset_inactive_users_path
 
       expect(response).to redirect_to(users_path)
       expect(User.where(status: :inactive).count).to eq(0)
-      # Also confirms active users stay active
       expect(User.where(status: :active).count).to be >= 3
     end
   end
 end
-
