@@ -1,8 +1,12 @@
 class UsersController < ApplicationController
-
   # execs only for now
-  before_action :require_exec!, only: [:index, :show, :new, :create, :edit, :update, :delete, :destroy]
-  before_action :set_user,      only: [:show, :edit, :update, :delete, :destroy]
+  before_action :require_exec!, only: [ :index, :show, :new, :create, :edit, :update, :delete, :destroy ]
+  before_action :set_user,      only: [ :show, :edit, :update, :delete, :destroy ]
+
+  def public_index
+    @execs = User.where(role: "exec").order(:last_name, :first_name)
+    @committees = Committee.all.includes(committee_memberships: :user).order(:name)
+  end
 
   def index
     @users = User.all
@@ -55,7 +59,7 @@ class UsersController < ApplicationController
     user_ids = params[:user_ids] || []
     updates  = {}
 
-    [:status, :graduation_year, :major, :t_shirt_size].each do |field|
+    [ :status, :graduation_year, :major, :t_shirt_size ].each do |field|
       value = params.dig(:bulk_update, field)
       updates[field] = value if value.present?
     end
@@ -96,20 +100,20 @@ class UsersController < ApplicationController
   # base fields everyone can edit
 
   def base_permitted_params
-    [:email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url]
+    [ :email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url ]
   end
 
   # execs can also set status
 
   def exec_permitted_params
-    base_permitted_params + [:status]
+    base_permitted_params + [ :status ]
   end
 
 
   # president can also set position/role
 
   def pres_permitted_params
-    exec_permitted_params + [:position, :role]
+    exec_permitted_params + [ :position, :role ]
   end
 
   def user_params
@@ -122,4 +126,3 @@ class UsersController < ApplicationController
     end
   end
 end
-

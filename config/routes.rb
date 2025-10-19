@@ -82,6 +82,9 @@ Rails.application.routes.draw do
   get "/contact/edit", to: "contact#edit", as: :edit_contact
   patch "/contact", to: "contact#update", as: :update_contact
 
+  # Members page
+  get "/members", to: "users#public_index", as: :members
+
   # Root
   root "home#index"
 
