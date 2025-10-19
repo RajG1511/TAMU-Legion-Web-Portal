@@ -23,9 +23,10 @@ module CmsHelper
       HomePageStore.read.fetch(key.to_s, "")
     when :recruitment
       RecruitmentPageStore.read.fetch(key.to_s, "")
+    when :about
+      AboutPageStore.read.fetch(key.to_s, "")
     else
       ""
     end
   end
 end
-

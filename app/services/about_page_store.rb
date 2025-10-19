@@ -99,7 +99,7 @@ class AboutPageStore
   # internals
 
   def self.page
-    @page ||= Page.find_by!(slug: PAGE_SLUG)
+    @page ||= Page.find_by(slug: PAGE_SLUG)
   end
 
   def self.ensure_page_and_sections!

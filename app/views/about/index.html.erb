@@ -1,0 +1,39 @@
+<% content_for :title, "About" %>
+
+<div class="wix-top-line"></div>
+
+<!-- WHAT IS LEGION? -->
+<section class="what-is-legion">
+    <div class="what__content">
+        <h2 class="what__title"><%= cms_text(:what_is_title, page: :about) %></h2>
+        <div class="what__rule"></div>
+        <p class="what__body"><%= cms_html(:what_is_body_html, page: :about) %></p>
+    </div>
+</section>
+
+<!-- FACTS -->
+<section class="about-facts">
+    <div class="about-facts__content">
+        <h2 class="about-facts__title"><%= cms_text(:facts_title, page: :about) %></h2>
+        <p class="about-facts__fact"><%= cms_text(:fact_1, page: :about) %></p>
+        <p class="about-facts__fact"><%= cms_text(:fact_2, page: :about) %></p>
+        <p class="about-facts__fact"><%= cms_text(:fact_3, page: :about) %></p>
+    </div>
+</section>
+
+<!-- PILLARS -->
+<section class="about-pillars">
+    <div class="about-pillars__content">
+        <h2 class="about-pillars__title"><%= cms_text(:pillars_title, page: :about) %></h2>
+        <p class="about-pillars__pillar"><%= cms_text(:pillar_1, page: :about) %></p>
+        <p class="about-pillars__pillar"><%= cms_text(:pillar_2, page: :about) %></p>
+        <p class="about-pillars__pillar"><%= cms_text(:pillar_3, page: :about) %></p>
+    </div>
+</section>
+
+<!-- EDIT BUTTON -->
+<% if current_user&.exec?%>
+    <section class="about-edit">
+        <%= link_to "Edit About Page", edit_about_path, class: "btn btn-outline-light" %>
+    </section>
+<% end %>
