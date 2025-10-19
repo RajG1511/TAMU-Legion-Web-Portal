@@ -1,10 +1,14 @@
+<% flash.each do |key, message| %>
+    <div class="alert alert-<%= key %>"><%= message %></div>
+<% end %>
+
 <h1>Committees</h1>
 
 <% if current_user&.exec? %>
     <div><%= link_to "Create New Committee", new_committee_path %></div>
 <% end %>
 
-<ul>
+<ul id="committee-list">
     <% @committees.each do |committee| %>
         <li>
             <h2><%= committee.name %> Committee</h2>

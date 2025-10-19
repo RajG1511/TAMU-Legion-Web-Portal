@@ -3,17 +3,17 @@ class ApplicationController < ActionController::Base
   
   def require_member!
     return if current_user&.member?
-    redirect_to new_user_session_path, alert: 'Member access only.'
+    redirect_to login_path, alert: 'Please sign in to continue.'
   end
 
   def require_exec!
     return if current_user&.exec?
-    redirect_to new_user_session_path, alert: 'Executive access only.'
+    redirect_to login_path, alert: 'Please sign in as an executive to continue.'
   end
 
   def require_president!
     return if current_user&.president?
-    redirect_to new_user_session_path, alert: 'President access only.'
+    redirect_to login_path, alert: 'Please sign in as president to continue.'
   end
 
   def after_sign_in_path_for(resource)

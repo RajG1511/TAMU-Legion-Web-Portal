@@ -106,7 +106,7 @@ class UsersController < ApplicationController
   # execs can also set status
 
   def exec_permitted_params
-    base_permitted_params + [ :status ]
+    base_permitted_params + [ :status]
   end
 
 
