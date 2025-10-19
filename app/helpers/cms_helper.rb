@@ -25,6 +25,8 @@ module CmsHelper
       RecruitmentPageStore.read.fetch(key.to_s, "")
     when :about
       AboutPageStore.read.fetch(key.to_s, "")
+    when :contact
+      ContactPageStore.read.fetch(key.to_s, "")
     else
       ""
     end

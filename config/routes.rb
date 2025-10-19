@@ -73,10 +73,14 @@ Rails.application.routes.draw do
   patch "/recruitment",      to: "recruitment#update", as: :update_recruitment
 
   # About page
-
   get "/about", to: "about#index", as: :about
   get "/about/edit", to: "about#edit", as: :edit_about
   patch "/about", to: "about#update", as: :update_about
+
+  # Contact page
+  get "/contact", to: "contact#index", as: :contact
+  get "/contact/edit", to: "contact#edit", as: :edit_contact
+  patch "/contact", to: "contact#update", as: :update_contact
 
   # Root
   root "home#index"
