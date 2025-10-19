@@ -1,9 +1,11 @@
 Rails.application.routes.draw do
   # User / Auth routes
-  devise_for :users, controllers: {
-    sessions: "users/sessions",
-    omniauth_callbacks: "users/omniauth_callbacks"
-  }
+  devise_for :users,
+    skip: [ :registrations ],
+    controllers: {
+      sessions: "users/sessions",
+      omniauth_callbacks: "users/omniauth_callbacks"
+    }
 
   # Users routes
   resources :users do

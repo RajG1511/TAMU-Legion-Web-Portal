@@ -1,5 +1,6 @@
 # spec/requests/users_crud_smoke_spec.rb
 # frozen_string_literal: true
+
 require "rails_helper"
 
 RSpec.describe "Users CRUD (smoke)", type: :request do
@@ -9,6 +10,7 @@ RSpec.describe "Users CRUD (smoke)", type: :request do
   after  { Warden.test_reset! }
 
   let(:exec) { create(:user, :exec, email: "crud_exec@example.org") }
+  let(:pres) { create(:user, :president, email: "crud_pres@example.org") }
   let!(:existing) { create(:user, email: "existing@example.org") }
 
   let(:valid_attrs) do
@@ -18,6 +20,9 @@ RSpec.describe "Users CRUD (smoke)", type: :request do
       last_name: "User",
       role: "member",
       status: "active",
+      major: "Computer Science",
+      graduation_year: 2026,
+      t_shirt_size: "M",
       password: "password123",
       password_confirmation: "password123"
     }
@@ -41,10 +46,13 @@ RSpec.describe "Users CRUD (smoke)", type: :request do
   end
 
   describe "POST /users" do
-    before { login_as(exec, scope: :user) }
+    before { login_as(pres, scope: :user) }
 
     it "creates a user and redirects to show" do
       post users_path, params: { user: valid_attrs }
+
+      puts "STATUS: #{response.status}"
+      puts "BODY: #{response.body}"
 
       created = User.find_by(email: "new_user@example.org")
       expect(created).not_to be_nil
