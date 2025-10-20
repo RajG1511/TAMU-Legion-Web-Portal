@@ -9,54 +9,100 @@
     <%= csp_meta_tag %>
 
     <%= yield :head %>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;700&display=swap" rel="stylesheet">
 
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
-
+    <!-- Includes all stylesheet files in app/assets/stylesheets -->
     <%= stylesheet_link_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css", crossorigin: "anonymous" %>
     <%= javascript_include_tag "https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js", crossorigin: "anonymous" %>
+
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload"%>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+
+    <link rel="stylesheet" href="/manual.css" media="all">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
   </head>
 
   <body>
-    <nav>
-      <%= link_to "Events Dashboard", dashboard_events_path %> |
-      <%= link_to "Resources Dashboard", dashboard_resources_path %>
-      <% if user_signed_in? && (current_user.exec? || current_user.president?) %>
-        <%= link_to "Resources Dashboard", dashboard_resources_path %> |
-        <%= link_to "Events Dashboard", dashboard_events_path %>
-      <% end %>
-      <%= link_to "Events", events_path %> |
-      <%= link_to "Resources", resources_path %>
+    <!-- Navbar -->
+    <nav class="navbar bg-white px-4 mt-4">
+      <div class="container-fluid d-flex align-items-center justify-content-between flex-nowrap border-bottom-dark-navy mb-2">
+        <!-- Logo on the left -->
+        <%= link_to root_path, class: "d-flex align-items-center me-4" do %>
+          <img src="/Logos/legion large blue.png" alt="TAMU Legion Logo" class="navbar-logo" style="height:50px;">
+        <% end %>
 
-      <% if user_signed_in? && (current_user.exec? || current_user.president?) %>
-        | <%= link_to "Manage Users", users_path %>
-      <% end %>
+        <!-- Navbar links -->
+        <ul class="nav font-primary-heading">
+          <% nav_links = {
+            "Home" => root_path,
+            "About Us" => about_path,
+            "Recruitment" => recruitment_path,
+            "Members" => members_path,
+            "Committees" => committees_path,
+            "Contact Us" => contact_path,
+            "Member Center" => member_center_path
+          } %>
 
-      <!-- Service Hours navigation (visible to everyone) -->
-      | <%= link_to "Submit Service Hours", new_service_path %>
-      | <%= link_to "View Service Hours", services_path %>
-      | <%= link_to "Approve/Reject Service Hours", services_path %>
+          <% nav_links.each do |name, path| %>
+            <% active_class = current_page?(path) ? "active-link" : "" %>
+            <li class="nav-item">
+              <%= link_to name, path, class: "nav-link text-dark-navy #{active_class}" %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
     </nav>
 
-    <p style="color: red"><%= flash[:error] %></p>
-    <p style="color: blue"><%= flash[:notice] %></p>
-    <p style="color: green"><%= flash[:success] %></p>
+    
+    <!-- Sign in/out links MOCK Link-->  
+    <%#
+      if user_signed_in?
+        link_to "Sign out", destroy_user_session_path, method: :delete, data: { turbo: false }
+      else
+        link_to "Sign in", new_user_session_path, data: { turbo: false }
+      end
+    %>
 
-    <% if user_signed_in? %>
-      <%= link_to "Sign out", destroy_user_session_path, method: :delete, data: { turbo: false } %>
-    <% else %>
-      <%= link_to "Sign in", new_user_session_path, data: { turbo: false } %>
-    <% end %>
 
     <%= yield %>
 
-    <% flash.each do |key, message| %>
-      <div class="flash <%= key %>"><%= message %></div>
-    <% end %>
+    <%# Flash messages block commented out %>
+    <!--
+    <p style="color: red"><%= flash[:error] %></p>
+    <p style="color: blue"><%= flash[:notice] %></p>
+    <p style="color: green"><%= flash[:success] %></p>
+    -->
+
+    <!-- Footer -->
+    <footer class="footer bg-dark-navy text-white py-3 mt-auto font-secondary-body">
+      <div class="container d-flex justify-content-between align-items-center flex-wrap">
+        <!-- Left side: copyright & contact -->
+        <div class="footer-left">
+          &copy; <%= Time.current.year %> by LEGION Men's Organization |
+          <%= link_to "Contact Us", contact_path, class: "text-gold text-decoration-none" %> | 
+          <%= link_to "Contact Support", "mailto:kylepalermo@tamu.edu", class: "text-gold text-decoration-none"%>
+        </div>
+
+        <!-- Right side: social icons -->
+        <div class="footer-right d-flex gap-2">
+          <a href="https://www.instagram.com/tamulegion/" target="_blank" class="footer-icon d-flex align-items-center justify-content-center">
+            <i class="bi bi-instagram"></i>
+          </a>
+          <a href="https://www.linkedin.com/company/tamulegion/mycompany/?viewAsMember=true" target="_blank" class="footer-icon d-flex align-items-center justify-content-center">
+            <i class="bi bi-linkedin"></i>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+ 
   </body>
 </html>
+

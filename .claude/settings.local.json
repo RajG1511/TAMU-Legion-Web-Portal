@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sudo chown:*)",
+      "Bash(chmod:*)",
+      "Bash(chown:*)",
+      "Bash(bundle exec rspec:*)"
+    ],
+    "deny": []
+  }
+}

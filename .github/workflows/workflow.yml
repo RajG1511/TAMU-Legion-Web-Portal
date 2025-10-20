@@ -58,7 +58,10 @@ jobs:
 
       - name: Precompile Rails assets
         run: bin/rails assets:precompile RAILS_ENV=test
-
+      
+      - name: Install ImageMagick
+        run: sudo apt-get update && sudo apt-get install -y imagemagick
+        
       - name: Run tests
         run: bundler exec rspec .
 
@@ -66,7 +69,7 @@ jobs:
         run: brakeman -o brakeman.txt
 
       - name: Run rubocop
-        run: bundler exec rubocop --force-exclusion vendor/*/** --out rubocop.txt
+        run: bundle exec rubocop app/ lib/ spec/ --out rubocop.txt
 
       - name: Upload coverage results
         uses: actions/upload-artifact@master

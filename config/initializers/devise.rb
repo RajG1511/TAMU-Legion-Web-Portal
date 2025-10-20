@@ -9,7 +9,7 @@
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
-  require "devise/orm/active_record"
+     require "devise/orm/active_record"
   # For devise auth
 
   puts "Rails.env=#{Rails.env}"
@@ -19,7 +19,7 @@ Devise.setup do |config|
   client_secret = Rails.application.credentials.dig("google_oauth", "client_secret") || ENV["GOOGLE_OAUTH_CLIENT_SECRET"] || "dummy_client_secret"
 
   if client_id.blank? || client_secret.blank?
-    raise "Missing Google OAuth client_id/client_secret. Check credentials or ENV."
+       raise "Missing Google OAuth client_id/client_secret. Check credentials or ENV."
   end
 
   config.omniauth :google_oauth2, client_id, client_secret, {}
@@ -296,6 +296,8 @@ Devise.setup do |config|
   #   manager.intercept_401 = false
   #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
+  # ==> Warden configuration
+
 
   # ==> Mountable engine configurations
   # When using Devise inside an engine, let's call it `MyEngine`, and this engine
@@ -320,10 +322,9 @@ Devise.setup do |config|
   config.responder.error_status = :unprocessable_entity
   config.responder.redirect_status = :see_other
 
-  # ==> Configuration for :registerable
+     # ==> Configuration for :registerable
 
-  # When set to false, does not sign a user in automatically after their password is
-  # changed. Defaults to true, so a user is signed in automatically after changing a password.
-  # config.sign_in_after_change_password = true
+     # When set to false, does not sign a user in automatically after their password is
+     # changed. Defaults to true, so a user is signed in automatically after changing a password.
+     # config.sign_in_after_change_password = true
 end
-

@@ -1,34 +1,36 @@
+# app/controllers/users/omniauth_callbacks_controller.rb
 module Users
-  class OmniauthCallbacksController < Devise::OmniauthCallbacksController
-    def google_oauth2
-      user = User.from_google(**from_google_params)
-      if user.present?
-        sign_out_all_scopes
-        flash[:success] = t 'devise.omniauth_callbacks.success', kind: 'Google'
-        sign_in_and_redirect user, event: :authentication
-      else
-        flash[:alert] = "You are not authorized. Please contact an executive."
-        redirect_to new_user_session_path
-      end
-    end
+     class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+          def google_oauth2
+               user = User.from_google(**from_google_params)
 
-    protected
+            if user.present?
+                 sign_out_all_scopes
+              flash[:success] = t "devise.omniauth_callbacks.success", kind: "Google"
+              sign_in_and_redirect user, event: :authentication, fallback_location: login_path
+            else
+                 flash[:alert] = "You are not authorized. Please contact an executive."
+              redirect_to login_path
+            end
+          end
 
-    def after_omniauth_failure_path_for(_scope)
-      new_user_session_path
-    end
+       protected
 
-    def from_google_params
-      @from_google_params ||= {
-        uid: auth.uid,
-        email: auth.info.email,
-        full_name: auth.info.name,
-        avatar_url: auth.info.image
-      }
-    end
+            def after_omniauth_failure_path_for(_scope)
+                 login_path
+            end
 
-    def auth
-      @auth ||= request.env['omniauth.auth']
-    end
-  end
+       def from_google_params
+            @from_google_params ||= {
+              uid: auth.uid,
+              email: auth.info.email,
+              full_name: auth.info.name,
+              avatar_url: auth.info.image
+            }
+       end
+
+       def auth
+            @auth ||= request.env["omniauth.auth"]
+       end
+     end
 end

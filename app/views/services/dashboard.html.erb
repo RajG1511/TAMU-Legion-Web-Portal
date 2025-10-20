@@ -1,0 +1,73 @@
+<h1>Pending Service Requests</h1>
+
+<% if notice.present? %>
+  <p style="color: green;"><%= notice %></p>
+<% end %>
+<% if alert.present? %>
+  <p style="color: red;"><%= alert %></p>
+<% end %>
+
+<% if @services.blank? %>
+  <p>No pending service requests.</p>
+<% else %>
+  <table>
+    <thead>
+      <tr>
+        <th>Submitter</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Hours</th>
+        <th>Date performed</th>
+        <th>Committee</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @services.each do |service| %>
+        <tr>
+          <td><%= service.user&.email || "Unknown" %></td>
+          <td><%= service.name %></td>
+          <td><%= service.description %></td>
+          <td><%= service.hours %></td>
+          <td><%= service.date_performed %></td>
+          <td><%= service.committee.present? ? service.committee.titleize : "—" %>
+          <td><%= service.status %></td>
+          <td>
+            <%= button_to "Approve",
+                approve_service_path(service),
+                method: :patch,
+                form: { data: { turbo_confirm: "Approve this request?" } } %>
+
+            <%= form_with model: service, url: reject_service_path(service), method: :patch, local: true do |f| %>
+                <div>
+                    <%= f.text_field :rejection_reason,
+                        placeholder: "Reason for rejection",
+                        required: true %>
+                </div>
+                <%= f.submit "Reject", class: "danger" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<h2>Approved Hours by Committee</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Committee</th>
+      <th>Total Approved Hours</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% Service::COMMITTEES.each do |committee| %>
+      <tr>
+        <td><%= committee.titleize %></td>
+        <td><%= @committee_totals[committee] || 0 %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,48 @@
+<% content_for :title, "Edit Contact" %>
+
+<h1>Edit Contact Page</h1>
+
+<%= form_with url: contact_path, method: :patch, local: true do |f| %>
+    <div class="card p-3 mb-3">
+        <h3>Hero Title</h3>
+        <%= text_field_tag "contact_page[hero_title]", @sections["hero_title"], class: "form-control" %>
+    </div>
+
+    <div class="card p-3 mb-3">
+        <h3>Meetings - Title</h3>
+        <%= text_field_tag "contact_page[meetings_title]", @sections["meetings_title"], class: "form-control" %>
+        <h3>Meetings - Body (HTML)</h3>
+        <%= text_area_tag "contact_page[meetings_body_html]", @sections["meetings_body_html"], rows: 6, class: "form-control" %>
+        <h3>Meetings - Location</h3>
+        <%= text_field_tag "contact_page[meetings_location]", @sections["meetings_location"], class: "form-control" %>
+        <h3>Meetings - Location URL</h3>
+        <%= text_field_tag "contact_page[meetings_location_url]", @sections["meetings_location_url"], class: "form-control" %>
+        <h3>Meetings - Additional (HTML)</h3>
+        <%= text_area_tag "contact_page[meetings_additional_html]", @sections["meetings_additional_html"], rows: 6, class: "form-control" %>
+    </div>
+
+    <div class="card p-3 mb-3">
+        <h3>Questions - Title</h3>
+        <%= text_field_tag "contact_page[questions_title]", @sections["questions_title"], class: "form-control" %>
+        <h3>Questions - Body (HTML)</h3>
+        <%= text_area_tag "contact_page[questions_body_html]", @sections["questions_body_html"], rows: 6, class: "form-control" %>
+        <h3>Questions - Button Label</h3>
+        <%= text_field_tag "contact_page[questions_button_label]", @sections["questions_button_label"], class: "form-control" %>
+        <h3>Questions - Button URL</h3>
+        <%= text_field_tag "contact_page[questions_button_url]", @sections["questions_button_url"], class: "form-control" %>
+    </div>
+
+    <div class="card p-3 mb-3">
+        <h3>Email List - Title</h3>
+        <%= text_field_tag "contact_page[email_list_title]", @sections["email_list_title"], class: "form-control" %>
+        <h3>Email List - Body (HTML)</h3>
+        <%= text_area_tag "contact_page[email_list_body_html]", @sections["email_list_body_html"], rows: 6, class: "form-control" %>
+        <h3>Email List - Button Label</h3>
+        <%= text_field_tag "contact_page[email_list_button_label]", @sections["email_list_button_label"], class: "form-control" %>
+        <h3>Email List - Button URL</h3>
+        <%= text_field_tag "contact_page[email_list_button_url]", @sections["email_list_button_url"], class: "form-control" %>
+    </div>
+    
+    <%= f.submit "Save", class: "btn btn-navy" %>
+    <%= link_to "Cancel", root_path, class: "btn btn-outline-light", style: "margin-left:8px" %>
+<% end %>

@@ -1,5 +1,5 @@
 class AddLocationTextToEvents < ActiveRecord::Migration[8.0]
-  def change
-    add_column :events, :location_text, :string
-  end
+     def change
+          add_column :events, :location_text, :string
+     end
 end
