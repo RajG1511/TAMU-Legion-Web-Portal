@@ -1,15 +1,17 @@
-require 'rails_helper'
+require "rails_helper"
 
-# Specs in this file have access to a helper object that includes
-# the HomeHelper. For example:
-#
-# describe HomeHelper do
-#   describe "string concat" do
-#     it "concats two strings with spaces" do
-#       expect(helper.concat_strings("this","that")).to eq("this that")
-#     end
-#   end
-# end
 RSpec.describe HomeHelper, type: :helper do
-     pending "add some examples to (or delete) #{__FILE__}"
+     describe "#home_section" do
+          it "returns value when present in @sections" do
+               helper.instance_variable_set(:@sections, { "who_we_are_title" => "Who we are" })
+
+            expect(helper.home_section("who_we_are_title")).to eq("Who we are")
+          end
+
+       it "returns empty string when key is missing" do
+            helper.instance_variable_set(:@sections, { "hero_badge_html" => "<b>Badge</b>" })
+
+         expect(helper.home_section("who_we_are_title")).to eq("")
+       end
+     end
 end
