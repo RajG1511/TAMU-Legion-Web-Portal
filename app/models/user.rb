@@ -1,8 +1,8 @@
 class User < ApplicationRecord
-  # Devise
-  devise :database_authenticatable, :registerable,
-         :recoverable, :validatable,
-         :omniauthable, omniauth_providers: [:google_oauth2]
+     # Devise
+     devise :database_authenticatable, :registerable,
+            :recoverable, :validatable,
+            :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
   # Enums - Updated to include president
   enum :status, { inactive: 0, active: 1 }
@@ -34,56 +34,55 @@ class User < ApplicationRecord
 
   # Scopes
   scope :active,     -> { where(status: :active) }
-  scope :members,    -> { where(role: [:member, :exec, :president]) }
-  scope :execs,      -> { where(role: [:exec, :president]) }
-  scope :leadership, -> { where(role: [:exec, :president]) }
+  scope :members,    -> { where(role: [ :member, :exec, :president ]) }
+  scope :execs,      -> { where(role: [ :exec, :president ]) }
+  scope :leadership, -> { where(role: [ :exec, :president ]) }
 
   def full_name
-    "#{first_name} #{last_name}"
+       "#{first_name} #{last_name}"
   end
 
   def president?
-    role == "president"
+       role == "president"
   end
 
   def exec?
-    role == "exec" || president?
+       role == "exec" || president?
   end
 
   def member?
-    role == "member" || exec?
+       role == "member" || exec?
   end
 
   def can_edit_exec_tags?
-    role == "president"
+       role == "president"
   end
 
   def can_manage_members?
-    exec?
+       exec?
   end
 
   def can_create_events?
-    exec?
+       exec?
   end
 
   # OAuth mapping (intentionally no auto-create)
   def self.from_google(email:, full_name:, uid:, avatar_url:)
-    find_by(email: email)
+       find_by(email: email)
   end
 
   private
 
-  def apply_defaults
-    self.role   ||= "member"
-    self.status ||= "active"
-  end
+       def apply_defaults
+            self.role   ||= "member"
+         self.status ||= "active"
+       end
 
   def president_role_matches_position
-    if role == "president" && position != "President"
-      errors.add(:position, "must be 'President' for president role")
-    elsif position == "President" && role != "president"
-      errors.add(:role, "must be president for President position")
-    end
+       if role == "president" && position != "President"
+            errors.add(:position, "must be 'President' for president role")
+       elsif position == "President" && role != "president"
+            errors.add(:role, "must be president for President position")
+       end
   end
 end
-
