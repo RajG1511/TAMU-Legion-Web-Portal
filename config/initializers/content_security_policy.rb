@@ -1,7 +1,7 @@
 # config/initializers/content_security_policy.rb
 Rails.application.config.content_security_policy do |policy|
-  # Only allow HTTPS + self
-  policy.default_src :self, :https
+     # Only allow HTTPS + self
+     policy.default_src :self, :https
 
   # Your external assets
   policy.style_src  :self, :https, :unsafe_inline,
@@ -22,4 +22,3 @@ end
 
 # If you previously had report-only, disable it in production:
 # Rails.application.config.content_security_policy_report_only = false
-

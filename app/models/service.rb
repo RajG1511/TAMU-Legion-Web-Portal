@@ -1,5 +1,5 @@
 class Service < ApplicationRecord
-  belongs_to :user
+     belongs_to :user
 
   enum :status, { pending: 0, approved: 1, rejected: 2 }
 
@@ -22,7 +22,7 @@ class Service < ApplicationRecord
 
   private
 
-  def set_default_status
-    self.status ||= :pending
-  end
+       def set_default_status
+            self.status ||= :pending
+       end
 end

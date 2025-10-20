@@ -5,7 +5,7 @@ require "rails_helper"
 # System specs for bulk edit UI
 # -------------------------
 RSpec.describe "Users bulk actions", type: :system do
-  include Warden::Test::Helpers
+     include Warden::Test::Helpers
 
   before(:each) { Warden.test_mode! }
   after(:each)  { Warden.test_reset! }
@@ -17,7 +17,7 @@ RSpec.describe "Users bulk actions", type: :system do
   let!(:u2)   { create(:user, :inactive, email: "member2@example.org", password: "password123") }
 
   it "GET /users/bulk_edit with selected ids renders the page" do
-    login_as(exec, scope: :user)
+       login_as(exec, scope: :user)
 
     visit users_path
 
@@ -36,17 +36,17 @@ end
 # Request specs for controller actions
 # -------------------------
 RSpec.describe "Users bulk actions (requests)", type: :request do
-  include Devise::Test::IntegrationHelpers
+     include Devise::Test::IntegrationHelpers
 
   let!(:exec)     { create(:user, :exec, email: "exec2@example.org") }
   let!(:member_a) { create(:user, email: "req_member_a@example.org", graduation_year: 2026, major: "Biology", t_shirt_size: "M") }
   let!(:member_b) { create(:user, :inactive, email: "req_member_b@example.org", graduation_year: 2025, major: "Business", t_shirt_size: "L") }
 
   it "PATCH /users/bulk_update updates only provided fields" do
-    sign_in exec
+       sign_in exec
 
     patch bulk_update_users_path, params: {
-      user_ids: [member_a.id, member_b.id],
+      user_ids: [ member_a.id, member_b.id ],
       bulk_update: { status: "active" } # only update status
     }
 
@@ -66,7 +66,7 @@ RSpec.describe "Users bulk actions (requests)", type: :request do
   end
 
   it "POST /users/reset_inactive sets all inactive users to active" do
-    sign_in exec
+       sign_in exec
 
     expect(User.where(status: :inactive).count).to be >= 1
     expect(User.where(status: :active).count).to be >= 1
@@ -77,4 +77,3 @@ RSpec.describe "Users bulk actions (requests)", type: :request do
     expect(User.where(status: :inactive).count).to eq(0)
   end
 end
-

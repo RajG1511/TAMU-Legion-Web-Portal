@@ -1,6 +1,6 @@
 class ChangePublishedToIntegerInResources < ActiveRecord::Migration[8.0]
-  def up
-    execute <<-SQL
+     def up
+          execute <<-SQL
       ALTER TABLE resources
       ALTER COLUMN published DROP DEFAULT,
       ALTER COLUMN published TYPE integer USING CASE
@@ -11,10 +11,10 @@ class ChangePublishedToIntegerInResources < ActiveRecord::Migration[8.0]
       ALTER COLUMN published SET DEFAULT 0,
       ALTER COLUMN published SET NOT NULL;
     SQL
-  end
+     end
 
   def down
-    execute <<-SQL
+       execute <<-SQL
       ALTER TABLE resources
       ALTER COLUMN published DROP DEFAULT,
       ALTER COLUMN published TYPE boolean USING CASE

@@ -31,15 +31,15 @@ require 'capybara/rspec'
 # recreate the test database by loading the schema.
 # If you are not using ActiveRecord, you can remove these lines.
 begin
-  ActiveRecord::Migration.maintain_test_schema!
-rescue ActiveRecord::PendingMigrationError => e
-  abort e.to_s.strip
+     ActiveRecord::Migration.maintain_test_schema!
+   rescue ActiveRecord::PendingMigrationError => e
+        abort e.to_s.strip
 end
 RSpec.configure do |config|
-  # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_paths = [
-    Rails.root.join('spec/fixtures')
-  ]
+     # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
+     config.fixture_paths = [
+       Rails.root.join('spec/fixtures')
+     ]
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
@@ -75,7 +75,7 @@ RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   config.before(:each, type: :system) do
-    driven_by :selenium_chrome_headless
+       driven_by :selenium_chrome_headless
   end
 
   include ActionDispatch::TestProcess
