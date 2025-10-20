@@ -15,17 +15,24 @@ class UsersController < ApplicationController
   def show; end
 
   def new
-       @user = User.new
+       # Default sensible values so execs can create without needing president fields
+       @user = User.new(role: :member, status: :active)
   end
 
   def create
-       @user = User.new(user_params)
+       # Pre-set defaults if the creator isn't allowed to pick them
+       defaults = {}
+    defaults[:role]   = :member  if params.dig(:user, :role).blank?
+    defaults[:status] = :active  if params.dig(:user, :status).blank?
+
+    @user = User.new(defaults.merge(user_params))
+
     if @user.save
          flash[:success] = "User created."
       redirect_to users_path
     else
          Rails.logger.error(@user.errors.full_messages.to_sentence)
-      flash.now[:error] = "User not created."
+      flash.now[:error] = "User not created: " + @user.errors.full_messages.to_sentence
       render :new, status: :unprocessable_entity
     end
   end
@@ -37,7 +44,7 @@ class UsersController < ApplicationController
             flash[:success] = "User updated."
          redirect_to users_path
        else
-            flash.now[:error] = "User not updated."
+            flash.now[:error] = "User not updated: " + @user.errors.full_messages.to_sentence
          render :edit, status: :unprocessable_entity
        end
   end
@@ -81,16 +88,11 @@ class UsersController < ApplicationController
     redirect_to users_path
   end
 
-    # app/controllers/users_controller.rb
-    def update_member_center_caption
-         text = params[:text]
-      File.write(Rails.root.join("config", "member_center_caption.yml"), { text: text }.to_yaml)
-      redirect_back(fallback_location: root_path, notice: "Member Center Caption updated!")
-    end
-
-
-
-  # ----------------------------------
+  def update_member_center_caption
+       text = params[:text]
+    File.write(Rails.root.join("config", "member_center_caption.yml"), { text: text }.to_yaml)
+    redirect_back(fallback_location: root_path, notice: "Member Center Caption updated!")
+  end
 
   private
 
@@ -99,19 +101,16 @@ class UsersController < ApplicationController
        end
 
   # base fields everyone can edit
-
   def base_permitted_params
        [ :email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url ]
   end
 
   # execs can also set status
-
   def exec_permitted_params
        base_permitted_params + [ :status ]
   end
 
   # president can also set position/role
-
   def pres_permitted_params
        exec_permitted_params + [ :position, :role ]
   end
@@ -121,17 +120,16 @@ class UsersController < ApplicationController
   end
 
   def user_params
-       if current_user&.president?
-            permitted_params = pres_permitted_params
-       elsif current_user&.exec?
-            permitted_params = exec_permitted_params
-       else
-            permitted_params = base_permitted_params
-       end
+       permitted_params =
+         if current_user&.president?
+              pres_permitted_params
+         elsif current_user&.exec?
+              exec_permitted_params
+         else
+              base_permitted_params
+         end
 
-    if action_name == "create"
-         permitted_params += create_permitted_params
-    end
+    permitted_params += create_permitted_params if action_name == "create"
 
     params.require(:user).permit(permitted_params)
   end
