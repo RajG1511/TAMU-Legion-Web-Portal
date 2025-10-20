@@ -2,6 +2,7 @@
 inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 
 # Pull in the auto-generated TODO file to ignore legacy offenses
+#fixme: Remove this line when all offenses are resolved
 inherit_from:
   - .rubocop_todo.yml
 
