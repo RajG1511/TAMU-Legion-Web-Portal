@@ -1,18 +1,42 @@
-<%= form_for @user do |f| %>
+<%= form_with model: @user, local: true do |f| %>
+  <% if @user.errors.any? %>
+    <div class="mb-4 p-3 rounded bg-red-100 text-red-800">
+      <p><strong><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</strong></p>
+      <ul class="list-disc ml-6">
+        <% @user.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
   <div>
     <%= f.label :email %><br>
-    <%= f.email_field :email %>
+    <%= f.email_field :email, required: true %>
   </div>
 
   <div>
     <%= f.label :first_name %><br>
-    <%= f.text_field :first_name %>
+    <%= f.text_field :first_name, required: true %>
   </div>
 
   <div>
     <%= f.label :last_name %><br>
-    <%= f.text_field :last_name %>
+    <%= f.text_field :last_name, required: true %>
   </div>
+
+  <%# Password fields only on create %>
+  <% unless @user.persisted? %>
+    <div>
+      <%= f.label :password %><br>
+      <%= f.password_field :password, autocomplete: "new-password", required: true %>
+    </div>
+
+    <div>
+      <%= f.label :password_confirmation %><br>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true %>
+    </div>
+  <% end %>
 
   <div>
     <%= f.label :graduation_year, "Graduation year" %><br>
@@ -35,8 +59,7 @@
     <div>
       <%= f.label :status %><br>
       <% statuses_for_select = User.statuses.keys.map { |s| [s.humanize, s] } %>
-      <%= f.select :status,
-                   options_for_select(statuses_for_select, @user.status) %>
+      <%= f.select :status, options_for_select(statuses_for_select, @user.status || "active") %>
     </div>
   <% end %>
 
@@ -49,10 +72,13 @@
     <div>
       <%= f.label :role %><br>
       <% roles_for_select = User.roles.except('nonmember').keys.map { |r| [r.humanize, r] } %>
-      <%= f.select :role,
-                   options_for_select(roles_for_select, @user.role),
-                   include_blank: true %>
+      <%= f.select :role, options_for_select(roles_for_select, @user.role || "member"), include_blank: false %>
     </div>
+  <% else %>
+    <%# ensure a role value is sent on create for execs too %>
+    <% unless @user.persisted? %>
+      <%= f.hidden_field :role, value: (@user.role || "member") %>
+    <% end %>
   <% end %>
 
   <div>
@@ -61,6 +87,7 @@
   </div>
 
   <div>
-    <%= f.submit @user.persisted? ? "Update User" : "Create User" %>
+    <%= f.submit(@user.persisted? ? "Update User" : "Create User") %>
   </div>
 <% end %>
+

@@ -1,19 +1,33 @@
 <div class="container mx-auto px-4 py-8">
+  <% if flash.any? %>
+    <div class="mb-4">
+      <% flash.each do |k,v| %>
+        <div class="p-3 mb-2 rounded <%= k.to_s.include?('error') || k.to_s == 'alert' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
+          <%= v %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold">Users Management</h1>
     <div class="flex gap-2">
-      <%= link_to 'New User', new_user_path, class: "bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600" %>
+      <!-- Use site button styles instead of Tailwind utilities -->
+      <%= link_to 'New User', new_user_path, class: "btn btn-navy" %>
+
       <% if current_user.exec? %>
-        <%= button_to 'Reset All Inactive', reset_inactive_users_path, method: :post, 
-            data: { confirm: "Are you sure you want to reset all inactive members to active?" },
-            class: "bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600" %>
+        <%= button_to 'Reset All Inactive',
+                      reset_inactive_users_path,
+                      method: :post,
+                      data: { confirm: "Are you sure you want to reset all inactive members to active?" },
+                      class: "btn btn-outline-light" %>
       <% end %>
     </div>
   </div>
 
   <%= form_with url: bulk_edit_users_path, method: :get, local: true do |f| %>
     <div class="mb-4">
-      <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4">
+      <button type="submit" class="btn btn-navy mb-4">
         Edit Selected Users
       </button>
     </div>
@@ -74,11 +88,10 @@
   document.addEventListener('DOMContentLoaded', function() {
     const selectAll = document.getElementById('select-all');
     const checkboxes = document.querySelectorAll('.user-checkbox');
-    
+    if (!selectAll) return;
     selectAll.addEventListener('change', function() {
-      checkboxes.forEach(checkbox => {
-        checkbox.checked = selectAll.checked;
-      });
+      checkboxes.forEach(cb => { cb.checked = selectAll.checked; });
     });
   });
 </script>
+
