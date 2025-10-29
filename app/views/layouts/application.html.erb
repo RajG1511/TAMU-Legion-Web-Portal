@@ -29,7 +29,7 @@
     
   </head>
 
-  <body>
+  <body class="d-flex flex-column min-vh-100">
     <!-- Navbar -->
     <nav class="navbar bg-white px-4 mt-4">
       <div class="container-fluid d-flex align-items-center justify-content-between flex-nowrap border-bottom-dark-navy mb-2">
@@ -60,25 +60,10 @@
       </div>
     </nav>
 
-    
-    <!-- Sign in/out links MOCK Link-->  
-    <%#
-      if user_signed_in?
-        link_to "Sign out", destroy_user_session_path, method: :delete, data: { turbo: false }
-      else
-        link_to "Sign in", new_user_session_path, data: { turbo: false }
-      end
-    %>
+    <main class="flex-grow-1">
+      <%= yield %>
+    </main>
 
-
-    <%= yield %>
-
-    <%# Flash messages block commented out %>
-    <!--
-    <p style="color: red"><%= flash[:error] %></p>
-    <p style="color: blue"><%= flash[:notice] %></p>
-    <p style="color: green"><%= flash[:success] %></p>
-    -->
 
     <!-- Footer -->
     <footer class="footer bg-dark-navy text-white py-3 mt-auto font-secondary-body">
