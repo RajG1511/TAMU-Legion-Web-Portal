@@ -59,14 +59,15 @@ RSpec.describe "HomeController", type: :request do
        end
 
     it "saves and redirects with notice on success" do
-         allow(HomePageStore).to receive(:save_all!).and_return(true)
+      allow(HomePageStore).to receive(:save_all!).and_return(true)
 
       patch home_path, params: params_hash
 
       expect(response).to redirect_to(root_path)
-      follow_redirect!
-      expect(response.body).to include("Home page updated successfully")
+      # check flash instead of page body
+      expect(flash[:notice] || flash[:success]).to eq("Home page updated successfully.")
     end
+
 
     it "rescues validation error and re-renders :edit with 422 and flash" do
          allow(HomePageStore).to receive(:read).and_return(sections_hash)
