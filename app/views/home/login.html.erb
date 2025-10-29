@@ -21,14 +21,13 @@
         <!-- Google Sign-In Button -->
         <%= button_to user_google_oauth2_omniauth_authorize_path, 
             method: :post,  data: { turbo: false }, 
-            class: "btn btn-lg px-5 py-3 mb-0 white-btn" do %>
+            class: "btn btn-lg px-5 py-3 mb-0 white-btn-login default-border-radius" do %>
                 Sign in with Google
         <% end %>
 
         <!-- Not Registered? Link -->
         <p class="mt-4 font-secondary-subheading text-white"> Not Registered? 
-            <a href="#" data-bs-toggle="modal" data-bs-target="#registerInfoModal" 
-            class="text-gold fw-bold text-decoration-underline"> Click here</a>
+            <%= link_to "Click Here", contact_path, class: "text-gold text-decoration-none text-decoration-underline" %>
         </p>
 
     </div>
