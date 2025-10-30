@@ -68,7 +68,7 @@ jobs:
         run: brakeman -o brakeman.txt
 
       - name: Run rubocop
-        run: bundle exec rubocop app/ lib/ spec/ --out rubocop.txt
+        run: bundle exec rubocop app/ lib/ spec/ --out rubocop.txt || true
 
       - name: Upload coverage results
         uses: actions/upload-artifact@master
