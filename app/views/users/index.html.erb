@@ -1,14 +1,4 @@
 <div class="container mx-auto px-4 py-8">
-  <% if flash.any? %>
-    <div class="mb-4">
-      <% flash.each do |k,v| %>
-        <div class="p-3 mb-2 rounded <%= k.to_s.include?('error') || k.to_s == 'alert' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
-          <%= v %>
-        </div>
-      <% end %>
-    </div>
-  <% end %>
-
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold">Users Management</h1>
     <div class="flex gap-2">
