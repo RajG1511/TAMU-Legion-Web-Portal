@@ -1,15 +1,5 @@
-<!-- Flash Messages -->
-<% flash.each do |key, message| %>
-    <div class="container-fluid bg-gold text-dark-navy py-0">
-        <div class="alert alert-dismissible fade show mb-0 text-center" role="alert" style="background-color: transparent; border: none;">
-            <strong><%= message %></strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    </div>
-<% end %>
-
 <!-- Top Heading -->
-<div class="container-fluid bg-polo-slate text-white py-3">
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
     <h1 class="text-center font-primary-title">Resources Dashboard</h1>
 </div>
 
@@ -18,104 +8,159 @@
     <div class="row">
 
         <!-- Left Column Contains Log and Buttons -->
-        <div class="col-md-4 bg-legion-blue py-4">
-        
-            <!-- Full-width Create and Member View Buttons -->
-            <div class="d-grid gap-3 px-4 mt-4 mb-4">
-                <%= link_to "Create New Resource", new_resource_path, class: "btn bg-white text-legion-blue default-border-radius btn-lg w-100 font-primary-heading" %>
-                <%= link_to "View Member Resources", resources_path, class: "btn bg-white text-legion-blue default-border-radius btn-lg w-100 font-primary-heading" %>
-            </div>
+        <div class="col-md-5 bg-legion-blue py-4">
 
-            <!-- Resource Update Log Table -->
-            <div class="table-responsive" style="max-height: 1200px; overflow-y: auto;">
-                <table class="table table-bordered table-striped border-primary border-legion-blue">
-                    <thead>
-                        <tr><th colspan="4" class="bg-white text-black border-white text-center h4 font-secondary-heading">Resource Update Log</th></tr>
-                        <tr>
-                            <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Resource</th>
-                            <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Updated By</th>
-                            <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Timestamp</th>
-                            <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Change Type</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% @resource_versions.each do |version| %>
-                            <tr class="border border-legion-blue">
-                                <td class="font-secondary-subheading"><%= version.name %></td>
-                                <td class="font-secondary-subheading"><%= version.user.first_name %> <%= version.user.last_name %></td>
-                                <td class="font-secondary-subheading"><%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
-                                <td class="font-secondary-subheading"><%= version.change_type.capitalize %></td>
+            <div class="default-padding-left">
+                <!-- Full-width Create and Member View Buttons -->
+                <div class="d-grid gap-3 px-4 mt-4 mb-4">
+                    <%= link_to "Create New Resource", new_resource_path, class: "btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading" %>
+                    <%= link_to "View Member Resources", resources_path, class: "btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading" %>
+                    <button type="button" class="btn white-btn-edit default-border-radius btn-lg font-primary-heading w-100"
+                        data-bs-toggle="modal" data-bs-target="#UserGuideModal">
+                        User Guide: Managing Resources
+                    </button>
+                </div>
+
+                <!-- Resource Update Log Table -->
+                <div class="table-responsive log-scroll-container" style="max-height: 1200px; overflow-y: auto;">
+                    <table class="table table-bordered table-striped border-primary border-legion-blue">
+                        <thead>
+                            <tr><th colspan="4" class="bg-white text-black border-white text-center h4 font-secondary-heading">Resource Update Log</th></tr>
+                            <tr>
+                                <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Resource</th>
+                                <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Updated By</th>
+                                <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Timestamp</th>
+                                <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Change Type</th>
                             </tr>
-                        <% end %>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <% @resource_versions.each do |version| %>
+                                <tr class="border border-legion-blue">
+                                    <td class="font-secondary-subheading"><%= version.name %></td>
+                                    <td class="font-secondary-subheading"><%= version.user.first_name %> <%= version.user.last_name %></td>
+                                    <td class="font-secondary-subheading"><%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
+                                    <td class="font-secondary-subheading"><%= version.change_type.capitalize %></td>
+                                </tr>
+                            <% end %>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
         <!-- Right Column Contains All Resource Cards and Filter Bar -->
-        <div class="col-md-8 bg-dark-navy text-white py-4">
+        <div class="col-md-7 bg-dark-navy text-white py-4">
+            
+            <div class="default-padding-right">
+                <!-- Section Heading with Divider -->
+                <h2 class="mb-2 font-primary-heading">All Resources</h2>
+                <hr class="thick-white-divider mb-2">
 
-            <!-- Section Heading with Divider -->
-            <h2 class="mb-2 font-primary-heading">All Resources</h2>
-            <hr class="thick-white-divider mb-4">
+                <!-- Filter Bar -->
+                <div class="bg-white p-3 mb-4 default-border-radius">
+                    <%= form_with url: dashboard_resources_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue" do %>
+                    <div class="col-auto"> <span class="fw-bold font-secondary-body">Filter By</span> </div>
 
-            <!-- Filter Bar -->
-            <div class="bg-white p-3 mb-4 default-border-radius">
-                <%= form_with url: dashboard_resources_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue" do %>
-                <div class="col-auto"> <span class="fw-bold font-secondary-body">Filter By</span> </div>
-
-                <!-- Category Label + Dropdown -->
-                <div class="col-auto"> <label for="category_filter" class="form-label mb-0 font-secondary-subheading">Category:</label> </div>
-                <div class="col">
-                    <%= select_tag :category_id, options_for_select([["All", ""]] + ResourceCategory.pluck(:name, :id), params[:category_id]),
-                    include_blank: false, class: "form-select default-border-radius text-legion-blue" %>
-                </div>
-
-                <!-- Visibility Label + Dropdown -->
-                <div class="col-auto"> <label for="visibility_filter" class="form-label mb-0 font-secondary-subheading">Visibility:</label> </div>
-                <div class="col">
-                    <%= select_tag :visibility, options_for_select([["All", ""]] + Resource.visibilities.keys.map { |v| [v.titleize, v] }, params[:visibility]),
-                    include_blank: false, class: "form-select default-border-radius text-legion-blue" %>
-                </div>
-
-                <div class="col-auto"> <%= submit_tag "Filter", class: "btn btn-gold text-dark-navy default-border-radius font-secondary-body" %> </div>
-            <% end %>
-            </div>
-
-            <!-- Scrollable Resource Cards -->
-            <div class="resource-scroll-container">
-                <ul class="list-unstyled">
-                    <% @resources.each do |resource| %>
-                    <li class="resource-card mb-4 p-3">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h3 class="mb-0 text-white font-primary-title"><%= resource.name %></h3>
-                        
-                        <!-- Action Buttons: Edit, Delete, Publish/Unpublish -->
-                        <div class="d-flex gap-2">
-                            <%= link_to "Edit", edit_resource_path(resource), class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
-                            <%= button_to "Delete", resource_path(resource), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
-                            <%= button_to (resource.published? ? "Unpublish" : "Publish"),
-                                toggle_publish_resource_path(resource), method: :patch, data: { confirm: "Are you sure you want to #{ resource.published? ? 'unpublish' : 'publish' } this resource?" },
-                                class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
-                        </div>
+                    <!-- Category Label + Dropdown -->
+                    <div class="col-auto"> <label for="category_filter" class="form-label mb-0 font-secondary-subheading">Category:</label> </div>
+                    <div class="col">
+                        <%= select_tag :category_id, options_for_select([["All", ""]] + ResourceCategory.pluck(:name, :id), params[:category_id]),
+                        include_blank: false, class: "form-select default-border-radius text-legion-blue" %>
                     </div>
 
-                    <p class="text-white mb-2 font-primary-heading"> <strong>Category:</strong> <%= resource.resource_category&.name %> | <strong>Visibility:</strong> <%= resource.visibility.titleize %> </p>
-                    
-                    <!-- Resource Type Specific Actions -->
-                    <% if resource.resource_type == "link" %>
-                        <%= link_to "Link to Resource", resource.content, class: "btn btn-gold text-legion-blue w-100 mb-2", target: "_blank" %>
-                    <% elsif resource.resource_type == "file" && resource.file.attached? %>
-                        <div class="d-flex gap-2">
-                            <%= link_to "View File", rails_blob_path(resource.file, disposition: "inline"), target: "_blank", class: "btn btn-gold text-legion-blue w-50" %>
-                            <%= link_to "Download File", rails_blob_path(resource.file, disposition: "attachment"), class: "btn btn-gold text-legion-blue w-50" %>
-                        </div>
-                    <% end %>
+                    <!-- Visibility Label + Dropdown -->
+                    <div class="col-auto"> <label for="visibility_filter" class="form-label mb-0 font-secondary-subheading">Visibility:</label> </div>
+                    <div class="col">
+                        <%= select_tag :visibility, options_for_select([["All", ""]] + Resource.visibilities.keys.map { |v| [v.titleize, v] }, params[:visibility]),
+                        include_blank: false, class: "form-select default-border-radius text-legion-blue" %>
+                    </div>
 
-                    </li>
-                    <% end %>
-                </ul>
+                    <div class="col-auto"> <%= submit_tag "Filter", class: "btn btn-gold text-dark-navy default-border-radius font-secondary-body" %> </div>
+                <% end %>
+                </div>
+
+                <!-- Scrollable Resource Cards -->
+                <div class="resource-scroll-container">
+                    <ul class="list-unstyled">
+                        <% @resources.each do |resource| %>
+                        <li class="resource-card mb-4 p-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h3 class="mb-0 text-white font-primary-title"><%= resource.name %></h3>
+                            
+                            <!-- Action Buttons: Edit, Delete, Publish/Unpublish -->
+                            <div class="d-flex gap-2">
+                                <%= link_to "Edit", edit_resource_path(resource), class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
+                                <%= button_to "Delete", resource_path(resource), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
+                                <%= button_to (resource.published? ? "Unpublish" : "Publish"),
+                                    toggle_publish_resource_path(resource), method: :patch, data: { confirm: "Are you sure you want to #{ resource.published? ? 'unpublish' : 'publish' } this resource?" },
+                                    class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
+                            </div>
+                        </div>
+
+                        <p class="text-white mb-1 font-primary-heading"> <strong>Category:</strong> <%= resource.resource_category&.name %> | <strong>Visibility:</strong> <%= resource.visibility.titleize %> </p>
+                        
+                        <!-- Resource Type Specific Actions -->
+                        <% if resource.resource_type == "link" %>
+                            <%= link_to "Link to Resource", resource.content, class: "btn white-btn-resources text-legion-blue w-100 mb-2", target: "_blank" %>
+                        <% elsif resource.resource_type == "file" && resource.file.attached? %>
+                            <div class="d-flex gap-2">
+                                <%= link_to "View File", rails_blob_path(resource.file, disposition: "inline"), target: "_blank", class: "btn white-btn-resources text-legion-blue w-50" %>
+                                <%= link_to "Download File", rails_blob_path(resource.file, disposition: "attachment"), class: "btn white-btn-resources text-legion-blue w-50" %>
+                            </div>
+                        <% end %>
+
+                        </li>
+                        <% end %>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
+</div>
+
+<!-- User Guide Modal -->
+<div class="modal fade edit-info-modal" id="UserGuideModal" tabindex="-1" aria-labelledby="UserGuideModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title font-primary-heading" id="UserGuideModalLabel">Resources Dashboard Guide</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body font-secondary-subheading">
+        <p>
+          Welcome to the Resources Dashboard Guide! 
+          Here you’ll find information on how to view and manage resources.
+        </p>
+
+        <h6 class="font-secondary-body text-gold mt-4">Navigating the Resources Dashboard</h6>
+        <ul class="font-secondary-subheading">
+          <li>The left sidebar provides navigation to access the member-view of resources or create a resource.</li>
+          <li>The left sidebar provides an update log of all changes made in regards to resources and by which user.</li>
+          <li>Within the All Resources section, you can filter by resource category and resource visibility.</li>
+          <li>The Resource Cards showcases all of the resources created, their content, and statuses that the user can modify.</li>
+        </ul>
+
+        <h6 class="text-gold mt-4 font-secondary-body">Resource Card Actions</h6>
+        <ul class="font-secondary-subheading">
+          <li>Editing a resource will take you to the Edit Resource page to edit its attributes.</li>
+          <li>Deleting a resource will permanently remove it from the resources list on all views.</li>
+          <li>Publishing/Unpublishing a resource will toggle its visibility on the member-view of resources.</li>
+          <li>Once saved, the changes will be reflected on the Resources Dashboard.</li>
+          <li>Any issues upon saving will be indicated by an error flash message.</li>
+        </ul>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+
+    </div>
+  </div>
 </div>

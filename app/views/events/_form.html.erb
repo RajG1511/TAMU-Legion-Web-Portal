@@ -2,12 +2,12 @@
 <div class="container-fluid bg-dark-navy text-white min-vh-100 px-0">
 
   <!-- Header Strip -->
-  <div class="container-fluid bg-polo-slate text-white py-3">
+  <div class="container-fluid bg-dark-gray-blue text-white py-3">
     <h2 class="text-center font-primary-title"> <%= @event.persisted? ? "Update an Event" : "Create an Event" %> </h2>
   </div>
 
   <!-- Gold Divider -->
-  <div class="container-fluid bg-gold" style="height: 12px;"></div>
+  <div class="container-fluid bg-gold py-1"></div>
 
 
   <!-- Form Container -->
@@ -35,18 +35,34 @@
       <!-- Section 1: Name, Category, Visibility -->
       <div class="row mb-4">
         <div class="col-md-4">
-          <%= f.label :name, "Event Name", class: "form-label font-primary-heading" %>
-          <%= f.text_field :name, class: "form-control form-dark default-border-radius font-secondary-subheading " %>
+          <div class="d-flex align-items-center">
+            <%= f.label :name, "Event Name", class: "form-label font-primary-heading mb-1 me-2" %>
+          </div>
+          <%= f.text_field :name, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
         </div>
 
         <div class="col-md-4">
-          <%= f.label :event_category_id, "Event Category", class: "form-label font-primary-heading" %>
-          <%= f.collection_select :event_category_id, @categories, :id, :name, { prompt: "Select a category" }, class: "form-select form-dark default-border-radius font-secondary-subheading " %>
+          <div class="d-flex align-items-center">
+            <%= f.label :event_category_id, "Event Category", class: "form-label font-primary-heading mb-1 me-2" %>
+            <i class="bi bi-info-circle text-white" 
+              data-bs-toggle="tooltip" 
+              data-bs-placement="right"
+              title="Choose the category that best fits the event."></i>
+          </div>
+          <%= f.collection_select :event_category_id, @categories, :id, :name, { prompt: "Select a category" }, 
+            class: "form-select form-dark default-border-radius font-secondary-subheading" %>
         </div>
 
         <div class="col-md-4">
-          <%= f.label :visibility, "Visibility", class: "form-label font-primary-heading" %>
-          <%= f.select :visibility, Event.visibilities.keys.map { |v| [v.titleize, v] }, { prompt: "Select visibility" }, class: "form-select form-dark default-border-radius font-secondary-subheading " %>
+          <div class="d-flex align-items-center">
+            <%= f.label :visibility, "Visibility", class: "form-label font-primary-heading mb-1 me-2" %>
+            <i class="bi bi-info-circle text-white" 
+              data-bs-toggle="tooltip" 
+              data-bs-placement="right"
+              title="Control who can see this event — members or officers only. Public events are not implemented yet."></i>
+          </div>
+          <%= f.select :visibility, Event.visibilities.keys.map { |v| [v.titleize, v] }, { prompt: "Select visibility" },
+            class: "form-select form-dark default-border-radius font-secondary-subheading" %>
         </div>
       </div>
 
@@ -71,21 +87,35 @@
 
       <!-- Section 3: Location Type + Conditional Fields -->
       <div class="mb-4">
-        <%= f.label :location_type, "Location Type", class: "form-label d-block font-primary-heading" %>
+        <div class="d-flex align-items-center">
+          <%= f.label :location_type, "Location Type", class: "form-label font-primary-heading mb-0 me-2" %>
+        </div>
 
         <div class="form-check form-check-inline">
           <%= f.radio_button :location_type, "campus", id: "on_campus", class: "form-check-input font-primary-body" %>
           <%= f.label :location_type, "On Campus", for: "on_campus", class: "form-check-label font-secondary-subheading " %>
+            <i class="bi bi-info-circle text-white" 
+              data-bs-toggle="tooltip" 
+              data-bs-placement="right"
+            title="A TAMU Location. Campus code such as PETR and Campus Number such as 111."></i>
         </div>
 
         <div class="form-check form-check-inline">
           <%= f.radio_button :location_type, "off_campus", id: "off_campus", class: "form-check-input font-primary-body" %>
           <%= f.label :location_type, "Off Campus", for: "off_campus", class: "form-check-label font-secondary-subheading " %>
+            <i class="bi bi-info-circle text-white" 
+              data-bs-toggle="tooltip" 
+              data-bs-placement="right"
+            title="Include the name of the location as well as its address."></i>
         </div>
 
         <div class="form-check form-check-inline">
           <%= f.radio_button :location_type, "other_location", id: "other_location", class: "form-check-input font-primary-body" %>
           <%= f.label :location_type, "Other Location", for: "other_location", class: "form-check-label font-secondary-subheading " %>
+            <i class="bi bi-info-circle text-white" 
+              data-bs-toggle="tooltip" 
+              data-bs-placement="right"
+            title="Any location such as a virtual event. Include the appropriate link/information."></i>
         </div>
       </div>
 
@@ -130,101 +160,5 @@
   </div>
 
   <!-- Gold Footer Strip -->
-  <div class="container-fluid bg-gold" style="height: 12px;"></div>
+  <div class="container-fluid bg-gold py-1"></div>
 </div>
-
-
-<script>
-document.addEventListener("DOMContentLoaded", function () {
-    const onCampusBtn = document.getElementById("on_campus");
-    const offCampusBtn = document.getElementById("off_campus");
-    const otherLocationBtn = document.getElementById("other_location");
-    const onCampusFields = document.getElementById("on-campus-fields");
-    const offCampusFields = document.getElementById("off-campus-fields");
-    const otherLocationFields = document.getElementById("other-location-fields");
-    const startTimeField = document.getElementById("starts_at");
-    const endTimeField = document.getElementById("ends_at");
-
-    // Helper - Get local Machine Time in YYYY-MM-DDTHH:MM format
-    function fmt(d) {
-        const pad = (n) => String(n).padStart(2, "0");
-        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    }
-
-    // Helper - Adds at least 1 minute from start time to a date object for end time selection
-    function addMinutes(date, minutes) {
-        const d = new Date(date.getTime());
-        d.setMinutes(d.getMinutes() + minutes);
-        return d;
-    }
-
-    // Helper - Toggles display of on-campus and off-campus fields
-    function toggleLocationFields() {
-        if (onCampusBtn.checked) {
-            onCampusFields.style.display = "block";
-            offCampusFields.style.display = "none";
-            otherLocationFields.style.display = "none";
-        } 
-        else if (offCampusBtn.checked) {
-            onCampusFields.style.display = "none";
-            offCampusFields.style.display = "block";
-            otherLocationFields.style.display = "none";
-        }
-        else if (otherLocationBtn.checked) {
-            onCampusFields.style.display = "none";
-            offCampusFields.style.display = "none";
-            otherLocationFields.style.display = "block";
-        } 
-        else {
-            onCampusFields.style.display = "none";
-            offCampusFields.style.display = "none";
-            otherLocationFields.style.display = "none";
-        }
-    }
-
-    // Helper - Syncs end time minimum to be at least 1 minute after start time
-    function syncEndMinToStart() {
-        if (!startTimeField.value) return;
-        const start = new Date(startTimeField.value);
-        const minEnd = addMinutes(start, 1);
-        endTimeField.min = fmt(minEnd);
-
-        if (!endTimeField.value || new Date(endTimeField.value) < minEnd) {
-            endTimeField.value = fmt(minEnd);
-        }
-    }
-
-    // Helper - Validates that end time is at least 1 minute after start time
-    function validateEndTime() {
-        if (startTimeField.value && endTimeField.value) {
-            const start = new Date(startTimeField.value);
-            const end = new Date(endTimeField.value);
-            const minEnd = addMinutes(start, 1);
-            if (end < minEnd) {
-                endTimeField.value = fmt(minEnd);
-                alert("End time must be at least 1 minute after start time.");
-            }
-        }
-    }
-
-    // Initialize time fields
-    const now = new Date();
-    now.setSeconds(0, 0);
-    startTimeField.min = fmt(now);
-    startTimeField.value ||= fmt(now);
-    syncEndMinToStart();
-
-    // Event listeners
-    onCampusBtn?.addEventListener("change", toggleLocationFields);
-    offCampusBtn?.addEventListener("change", toggleLocationFields);
-    otherLocationBtn?.addEventListener("change", toggleLocationFields);
-    startTimeField?.addEventListener("change", () => {
-        syncEndMinToStart();
-        validateEndTime();
-    });
-    endTimeField?.addEventListener("change", validateEndTime);
-
-    // Initial state
-    toggleLocationFields();
-});
-</script>

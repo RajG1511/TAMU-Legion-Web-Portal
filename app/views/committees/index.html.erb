@@ -1,7 +1,3 @@
-<% flash.each do |key, message| %>
-    <div class="alert alert-<%= key %>"><%= message %></div>
-<% end %>
-
 <h1>Committees</h1>
 
 <% if current_user&.exec? %>

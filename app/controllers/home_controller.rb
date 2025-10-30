@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
-     # Make sure only signed-in members can hit these, then fetch the shared user
-     before_action :require_member!, only: [ :member_center, :upload_gallery, :delete_gallery_photo ]
+  # Make sure only signed-in members can hit these, then fetch the shared user
+  before_action :require_member!, only: [ :member_center, :upload_gallery, :delete_gallery_photo ]
   before_action :set_shared_user, only: [ :member_center, :upload_gallery, :delete_gallery_photo ]
 
   # Only exec/president can edit or update the homepage
@@ -33,18 +33,32 @@ class HomeController < ApplicationController
   def member_center
        # require_member! above already guarantees a signed-in member
        @user = current_user
-    @shared_user.gallery_photos.load
+       @gallery_photos = @shared_user.gallery_photos.load
   end
 
   def upload_gallery
-       if params[:gallery_photos].present?
-            @shared_user.gallery_photos.attach(params[:gallery_photos])
-         flash[:success] = "#{params[:gallery_photos].count} photo(s) uploaded successfully."
-       else
-            flash[:alert] = "No photos selected for upload."
-       end
-    redirect_to member_center_path
+     uploaded_files = Array(params[:gallery_photos]).select { |f| f.respond_to?(:content_type) }
+
+     if uploaded_files.blank?
+          flash[:alert] = "No photos selected for upload."
+          return redirect_to member_center_path
+     end
+
+     allowed_types = ["image/jpeg", "image/png"]
+     invalid_files = uploaded_files.reject { |file| allowed_types.include?(file.content_type) }
+
+     if invalid_files.any?
+          invalid_names = invalid_files.map(&:original_filename).join(", ")
+          flash[:alert] = "Only JPEG and PNG files are allowed. Invalid file(s): #{invalid_names}"
+     else
+          @shared_user.gallery_photos.attach(uploaded_files)
+          flash[:success] = "#{uploaded_files.count} photo(s) uploaded successfully."
+     end
+
+     redirect_to member_center_path
   end
+
+
 
   def delete_gallery_photo
        photo = @shared_user.gallery_photos.find_by(id: params[:photo_id])

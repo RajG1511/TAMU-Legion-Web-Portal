@@ -88,11 +88,32 @@ class UsersController < ApplicationController
     redirect_to users_path
   end
 
-  def update_member_center_caption
-       text = params[:text]
-    File.write(Rails.root.join("config", "member_center_caption.yml"), { text: text }.to_yaml)
-    redirect_back(fallback_location: root_path, notice: "Member Center Caption updated!")
-  end
+     def update_member_center_caption
+          text = params[:text]
+
+          # Only allow <a> tags with href attribute
+          allowed_tags = %w[a]
+          allowed_attributes = %w[href title target]
+
+          sanitized_text = ActionController::Base.helpers.sanitize(
+               text,
+               tags: allowed_tags,
+               attributes: allowed_attributes
+          )
+
+          if sanitized_text.blank?
+               redirect_back(fallback_location: root_path, alert: "Caption cannot be empty!")
+               return
+          end
+
+          File.write(
+               Rails.root.join("config", "member_center_caption.yml"),
+               { text: sanitized_text }.to_yaml
+          )
+
+          redirect_back(fallback_location: root_path, notice: "Member Center Caption updated!")
+     end
+
 
   private
 

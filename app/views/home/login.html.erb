@@ -1,13 +1,5 @@
 <div class="container-fluid bg-legion-blue min-vh-100 d-flex flex-column align-items-center text-center p-0">
 
-    <!-- Flash banner at top of container -->
-    <% flash.each do |key, message| %>
-        <div class="login-flash alert alert-dismissible fade show font-primary-heading w-100 text-center mb-0" role="alert">
-            <%= message %>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    <% end %>
-
     <!-- Login content -->
     <div class="d-flex flex-column justify-content-center align-items-center flex-grow-1 w-100">
     
@@ -21,14 +13,13 @@
         <!-- Google Sign-In Button -->
         <%= button_to user_google_oauth2_omniauth_authorize_path, 
             method: :post,  data: { turbo: false }, 
-            class: "btn btn-lg px-5 py-3 mb-0 white-btn" do %>
+            class: "btn btn-lg px-5 py-3 mb-0 white-btn-login default-border-radius" do %>
                 Sign in with Google
         <% end %>
 
         <!-- Not Registered? Link -->
         <p class="mt-4 font-secondary-subheading text-white"> Not Registered? 
-            <a href="#" data-bs-toggle="modal" data-bs-target="#registerInfoModal" 
-            class="text-gold fw-bold text-decoration-underline"> Click here</a>
+            <%= link_to "Click Here", contact_path, class: "text-gold text-decoration-none text-decoration-underline" %>
         </p>
 
     </div>

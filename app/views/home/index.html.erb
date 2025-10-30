@@ -43,22 +43,11 @@
     <h3 class="footer__title"><%= cms_text(:footer_diversity_title, page: :home) %></h3>
     <p class="footer__body"><%= cms_html(:footer_diversity_body_html, page: :home) %></p>
 
-    <div class="footer__social">
-      <a href="https://www.instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="footer__icon">◦</a>
-      <a href="https://www.linkedin.com"  target="_blank" rel="noopener" aria-label="LinkedIn"   class="footer__icon">in</a>
-    </div>
-
     <% if current_user&.exec? || current_user&.president? %>
       <div class="footer__edit">
         <%= link_to "Edit Home Page", edit_home_path, class: "btn btn-outline-light" %>
       </div>
     <% end %>
-
-    <div class="footer__bottom">
-      <span>© <%= Time.current.year %> by LEGION Men’s Organization</span>
-      <span class="sep">|</span>
-      <%= link_to "Contact Us", "mailto:legion@example.edu", class: "footer__link" %>
-    </div>
   </div>
 </footer>
 
