@@ -49,10 +49,8 @@ jobs:
           node-version: 22
           cache: "yarn"
 
-      - uses: borales/actions-yarn@v3.0.0
-        with:
-          cmd: install
-          useDocker: false
+      - name: Install JS dependencies
+        run: yarn install --frozen-lockfile
 
       - name: Build Tailwind CSS
         run: yarn build:css
