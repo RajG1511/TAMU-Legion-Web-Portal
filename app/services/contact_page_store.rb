@@ -83,6 +83,7 @@ class ContactPageStore
          SECTION_KEYS.each do |key|
               new_html = normalized[key]
            next if new_html.nil?
+           new_html = sanitize_html(new_html)
 
            s = section_for(key)
 
@@ -138,5 +139,20 @@ class ContactPageStore
        else
             nil
        end
+  end
+
+  def self.sanitize_html(html)
+     raw = html.to_s
+
+     # get rid of any script or style blocks
+     raw = raw.gsub(/<script.*?>.*?<\/script>/mi, "")
+     raw = raw.gsub(/<style.*?>.*?<\/style>/mi, "")
+
+     # normal html sanitization
+     ActionController::Base.helpers.sanitize(
+          raw,
+          tags: %w[p br strong em b i a ul ol li h1 h2 h3 h4 span],
+          attributes: %w[href title target rel class]
+     )
   end
 end
