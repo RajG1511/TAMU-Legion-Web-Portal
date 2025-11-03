@@ -123,7 +123,7 @@ class UsersController < ApplicationController
 
   # base fields everyone can edit
   def base_permitted_params
-       [ :email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url ]
+       [ :email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url, :headshot ]
   end
 
   # execs can also set status

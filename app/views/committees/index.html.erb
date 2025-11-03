@@ -14,8 +14,8 @@
                 <ul>
                 <% committee.users.each do |member| %>
                     <li>
-                        <% if member.image_url.present? %>
-                            <img src="<%= member.image_url %>">
+                        <% if member.headshot.present? %>
+                            <%= image_tag member.headshot %>
                         <% end %>
                         <p><%= member.full_name %></p>
                     </li>

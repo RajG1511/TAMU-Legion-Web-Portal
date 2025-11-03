@@ -82,8 +82,12 @@
   <% end %>
 
   <div>
-    <%= f.label :image_url, "Image url" %><br>
-    <%= f.text_field :image_url %>
+    <%= f.label :headshot, "Headshot" %>
+    <%= f.file_field :headshot %>
+    <% if @user.headshot.attached? %>
+      <p>Current Active headshot:</p>
+      <%= image_tag @user.headshot %>
+    <% end %>
   </div>
 
   <div>
