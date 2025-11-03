@@ -11,11 +11,12 @@
   <dt>Status</dt><dd><%= @user.status.humanize %></dd>
   <dt>Position</dt><dd><%= @user.position %></dd>
   <dt>Role</dt><dd><%= @user.role.humanize %></dd>
-  <dt>Image URL</dt><dd><%= @user.image_url %></dd>
   <dt>Joined</dt><dd><%= @user.created_at.strftime("%B %d, %Y") %></dd>
 </dl>
 
-<img src="<%= @user.image_url %>" alt="<%= @user.full_name %>">
+<% if @user.headshot.present? %>
+  <%= image_tag @user.headshot %>
+<% end %>
 
 <p>
   <%= link_to 'Edit', edit_user_path(@user) %> |

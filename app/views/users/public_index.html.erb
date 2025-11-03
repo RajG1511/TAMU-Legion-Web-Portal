@@ -6,7 +6,9 @@
         <ul>
             <% @execs.each do |user| %>
                 <li>
-                    <img src="<%= user.image_url %>" alt="<%= user.full_name %>">
+                    <% if user.headshot.present? %>
+                        <%= image_tag user.headshot %>
+                    <% end %>
                     <p><strong><%= user.full_name %> '<%= user.graduation_year%></strong></p>
                     <p><strong><%= user.position %></strong></p>
                     <p><%= user.major %></p>
@@ -23,7 +25,9 @@
             <ul>
                 <% committee.users.each do |user| %>
                     <li>
-                        <img src="<%= user.image_url %>" alt="<%= user.full_name %>">
+                        <% if user.headshot.present? %>
+                            <%= image_tag user.headshot %>
+                        <% end %>
                         <p><strong><%= user.full_name %> '<%= user.graduation_year%></strong></p>
                         <p><%= user.major %></p>
                     </li>

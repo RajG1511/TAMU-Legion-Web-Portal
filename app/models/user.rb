@@ -16,6 +16,7 @@ class User < ApplicationRecord
   has_many :resource_versions
   has_many :event_versions
   has_many_attached :gallery_photos, dependent: :destroy
+  has_one_attached :headshot
 
   # Default values so non-president creators don't fail validation silently
   after_initialize :apply_defaults, if: :new_record?
