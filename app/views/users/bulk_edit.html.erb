@@ -1,59 +1,72 @@
-<div class="default-padding py-8">
-  <h1 class="font-primary-title text-dark-navy mb-4">Bulk Edit Users</h1>
-
-  <div class="bg-gold text-dark-navy p-3 mb-6">
-    <p class="font-semibold">You are editing <%= @users.count %> users</p>
-    <p class="text-sm">Leave fields blank to keep existing values.</p>
-  </div>
-
-  <%= form_with url: bulk_update_users_path, method: :post, local: true do |f| %>
-    <% @users.each { |u| concat hidden_field_tag("user_ids[]", u.id) } %>
-
-    <div class="edit-card p-4">
-      <h2 class="font-primary-heading mb-3">Update Fields</h2>
-
-      <div class="grid md:grid-cols-2 gap-4">
-        <div>
-          <%= label_tag "bulk_update[graduation_year]", "Graduation Year", class: "block mb-1" %>
-          <%= number_field_tag "bulk_update[graduation_year]", nil, min: 2020, max: 2035, class: "form-dark w-full" %>
-        </div>
-
-        <div>
-          <%= label_tag "bulk_update[major]", "Major", class: "block mb-1" %>
-          <%= text_field_tag "bulk_update[major]", nil, class: "form-dark w-full" %>
-        </div>
-
-        <div>
-          <%= label_tag "bulk_update[t_shirt_size]", "T-Shirt Size", class: "block mb-1" %>
-          <%= select_tag "bulk_update[t_shirt_size]",
-                options_for_select([['Keep Current',''],['XS','XS'],['S','S'],['M','M'],['L','L'],['XL','XL'],['XXL','XXL'],['XXXL','XXXL']]),
-                class: "form-dark w-full" %>
-        </div>
-
-        <div>
-          <%= label_tag "bulk_update[status]", "Status", class: "block mb-1" %>
-          <%= select_tag "bulk_update[status]",
-                options_for_select([['Keep Current',''], ['Active','active'], ['Inactive','inactive']]),
-                class: "form-dark w-full" %>
-        </div>
-      </div>
-
-      <div class="mt-6">
-        <h3 class="font-primary-heading mb-2">Selected Users (<%= @users.count %>):</h3>
-        <div class="bg-white p-3 border max-h-40 overflow-y-auto">
-          <% @users.each do |user| %>
-            <span class="inline-block bg-powder-blue text-dark-navy text-sm px-3 py-1 mr-2 mb-2">
-              <%= user.full_name %> – <%= user.email %>
-            </span>
-          <% end %>
-        </div>
-      </div>
-
-      <div class="flex gap-3 mt-6">
-        <%= submit_tag "Update All", class: "btn btn-gold" %>
-        <%= link_to "Back", users_path, class: "white-btn" %>
-      </div>
-    </div>
-  <% end %>
+<!-- Header -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title">Bulk Edit Users</h1>
 </div>
+<div class="container-fluid bg-gold py-1"></div>
+
+<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100">
+  <div class="default-padding">
+
+    <div class="bg-white text-legion-blue p-3 mb-4 default-border-radius">
+      <p class="m-0 font-secondary-body">
+        <strong>You are editing <%= @users.count %> users.</strong>
+        <span class="ms-2 text-muted">Leave fields blank to keep existing values.</span>
+      </p>
+    </div>
+
+    <%= form_with url: bulk_update_users_path, method: :post, local: true do %>
+      <% @users.each { |u| concat hidden_field_tag("user_ids[]", u.id) } %>
+
+      <div class="bg-white text-legion-blue p-4 default-border-radius">
+        <h2 class="h5 mb-3 font-primary-heading">Update Fields</h2>
+
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Status</label>
+            <%= select_tag "bulk_update[status]",
+                  options_for_select([['Keep Current',''],['Active','active'],['Inactive','inactive']]),
+                  class: "form-select default-border-radius" %>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Graduation Year</label>
+            <%= number_field_tag "bulk_update[graduation_year]", nil, min: 2020, max: 2035,
+                  placeholder: "Keep current",
+                  class: "form-control default-border-radius" %>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">Major</label>
+            <%= text_field_tag "bulk_update[major]", nil,
+                  placeholder: "Keep current",
+                  class: "form-control default-border-radius" %>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">T-Shirt Size</label>
+            <%= select_tag "bulk_update[t_shirt_size]",
+                  options_for_select([['Keep Current',''],['XS','XS'],['S','S'],['M','M'],['L','L'],['XL','XL'],['XXL','XXL'],['XXXL','XXXL']]),
+                  class: "form-select default-border-radius" %>
+          </div>
+        </div>
+
+        <div class="mt-4">
+          <h3 class="h6 mb-2 font-primary-heading">Selected Users:</h3>
+          <div class="bg-gray-100 rounded p-3" style="max-height: 160px; overflow-y:auto;">
+            <% @users.each do |u| %>
+              <span class="badge bg-cornflower-blue me-2 mb-2"><%= u.full_name %> (<%= u.email %>)</span>
+            <% end %>
+          </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+          <%= submit_tag "Update All Selected Users", class: "btn btn-gold text-dark-navy default-border-radius" %>
+          <%= link_to "Cancel", users_path, class: "btn btn-outline-light default-border-radius" %>
+        </div>
+      </div>
+    <% end %>
+
+  </div>
+</div>
+<div class="container-fluid bg-gold py-1"></div>
 

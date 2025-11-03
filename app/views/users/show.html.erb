@@ -1,74 +1,74 @@
-<div class="default-padding py-8">
-  <div class="bg-dark-navy text-white thick-white-divider mb-6">
-    <div class="mdash-header__inner">
-      <h1 class="font-primary-title"><%= @user.full_name %>’s Profile</h1>
-      <div class="flex gap-2">
-        <%= link_to 'Back', users_path, class: 'white-btn mdash-btn' %>
-        <%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-gold mdash-btn' %>
-        <%= link_to 'Delete', delete_user_path(@user), class: 'btn btn-navy mdash-btn' %>
+<!-- Header -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title"><%= @user.full_name %>’s Profile</h1>
+</div>
+<div class="container-fluid bg-gold py-1"></div>
+
+<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100">
+  <div class="default-padding">
+
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <div class="event-card p-3">
+          <dl class="row mb-0 font-secondary-subheading">
+            <dt class="col-sm-3">Email</dt><dd class="col-sm-9"><%= @user.email %></dd>
+            <dt class="col-sm-3">Education</dt>
+            <dd class="col-sm-9"><%= @user.major.presence || "—" %>, <%= @user.graduation_year.presence || "—" %></dd>
+            <dt class="col-sm-3">Position | Role</dt>
+            <dd class="col-sm-9"><%= @user.position.presence || "—" %> | <%= @user.role.humanize %></dd>
+            <dt class="col-sm-3">Status</dt><dd class="col-sm-9"><%= @user.status.humanize %></dd>
+            <dt class="col-sm-3">T-Shirt Size</dt><dd class="col-sm-9"><%= @user.t_shirt_size.presence || "—" %></dd>
+            <dt class="col-sm-3">Joined</dt><dd class="col-sm-9"><%= @user.created_at.strftime("%B %d, %Y") %></dd>
+          </dl>
+        </div>
+
+        <div class="event-card p-3 mt-4">
+          <h2 class="h5 font-primary-heading mb-3">Submitted Services</h2>
+          <% if @user.services.any? %>
+            <div class="table-responsive">
+              <table class="table table-bordered table-striped bg-white text-legion-blue">
+                <thead>
+                  <tr>
+                    <th>Activity</th>
+                    <th>Status</th>
+                    <th>Hours</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% @user.services.each do |s| %>
+                    <tr>
+                      <td><%= s.name %></td>
+                      <td><%= s.status %></td>
+                      <td><%= s.hours %></td>
+                      <td><%= s.date_performed || s.created_at.to_date %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+            </div>
+          <% else %>
+            <p class="mb-0">No services submitted yet.</p>
+          <% end %>
+        </div>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="event-card p-3 text-center">
+          <% if @user.headshot.present? %>
+            <%= image_tag @user.headshot, class: "img-fluid" %>
+          <% else %>
+            <p>No photo uploaded.</p>
+          <% end %>
+          <div class="mt-3">
+            <%= link_to 'Edit', edit_user_path(@user), class: "btn btn-gold text-dark-navy default-border-radius me-2" %>
+            <%= link_to 'Delete', delete_user_path(@user), class: "btn btn-gold text-dark-navy default-border-radius" %>
+          </div>
+        </div>
       </div>
     </div>
+
   </div>
-
-  <div class="grid md:grid-cols-3 gap-6">
-    <section class="card p-4 md:col-span-2">
-      <h2 class="font-primary-heading text-dark-navy mb-3">Member’s Profile</h2>
-      <dl class="grid sm:grid-cols-2 gap-x-6 gap-y-2">
-        <dt class="font-semibold">Email</dt><dd><%= @user.email %></dd>
-        <dt class="font-semibold">Education</dt>
-        <dd><%= @user.major.presence || '-' %>, <%= @user.graduation_year.presence || '-' %></dd>
-
-        <dt class="font-semibold">Position | Role</dt>
-        <dd><%= (@user.position.presence || '-') %> | <%= @user.role.humanize %></dd>
-
-        <dt class="font-semibold">Status</dt><dd><%= @user.status.humanize %></dd>
-        <dt class="font-semibold">T-Shirt Size</dt><dd><%= @user.t_shirt_size.presence || '-' %></dd>
-        <dt class="font-semibold">Joined</dt><dd><%= @user.created_at.strftime("%B %d, %Y") %></dd>
-      </dl>
-    </section>
-
-    <aside class="card p-4">
-      <h3 class="font-primary-heading text-dark-navy mb-3">Photo</h3>
-      <% if @user.headshot.present? %>
-        <%= image_tag @user.headshot, class:"w-full h-auto border border-gray-200" %>
-      <% else %>
-        <div class="text-sm text-gray-500">No headshot uploaded.</div>
-      <% end %>
-    </aside>
-  </div>
-
-  <section class="card p-4 mt-6">
-    <h2 class="font-primary-heading text-dark-navy mb-3">Services</h2>
-
-    <% if @user.services.any? %>
-      <div class="overflow-x-auto">
-        <table class="min-w-full bg-white border border-gray-300">
-          <thead class="bg-gray-100">
-            <tr>
-              <th class="px-4 py-2 border">Activity</th>
-              <th class="px-4 py-2 border">Status</th>
-              <th class="px-4 py-2 border">Hours</th>
-              <th class="px-4 py-2 border">Timestamp</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @user.services.each do |service| %>
-              <tr class="hover:bg-gray-50">
-                <td class="px-4 py-2 border"><%= service.name %></td>
-                <td class="px-4 py-2 border"><%= service.status %></td>
-                <td class="px-4 py-2 border"><%= service.hours %></td>
-                <td class="px-4 py-2 border"><%= service.date_performed %></td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
-      </div>
-      <div class="text-sm text-gray-600 mt-2">
-        Total Service Hours: <%= @user.services.sum(:hours) %>
-      </div>
-    <% else %>
-      <p class="text-gray-600">No services submitted yet.</p>
-    <% end %>
-  </section>
 </div>
+<div class="container-fluid bg-gold py-1"></div>
 

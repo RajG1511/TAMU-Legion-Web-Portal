@@ -1,161 +1,227 @@
-<div class="default-padding py-8">
-  <!-- Page header strip -->
-  <div class="mdash-header bg-dark-navy text-white thick-white-divider">
-    <div class="mdash-header__inner">
-      <h1 class="mdash-title font-primary-title">Members Dashboard</h1>
+<!-- ===== Header Strip ===== -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title">Members Dashboard</h1>
+</div>
 
-      <div class="mdash-cta">
-        <%= link_to 'Create User', new_user_path, class: "btn btn-gold mdash-btn" %>
+<!-- ===== Thin Gold Divider ===== -->
+<div class="container-fluid bg-gold py-1"></div>
 
-        <% if current_user.exec? %>
-          <%= button_to 'Reset All Inactive',
-                        reset_inactive_users_path,
-                        method: :post,
-                        data: { confirm: "Are you sure you want to reset all inactive members to active?" },
-                        class: "white-btn mdash-btn" %>
-        <% end %>
+<!-- ===== Main Split Section ===== -->
+<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100 border-bottom border-12 border-gold">
+  <div class="row">
 
-        <%= form_with url: bulk_edit_users_path, method: :get, local: true, html: { class: "inline"} do |f| %>
-          <button type="submit" class="btn btn-navy mdash-btn">
-            Edit Selected Users
+    <!-- ========== LEFT: Actions + Update Log ========== -->
+    <div class="col-md-5 bg-legion-blue py-4">
+      <div class="default-padding-left">
+
+        <!-- Action Buttons (full width) -->
+        <div class="d-grid gap-3 px-4 mt-4 mb-4">
+          <%= link_to "Create User", new_user_path, class: "btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading" %>
+
+          <% if current_user.exec? %>
+            <%= button_to "Reset All Inactive",
+                  reset_inactive_users_path,
+                  method: :post,
+                  data: { confirm: "Are you sure you want to reset all inactive members to active?" },
+                  class: "btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading" %>
+          <% end %>
+
+          <!-- User Guide modal trigger -->
+          <button type="button"
+                  class="btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading"
+                  data-bs-toggle="modal" data-bs-target="#UsersGuideModal">
+            User Guide: Managing Members
           </button>
-        <% end %>
-      </div>
-    </div>
-  </div>
+        </div>
 
-  <!-- Top tools bar (search + optional guide link) -->
-  <div class="mdash-tools">
-    <div class="mdash-search">
-      <label for="user-search" class="font-primary-heading text-dark-navy">Search For:</label>
-      <input id="user-search" type="text" class="form-dark mdash-search__input" placeholder="Type a name, email, role, position, major…" />
-    </div>
-
-    <div class="mdash-guide">
-      <%= link_to "User Guide: Managing Members", "/Files/Guide_Managing_Members.pdf", class:"btn btn-outline-light", target:"_blank", rel:"noopener" %>
-    </div>
-  </div>
-
-  <%= form_with url: bulk_edit_users_path, method: :get, local: true do |f| %>
-    <!-- Dashboard 2-column layout (log at left, table at right) -->
-    <div class="mdash-grid">
-      <!-- Update Log (renders only if @update_log is present) -->
-      <% if defined?(@update_log) && @update_log.present? %>
-        <aside class="mdash-log card">
-          <h2 class="mdash-log__title font-primary-heading">Update Log</h2>
-          <div class="log-scroll-container mdash-log__body">
-            <table class="mdash-log__table">
-              <thead>
-                <tr>
-                  <th>Member(s)</th>
-                  <th>Updated By</th>
-                  <th>Change Type</th>
-                  <th>Timestamp</th>
-                </tr>
-              </thead>
-              <tbody>
-                <% @update_log.each do |row| %>
-                  <tr>
-                    <td><%= row[:member] %></td>
-                    <td><%= row[:actor] %></td>
-                    <td><%= row[:change] %></td>
-                    <td><%= row[:time] %></td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
-        </aside>
-      <% end %>
-
-      <!-- Main table -->
-      <div class="mdash-table-wrap">
-        <div class="overflow-x-auto">
-          <table class="mdash-table">
+        <!-- Update Log Table (scrollable) -->
+        <div class="table-responsive log-scroll-container" style="max-height: 1200px; overflow-y:auto;">
+          <table class="table table-bordered table-striped border-primary border-legion-blue mb-0">
             <thead>
               <tr>
-                <th class="w-10">
-                  <input type="checkbox" id="select-all" class="form-checkbox">
+                <th colspan="4" class="bg-white text-black border-white text-center h4 font-secondary-heading">
+                  Update Log
                 </th>
-                <th>Member-to-view</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Position</th>
-                <th>Status</th>
-                <th>Total Hours</th>
-                <th class="w-32">Actions</th>
+              </tr>
+              <tr>
+                <th class="bg-legion-blue text-white border-white font-secondary-body">Member(s)</th>
+                <th class="bg-legion-blue text-white border-white font-secondary-body">Updated By</th>
+                <th class="bg-legion-blue text-white border-white font-secondary-body">Change Type</th>
+                <th class="bg-legion-blue text-white border-white font-secondary-body">Timestamp</th>
               </tr>
             </thead>
-            <tbody id="users-tbody">
-              <% @users.each do |user| %>
-                <tr class="mdash-row">
-                  <td>
-                    <%= check_box_tag "user_ids[]", user.id, false, class: "user-checkbox form-checkbox" %>
+            <tbody>
+              <% (@user_versions || []).each do |v| %>
+                <tr class="border border-legion-blue">
+                  <td class="font-secondary-subheading"><%= v.try(:member_name) || v.try(:user)&.full_name || "-" %></td>
+                  <td class="font-secondary-subheading"><%= v.try(:updated_by_name) || v.try(:actor)&.full_name || current_user&.full_name || "-" %></td>
+                  <td class="font-secondary-subheading"><%= v.try(:change_type)&.to_s&.humanize || "Updated" %></td>
+                  <td class="font-secondary-subheading">
+                    <%= (v.try(:created_at) || Time.current).in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %>
                   </td>
+                </tr>
+              <% end %>
 
-                  <td class="mdash-member">
-                    <%= link_to user.full_name, user_path(user), class: "mdash-link" %>
-                  </td>
-
-                  <td class="mdash-email"><%= user.email %></td>
-
-                  <td>
-                    <span class="mdash-tag <%= user.exec? ? 'mdash-tag--purple' : 'mdash-tag--gray' %>">
-                      <%= user.role.humanize %>
-                    </span>
-                  </td>
-
-                  <td><%= user.position.presence || '-' %></td>
-
-                  <td>
-                    <span class="mdash-tag <%= user.active? ? 'mdash-tag--green' : 'mdash-tag--red' %>">
-                      <%= user.status.humanize %>
-                    </span>
-                  </td>
-
-                  <td>
-                    <%# If you have a method, use it; otherwise show 0 %>
-                    <%= (user.respond_to?(:total_hours) && user.total_hours) || (user.respond_to?(:services) ? user.services.sum(:hours) : 0) %>
-                  </td>
-
-                  <td class="mdash-actions">
-                    <%= link_to 'Edit', edit_user_path(user), class: "mdash-act mdash-act--edit" %>
-                    <%= link_to 'Delete', delete_user_path(user), class: "mdash-act mdash-act--delete" %>
+              <% if (@user_versions || []).empty? %>
+                <tr>
+                  <td colspan="4" class="text-center font-secondary-subheading">
+                    No user changes recorded yet.
                   </td>
                 </tr>
               <% end %>
             </tbody>
           </table>
         </div>
+
       </div>
     </div>
-  <% end %>
+
+    <!-- ========== RIGHT: Search + All Members table ========== -->
+    <div class="col-md-7 bg-dark-navy text-white py-4">
+      <div class="default-padding-right">
+
+        <!-- Section heading + divider -->
+        <h2 class="mb-2 font-primary-heading">All Members</h2>
+        <hr class="thick-white-divider mb-3">
+
+        <!-- Search strip + Edit Selected -->
+        <div class="bg-white p-3 mb-3 default-border-radius text-legion-blue">
+          <div class="d-flex gap-3 align-items-center justify-content-between flex-wrap">
+            <div class="flex-grow-1">
+              <label class="fw-bold font-secondary-body mb-1 d-block">Search For:</label>
+              <input id="member-search"
+                     type="text"
+                     class="form-control default-border-radius"
+                     placeholder="type a name, email, role, position, major, status…">
+            </div>
+
+            <div class="text-end mt-3 mt-md-0">
+              <%= form_with url: bulk_edit_users_path, method: :get, local: true, id: "bulk-edit-form" do %>
+                <button type="submit" class="btn btn-gold default-border-radius font-secondary-body">
+                  Edit Selected Users
+                </button>
+              <% end %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Members table (scrollable) -->
+        <div class="event-scroll-container px-1" style="max-height: 70vh; overflow-y:auto;">
+          <table class="table table-bordered table-striped bg-white text-legion-blue align-middle">
+            <thead class="bg-gray-100">
+              <tr>
+                <th class="align-middle" style="width:42px;">
+                  <input type="checkbox" id="select-all" class="form-check-input">
+                </th>
+                <th class="font-secondary-body">Member-to-view</th>
+                <th class="font-secondary-body">Email</th>
+                <th class="font-secondary-body">Role</th>
+                <th class="font-secondary-body">Position</th>
+                <th class="font-secondary-body">Status</th>
+                <th class="font-secondary-body">Total Hours</th>
+                <th class="font-secondary-body">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="members-table-body">
+              <% @users.each do |user| %>
+                <tr class="member-row">
+                  <!-- bulk select: append to the GET form above -->
+                  <td>
+                    <input type="checkbox"
+                           class="form-check-input user-checkbox"
+                           value="<%= user.id %>"
+                           form="bulk-edit-form"
+                           name="user_ids[]">
+                  </td>
+
+                  <!-- name links to show -->
+                  <td class="fw-semibold">
+                    <%= link_to user.full_name, user_path(user), class: "text-decoration-underline" %>
+                  </td>
+
+                  <td><%= user.email %></td>
+
+                  <td>
+                    <span class="badge <%= user.exec? ? 'bg-powder-blue' : 'bg-cornflower-blue' %>">
+                      <%= user.role.humanize %>
+                    </span>
+                  </td>
+
+                  <td><%= user.position.presence || "-" %></td>
+
+                  <td>
+                    <span class="badge <%= user.active? ? 'bg-success' : 'bg-danger' %>">
+                      <%= user.status.humanize %>
+                    </span>
+                  </td>
+
+                  <td>
+                    <% hours = (user.respond_to?(:services) ? user.services.sum(:hours) : 0) %>
+                    <%= number_with_precision(hours, precision: 0) %>
+                  </td>
+
+                  <td class="text-nowrap">
+                    <%= link_to "Edit", edit_user_path(user), class: "btn btn-gold btn-sm text-dark-navy me-2 default-border-radius" %>
+                    <%= link_to "Delete", delete_user_path(user), class: "btn btn-gold btn-sm text-dark-navy default-border-radius" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- ===== Thin Gold Divider ===== -->
+<div class="container-fluid bg-gold py-1"></div>
+
+<!-- ===== User Guide Modal ===== -->
+<div class="modal fade management-info-modal" id="UsersGuideModal" tabindex="-1" aria-labelledby="UsersGuideModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title font-primary-heading" id="UsersGuideModalLabel">Members Dashboard Guide</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body font-secondary-subheading">
+        <p>Use the left panel to create users, reset inactive members, and view the update log. Use the right panel to search, select, and bulk-edit members.</p>
+        <ul>
+          <li><strong>Edit Selected Users</strong> opens a bulk editor for the checked rows.</li>
+          <li><strong>Reset All Inactive</strong> sets all inactive users back to active.</li>
+          <li>The <strong>Update Log</strong> lists recent membership changes by user and time.</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Client-side helpers (select-all + search filter) ===== -->
 <script>
-  // Select all
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const selectAll = document.getElementById('select-all');
     const checkboxes = document.querySelectorAll('.user-checkbox');
-
     if (selectAll) {
-      selectAll.addEventListener('change', function() {
-        checkboxes.forEach(cb => { cb.checked = selectAll.checked; });
+      selectAll.addEventListener('change', () => {
+        checkboxes.forEach(cb => cb.checked = selectAll.checked);
       });
     }
 
-    // Client-side filter
-    const search = document.getElementById('user-search');
-    const rows = document.querySelectorAll('#users-tbody tr');
-    if (!search) return;
-
-    search.addEventListener('input', function () {
-      const q = this.value.toLowerCase();
-      rows.forEach(row => {
-        const txt = row.innerText.toLowerCase();
-        row.style.display = txt.includes(q) ? '' : 'none';
+    const search = document.getElementById('member-search');
+    const rows = document.querySelectorAll('#members-table-body tr.member-row');
+    if (search) {
+      search.addEventListener('input', () => {
+        const q = search.value.toLowerCase();
+        rows.forEach(row => {
+          row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
+        });
       });
-    });
+    }
   });
 </script>
 
