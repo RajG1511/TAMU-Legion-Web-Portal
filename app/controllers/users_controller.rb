@@ -41,8 +41,11 @@ class UsersController < ApplicationController
 
   def update
        if @user.update(user_params)
-            flash[:success] = "User updated."
-         redirect_to users_path
+          if params[:user][:remove_headshot] == "1"
+               @user.headshot.purge
+          end
+          flash[:success] = "User updated."
+          redirect_to users_path
        else
             flash.now[:error] = "User not updated: " + @user.errors.full_messages.to_sentence
          render :edit, status: :unprocessable_entity
