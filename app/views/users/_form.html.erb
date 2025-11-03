@@ -87,6 +87,9 @@
     <% if @user.headshot.attached? %>
       <p>Current Active headshot:</p>
       <%= image_tag @user.headshot %>
+
+      <%= f.check_box :remove_headshot, {}, "1", "0" %>
+      <%= f.label :remove_headshot, "Remove headshot" %>
     <% end %>
   </div>
 
