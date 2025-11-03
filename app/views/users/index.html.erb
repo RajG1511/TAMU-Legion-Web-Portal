@@ -1,86 +1,160 @@
-<div class="container mx-auto px-4 py-8">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold">Users Management</h1>
-    <div class="flex gap-2">
-      <!-- Use site button styles instead of Tailwind utilities -->
-      <%= link_to 'New User', new_user_path, class: "btn btn-navy" %>
+<div class="default-padding py-8">
+  <!-- Page header strip -->
+  <div class="mdash-header bg-dark-navy text-white thick-white-divider">
+    <div class="mdash-header__inner">
+      <h1 class="mdash-title font-primary-title">Members Dashboard</h1>
 
-      <% if current_user.exec? %>
-        <%= button_to 'Reset All Inactive',
-                      reset_inactive_users_path,
-                      method: :post,
-                      data: { confirm: "Are you sure you want to reset all inactive members to active?" },
-                      class: "btn btn-outline-light" %>
-      <% end %>
+      <div class="mdash-cta">
+        <%= link_to 'Create User', new_user_path, class: "btn btn-gold mdash-btn" %>
+
+        <% if current_user.exec? %>
+          <%= button_to 'Reset All Inactive',
+                        reset_inactive_users_path,
+                        method: :post,
+                        data: { confirm: "Are you sure you want to reset all inactive members to active?" },
+                        class: "white-btn mdash-btn" %>
+        <% end %>
+
+        <%= form_with url: bulk_edit_users_path, method: :get, local: true, html: { class: "inline"} do |f| %>
+          <button type="submit" class="btn btn-navy mdash-btn">
+            Edit Selected Users
+          </button>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top tools bar (search + optional guide link) -->
+  <div class="mdash-tools">
+    <div class="mdash-search">
+      <label for="user-search" class="font-primary-heading text-dark-navy">Search For:</label>
+      <input id="user-search" type="text" class="form-dark mdash-search__input" placeholder="Type a name, email, role, position, major…" />
+    </div>
+
+    <div class="mdash-guide">
+      <%= link_to "User Guide: Managing Members", "/Files/Guide_Managing_Members.pdf", class:"btn btn-outline-light", target:"_blank", rel:"noopener" %>
     </div>
   </div>
 
   <%= form_with url: bulk_edit_users_path, method: :get, local: true do |f| %>
-    <div class="mb-4">
-      <button type="submit" class="btn btn-navy mb-4">
-        Edit Selected Users
-      </button>
-    </div>
+    <!-- Dashboard 2-column layout (log at left, table at right) -->
+    <div class="mdash-grid">
+      <!-- Update Log (renders only if @update_log is present) -->
+      <% if defined?(@update_log) && @update_log.present? %>
+        <aside class="mdash-log card">
+          <h2 class="mdash-log__title font-primary-heading">Update Log</h2>
+          <div class="log-scroll-container mdash-log__body">
+            <table class="mdash-log__table">
+              <thead>
+                <tr>
+                  <th>Member(s)</th>
+                  <th>Updated By</th>
+                  <th>Change Type</th>
+                  <th>Timestamp</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @update_log.each do |row| %>
+                  <tr>
+                    <td><%= row[:member] %></td>
+                    <td><%= row[:actor] %></td>
+                    <td><%= row[:change] %></td>
+                    <td><%= row[:time] %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </aside>
+      <% end %>
 
-    <div class="overflow-x-auto">
-      <table class="min-w-full bg-white border border-gray-300">
-        <thead class="bg-gray-100">
-          <tr>
-            <th class="px-4 py-2 border">
-              <input type="checkbox" id="select-all" class="form-checkbox">
-            </th>
-            <th class="px-4 py-2 border">Name</th>
-            <th class="px-4 py-2 border">Email</th>
-            <th class="px-4 py-2 border">Role</th>
-            <th class="px-4 py-2 border">Position</th>
-            <th class="px-4 py-2 border">Status</th>
-            <th class="px-4 py-2 border">Graduation Year</th>
-            <th class="px-4 py-2 border">Major</th>
-            <th class="px-4 py-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @users.each do |user| %>
-            <tr class="hover:bg-gray-50">
-              <td class="px-4 py-2 border">
-                <%= check_box_tag "user_ids[]", user.id, false, class: "user-checkbox form-checkbox" %>
-              </td>
-              <td class="px-4 py-2 border">
-                <%= link_to user.full_name, user_path(user), class: "text-blue-600 hover:underline" %>
-              </td>
-              <td class="px-4 py-2 border"><%= user.email %></td>
-              <td class="px-4 py-2 border">
-                <span class="px-2 py-1 text-xs rounded <%= user.exec? ? 'bg-purple-200' : 'bg-gray-200' %>">
-                  <%= user.role.humanize %>
-                </span>
-              </td>
-              <td class="px-4 py-2 border"><%= user.position || '-' %></td>
-              <td class="px-4 py-2 border">
-                <span class="px-2 py-1 text-xs rounded <%= user.active? ? 'bg-green-200' : 'bg-red-200' %>">
-                  <%= user.status.humanize %>
-                </span>
-              </td>
-              <td class="px-4 py-2 border"><%= user.graduation_year || '-' %></td>
-              <td class="px-4 py-2 border"><%= user.major || '-' %></td>
-              <td class="px-4 py-2 border">
-                <%= link_to 'Edit', edit_user_path(user), class: "text-blue-600 hover:underline mr-2" %>
-                <%= link_to 'Delete', delete_user_path(user), class: "text-red-600 hover:underline" %>
-              </td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
+      <!-- Main table -->
+      <div class="mdash-table-wrap">
+        <div class="overflow-x-auto">
+          <table class="mdash-table">
+            <thead>
+              <tr>
+                <th class="w-10">
+                  <input type="checkbox" id="select-all" class="form-checkbox">
+                </th>
+                <th>Member-to-view</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Position</th>
+                <th>Status</th>
+                <th>Total Hours</th>
+                <th class="w-32">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <% @users.each do |user| %>
+                <tr class="mdash-row">
+                  <td>
+                    <%= check_box_tag "user_ids[]", user.id, false, class: "user-checkbox form-checkbox" %>
+                  </td>
+
+                  <td class="mdash-member">
+                    <%= link_to user.full_name, user_path(user), class: "mdash-link" %>
+                  </td>
+
+                  <td class="mdash-email"><%= user.email %></td>
+
+                  <td>
+                    <span class="mdash-tag <%= user.exec? ? 'mdash-tag--purple' : 'mdash-tag--gray' %>">
+                      <%= user.role.humanize %>
+                    </span>
+                  </td>
+
+                  <td><%= user.position.presence || '-' %></td>
+
+                  <td>
+                    <span class="mdash-tag <%= user.active? ? 'mdash-tag--green' : 'mdash-tag--red' %>">
+                      <%= user.status.humanize %>
+                    </span>
+                  </td>
+
+                  <td>
+                    <%# If you have a method, use it; otherwise show 0 %>
+                    <%= (user.respond_to?(:total_hours) && user.total_hours) || (user.respond_to?(:services) ? user.services.sum(:hours) : 0) %>
+                  </td>
+
+                  <td class="mdash-actions">
+                    <%= link_to 'Edit', edit_user_path(user), class: "mdash-act mdash-act--edit" %>
+                    <%= link_to 'Delete', delete_user_path(user), class: "mdash-act mdash-act--delete" %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   <% end %>
 </div>
 
 <script>
+  // Select all
   document.addEventListener('DOMContentLoaded', function() {
     const selectAll = document.getElementById('select-all');
     const checkboxes = document.querySelectorAll('.user-checkbox');
-    if (!selectAll) return;
-    selectAll.addEventListener('change', function() {
-      checkboxes.forEach(cb => { cb.checked = selectAll.checked; });
+
+    if (selectAll) {
+      selectAll.addEventListener('change', function() {
+        checkboxes.forEach(cb => { cb.checked = selectAll.checked; });
+      });
+    }
+
+    // Client-side filter
+    const search = document.getElementById('user-search');
+    const rows = document.querySelectorAll('#users-tbody tr');
+    if (!search) return;
+
+    search.addEventListener('input', function () {
+      const q = this.value.toLowerCase();
+      rows.forEach(row => {
+        const txt = row.innerText.toLowerCase();
+        row.style.display = txt.includes(q) ? '' : 'none';
+      });
     });
   });
 </script>

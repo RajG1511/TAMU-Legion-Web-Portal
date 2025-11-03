@@ -766,3 +766,45 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   border: 1px solid #ffffff;
   border-radius: 0 !important;
 }
+
+/* ==== Members Dashboard (Admin) ==== */
+.mdash-header__inner{display:flex;align-items:center;justify-content:space-between;padding:14px 3vw;}
+.mdash-title{font-size:32px;margin:0;}
+.mdash-cta{display:flex;gap:10px;flex-wrap:wrap}
+.mdash-btn{padding:.55rem .9rem}
+
+.mdash-tools{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:16px 0}
+.mdash-search label{display:block;margin-bottom:6px}
+.mdash-search__input{min-width:320px;padding:.55rem .75rem;border-radius:0}
+.mdash-guide{white-space:nowrap}
+
+.mdash-grid{display:grid;grid-template-columns:320px 1fr;gap:24px}
+@media (max-width: 1024px){.mdash-grid{grid-template-columns:1fr}}
+
+.card{background:#fff;border:1px solid #e5e7eb}
+.mdash-log__title{margin:0;padding:.75rem 1rem;border-bottom:1px solid #e5e7eb;background:#f8fafc}
+.mdash-log__body{max-height:420px;overflow:auto}
+.mdash-log__table{width:100%;border-collapse:collapse}
+.mdash-log__table th,.mdash-log__table td{border:1px solid #e5e7eb;padding:.5rem .6rem;text-align:left}
+
+.mdash-table-wrap{min-width:0}
+.mdash-table{width:100%;background:#fff;border:1px solid #e5e7eb;border-collapse:separate;border-spacing:0}
+.mdash-table thead th{position:sticky;top:0;background:#f3f4f6;border-bottom:1px solid #e5e7eb;padding:.6rem .7rem;text-align:left;z-index:1}
+.mdash-table td{border-top:1px solid #e5e7eb;padding:.6rem .7rem;vertical-align:middle}
+.mdash-row:hover{background:#fafafa}
+
+.mdash-member .mdash-link{color:#1d4ed8;text-decoration:none}
+.mdash-member .mdash-link:hover{text-decoration:underline}
+.mdash-email{font-family:monospace}
+
+.mdash-tag{display:inline-block;padding:.2rem .45rem;font-size:.78rem;border-radius:2px}
+.mdash-tag--green{background:#dcfce7;color:#065f46}
+.mdash-tag--red{background:#fee2e2;color:#991b1b}
+.mdash-tag--purple{background:#e9d5ff;color:#6b21a8}
+.mdash-tag--gray{background:#e5e7eb;color:#374151}
+
+.mdash-actions{display:flex;gap:.5rem}
+.mdash-act{font-weight:600;text-decoration:none}
+.mdash-act--edit{color:#1d4ed8}
+.mdash-act--delete{color:#b91c1c}
+

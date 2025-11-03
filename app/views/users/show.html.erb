@@ -1,38 +1,74 @@
+<div class="default-padding py-8">
+  <div class="bg-dark-navy text-white thick-white-divider mb-6">
+    <div class="mdash-header__inner">
+      <h1 class="font-primary-title"><%= @user.full_name %>’s Profile</h1>
+      <div class="flex gap-2">
+        <%= link_to 'Back', users_path, class: 'white-btn mdash-btn' %>
+        <%= link_to 'Edit', edit_user_path(@user), class: 'btn btn-gold mdash-btn' %>
+        <%= link_to 'Delete', delete_user_path(@user), class: 'btn btn-navy mdash-btn' %>
+      </div>
+    </div>
+  </div>
 
-<h1><%= @user.full_name %>’s Profile</h1>
+  <div class="grid md:grid-cols-3 gap-6">
+    <section class="card p-4 md:col-span-2">
+      <h2 class="font-primary-heading text-dark-navy mb-3">Member’s Profile</h2>
+      <dl class="grid sm:grid-cols-2 gap-x-6 gap-y-2">
+        <dt class="font-semibold">Email</dt><dd><%= @user.email %></dd>
+        <dt class="font-semibold">Education</dt>
+        <dd><%= @user.major.presence || '-' %>, <%= @user.graduation_year.presence || '-' %></dd>
 
-<dl>
-  <dt>Email</dt><dd><%= @user.email %></dd>
-  <dt>First name</dt><dd><%= @user.first_name %></dd>
-  <dt>Last name</dt><dd><%= @user.last_name %></dd>
-  <dt>Graduation year</dt><dd><%= @user.graduation_year %></dd>
-  <dt>Major</dt><dd><%= @user.major %></dd>
-  <dt>T-Shirt size</dt><dd><%= @user.t_shirt_size %></dd>
-  <dt>Status</dt><dd><%= @user.status.humanize %></dd>
-  <dt>Position</dt><dd><%= @user.position %></dd>
-  <dt>Role</dt><dd><%= @user.role.humanize %></dd>
-  <dt>Joined</dt><dd><%= @user.created_at.strftime("%B %d, %Y") %></dd>
-</dl>
+        <dt class="font-semibold">Position | Role</dt>
+        <dd><%= (@user.position.presence || '-') %> | <%= @user.role.humanize %></dd>
 
-<% if @user.headshot.present? %>
-  <%= image_tag @user.headshot %>
-<% end %>
+        <dt class="font-semibold">Status</dt><dd><%= @user.status.humanize %></dd>
+        <dt class="font-semibold">T-Shirt Size</dt><dd><%= @user.t_shirt_size.presence || '-' %></dd>
+        <dt class="font-semibold">Joined</dt><dd><%= @user.created_at.strftime("%B %d, %Y") %></dd>
+      </dl>
+    </section>
 
-<p>
-  <%= link_to 'Edit', edit_user_path(@user) %> |
-  <%= link_to 'Delete', delete_user_path(@user) %>
-</p>
+    <aside class="card p-4">
+      <h3 class="font-primary-heading text-dark-navy mb-3">Photo</h3>
+      <% if @user.headshot.present? %>
+        <%= image_tag @user.headshot, class:"w-full h-auto border border-gray-200" %>
+      <% else %>
+        <div class="text-sm text-gray-500">No headshot uploaded.</div>
+      <% end %>
+    </aside>
+  </div>
 
-<h2>Submitted Services</h2>
-<% if @user.services.any? %>
-  <ul>
-    <% @user.services.each do |service| %>
-      <li>
-        <strong><%= service.name %></strong> — <%= service.status %>
-        (<%= service.hours %> hours on <%= service.date_performed %>)
-      </li>
+  <section class="card p-4 mt-6">
+    <h2 class="font-primary-heading text-dark-navy mb-3">Services</h2>
+
+    <% if @user.services.any? %>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-300">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-4 py-2 border">Activity</th>
+              <th class="px-4 py-2 border">Status</th>
+              <th class="px-4 py-2 border">Hours</th>
+              <th class="px-4 py-2 border">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @user.services.each do |service| %>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-2 border"><%= service.name %></td>
+                <td class="px-4 py-2 border"><%= service.status %></td>
+                <td class="px-4 py-2 border"><%= service.hours %></td>
+                <td class="px-4 py-2 border"><%= service.date_performed %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+      <div class="text-sm text-gray-600 mt-2">
+        Total Service Hours: <%= @user.services.sum(:hours) %>
+      </div>
+    <% else %>
+      <p class="text-gray-600">No services submitted yet.</p>
     <% end %>
-  </ul>
-<% else %>
-  <p>No services submitted yet.</p>
-<% end %>
+  </section>
+</div>
+
