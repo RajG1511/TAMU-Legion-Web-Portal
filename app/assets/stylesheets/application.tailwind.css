@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "legion_admin";
+@import "./legion_admin.css";
 
 /* =========================================================
    TAMU LEGION BRANDING — CUSTOM STYLESHEET
