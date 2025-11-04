@@ -34,17 +34,6 @@
       <%= f.text_field :last_name, required: true, class: "form-control" %>
     </div>
 
-    <% unless @user.persisted? %>
-      <div class="col-md-6">
-        <%= f.label :password, class: "form-label" %>
-        <%= f.password_field :password, autocomplete: "new-password", required: true, class: "form-control" %>
-      </div>
-      <div class="col-md-6">
-        <%= f.label :password_confirmation, class: "form-label" %>
-        <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true, class: "form-control" %>
-      </div>
-    <% end %>
-
     <div class="col-md-6">
       <%= f.label :graduation_year, "Graduation year", class: "form-label" %>
       <%= f.number_field :graduation_year, min: 2020, step: 1, class: "form-control" %>
@@ -73,10 +62,6 @@
         <% roles_for_select = User.roles.except('nonmember').keys.map { |r| [r.humanize, r] } %>
         <%= f.select :role, options_for_select(roles_for_select, @user.role || "member"), {}, class: "form-select" %>
       </div>
-    <% else %>
-      <% unless @user.persisted? %>
-        <%= f.hidden_field :role, value: (@user.role || "member") %>
-      <% end %>
     <% end %>
 
     <div class="col-md-12">

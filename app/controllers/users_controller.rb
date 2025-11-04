@@ -9,7 +9,7 @@ class UsersController < ApplicationController
   end
 
   def index
-    # search across common fields; uses ILIKE for Postgres/Heroku
+    # Simple search across common fields
     @q = params[:q].to_s.strip
     scope = User.all
     if @q.present?
@@ -25,17 +25,23 @@ class UsersController < ApplicationController
   def show; end
 
   def new
-    # Default sensible values so execs can create without needing president fields
+    # defaults so execs don't need to touch role/status
     @user = User.new(role: :member, status: :active)
   end
 
   def create
-    # Pre-set defaults if the creator isn't allowed to pick them
     defaults = {}
-    defaults[:role]   = :member  if params.dig(:user, :role).blank?
-    defaults[:status] = :active  if params.dig(:user, :status).blank?
+    defaults[:role]   = :member if params.dig(:user, :role).blank?
+    defaults[:status] = :active if params.dig(:user, :status).blank?
 
-    @user = User.new(defaults.merge(user_params))
+    attrs = defaults.merge(user_params)
+
+    # SHARED PASSWORD FOR ALL USERS (hidden from UI)
+    shared_pw = ENV.fetch("SHARED_USER_PASSWORD", "LegionShared!2025")
+    attrs[:password]              ||= shared_pw
+    attrs[:password_confirmation] ||= shared_pw
+
+    @user = User.new(attrs)
 
     if @user.save
       flash[:success] = "User created."
@@ -50,7 +56,8 @@ class UsersController < ApplicationController
   def edit; end
 
   def update
-    if @user.update(user_params)
+    # Password is never edited from the UI
+    if @user.update(user_params.except(:password, :password_confirmation))
       if params.dig(:user, :remove_headshot) == "1"
         @user.headshot.purge
       end
@@ -103,16 +110,9 @@ class UsersController < ApplicationController
 
   def update_member_center_caption
     text = params[:text]
-
-    # Only allow <a> tags with href attribute
     allowed_tags = %w[a]
     allowed_attributes = %w[href title target]
-
-    sanitized_text = ActionController::Base.helpers.sanitize(
-      text,
-      tags: allowed_tags,
-      attributes: allowed_attributes
-    )
+    sanitized_text = ActionController::Base.helpers.sanitize(text, tags: allowed_tags, attributes: allowed_attributes)
 
     if sanitized_text.blank?
       redirect_back(fallback_location: root_path, alert: "Caption cannot be empty!")
@@ -149,6 +149,7 @@ class UsersController < ApplicationController
   end
 
   def create_permitted_params
+    # We still permit them on create, but we auto-fill with shared pw; UI won’t show them.
     [:password, :password_confirmation]
   end
 
@@ -163,7 +164,6 @@ class UsersController < ApplicationController
       end
 
     permitted_params += create_permitted_params if action_name == "create"
-
     params.require(:user).permit(permitted_params)
   end
 end

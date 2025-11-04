@@ -1,6 +1,8 @@
 <!-- Top Heading -->
 <div class="container-fluid bg-dark-gray-blue text-white py-3">
-  <h1 class="text-center font-primary-title">Members Dashboard</h1>
+  <div class="d-flex justify-content-between align-items-center">
+    <h1 class="text-center flex-grow-1 font-primary-title m-0">Members Dashboard</h1>
+  </div>
 </div>
 
 <!-- Thin Gold Divider -->
@@ -12,25 +14,21 @@
     <!-- Left column: actions + update log -->
     <div class="col-md-5 col-lg-4 mb-4">
       <div class="bg-legion-blue p-4 h-100">
-        <!-- Buttons -->
         <div class="d-grid gap-3 mb-4">
           <%= link_to "Create User", new_user_path, class: "btn white-btn-edit default-border-radius w-100 font-primary-heading" %>
-
           <% if current_user.exec? %>
             <%= button_to "Reset All Inactive",
                           reset_inactive_users_path,
                           method: :post,
-                          data: { confirm: "Are you sure you want to reset all inactive members to active?" },
+                          data: { confirm: "Reset ALL inactive to active?" },
                           class: "btn white-btn-edit default-border-radius w-100 font-primary-heading" %>
           <% end %>
-
           <button class="btn white-btn-edit default-border-radius w-100 font-primary-heading"
                   data-bs-toggle="modal" data-bs-target="#UsersGuideModal">
             User Guide: Managing Members
           </button>
         </div>
 
-        <!-- Update Log -->
         <div class="table-responsive log-scroll-container">
           <table class="table table-bordered border-white">
             <thead>
@@ -43,7 +41,6 @@
               </tr>
             </thead>
             <tbody>
-              <%# If you don’t have a versions table yet, keep the placeholder row %>
               <tr>
                 <td colspan="4" class="text-center font-secondary-subheading">No user changes recorded yet.</td>
               </tr>
@@ -58,31 +55,29 @@
       <h2 class="font-primary-heading">All Members</h2>
       <hr class="thick-white-divider">
 
-      <!-- Search + bulk edit bar -->
+      <!-- Search row (standalone form) -->
       <div class="bg-white p-3 mb-3 default-border-radius">
-        <%= form_with url: bulk_edit_users_path, method: :get, local: true do %>
-          <div class="row g-2 align-items-center">
-            <div class="col">
-              <%= form_with url: users_path, method: :get, local: true do %>
-                <div class="input-group">
-                  <%= text_field_tag :q, @q, placeholder: "type a name, email, role, position, major, status...",
-                                     class: "form-control default-border-radius" %>
-                  <button class="btn btn-gold default-border-radius font-secondary-body" type="submit">Search</button>
-                </div>
-              <% end %>
+        <%= form_with url: users_path, method: :get, local: true, class: "row g-2 align-items-center" do %>
+          <div class="col">
+            <div class="input-group">
+              <%= text_field_tag :q, @q, placeholder: "type a name, email, role, position, major, status...",
+                                 class: "form-control default-border-radius" %>
+              <button class="btn btn-gold default-border-radius font-secondary-body" type="submit">Search</button>
             </div>
-            <div class="col-auto">
-              <button class="btn btn-gold default-border-radius font-secondary-body" type="submit">
-                Edit Selected Users
-              </button>
-            </div>
+          </div>
+          <!-- Top submit for bulk form (uses form attribute) -->
+          <div class="col-auto">
+            <button type="submit" class="btn btn-gold default-border-radius font-secondary-body"
+                    form="bulk-edit-form">
+              Edit Selected Users
+            </button>
           </div>
         <% end %>
       </div>
 
-      <!-- Users table -->
+      <!-- Users table + bulk edit form -->
       <div class="table-responsive">
-        <%= form_with url: bulk_edit_users_path, method: :get, local: true do %>
+        <%= form_with url: bulk_edit_users_path, method: :get, local: true, html: { id: "bulk-edit-form" } do %>
           <table class="table table-bordered align-middle bg-white text-legion-blue">
             <thead class="bg-gray-100">
               <tr>
@@ -104,9 +99,7 @@
                   <td class="text-center">
                     <%= check_box_tag "user_ids[]", user.id, false, class: "user-checkbox form-check-input" %>
                   </td>
-                  <td>
-                    <%= link_to user.full_name, user_path(user), class: "text-decoration-underline" %>
-                  </td>
+                  <td><%= link_to user.full_name, user_path(user), class: "text-decoration-underline" %></td>
                   <td><%= user.email %></td>
                   <td>
                     <span class="badge <%= user.exec? ? 'bg-primary' : 'bg-secondary' %>"><%= user.role.humanize %></span>
@@ -116,8 +109,7 @@
                     <span class="badge <%= user.active? ? 'bg-success' : 'bg-danger' %>"><%= user.status.humanize %></span>
                   </td>
                   <td>
-                    <%# adjust if you track hours differently %>
-                    <%= (defined?(user.services) && user.services.respond_to?(:sum)) ? user.services.sum(:hours) : 0 %>
+                    <%= (defined?(user.services) && user.respond_to?(:services) && user.services.present?) ? user.services.sum(:hours) : 0 %>
                   </td>
                   <td class="text-center">
                     <%= link_to "Edit", edit_user_path(user), class: "btn btn-gold btn-sm text-dark-navy font-secondary-body me-2" %>
@@ -128,6 +120,7 @@
             </tbody>
           </table>
 
+          <!-- Bottom bulk button still works -->
           <div class="mt-2">
             <button class="btn btn-gold default-border-radius font-secondary-body" type="submit">
               Edit Selected Users
@@ -148,12 +141,7 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body font-secondary-subheading">
-        <p>This page lets execs search for members, bulk-edit selected members, and view user change logs.</p>
-        <ul>
-          <li>Use the search bar to find members by name, email, role, position, status, major, or grad year.</li>
-          <li>Select checkboxes then click <em>Edit Selected Users</em> to apply changes in bulk.</li>
-          <li>Create new users and reset inactive members using the left buttons.</li>
-        </ul>
+        <p>Search members by any field; select users and click Edit Selected Users to bulk edit.</p>
       </div>
       <div class="modal-footer">
         <button class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="modal">Close</button>
