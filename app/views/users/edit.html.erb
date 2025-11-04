@@ -1,16 +1,93 @@
-<div class="container-fluid bg-dark-gray-blue text-white py-3">
-  <div class="d-flex justify-content-between align-items-center">
-    <%= link_to "← Back to Members Dashboard", users_path, class: "btn btn-gold text-dark-navy" %>
-    <h1 class="text-center flex-grow-1 font-primary-title m-0">Edit User</h1>
-    <span></span>
-  </div>
-</div>
-<div class="container-fluid bg-gold py-1"></div>
+<%= render "shared/page_header", title: "Edit User", back_path: users_path %>
 
-<div class="container-fluid bg-dark-navy text-white py-4 min-vh-100">
+<div class="page-wrap pt-4 pb-5">
   <div class="default-padding">
-    <div class="bg-white text-legion-blue p-4 default-border-radius" style="max-width: 800px;">
-      <%= render "form" %>
+    <div class="row g-4">
+      <!-- Main form -->
+      <div class="col-lg-8">
+        <div class="admin-card p-4">
+          <h5 class="section-title mb-3">Contact</h5>
+          <div class="row g-3">
+            <div class="col-md-7">
+              <%= form_with model: @user, local: true, html: { multipart: true } do |f| %>
+                <div class="row g-3">
+                  <div class="col-12">
+                    <%= f.label :email, class: "form-label" %>
+                    <%= f.email_field :email, class: "form-control" %>
+                  </div>
+                  <div class="col-md-6">
+                    <%= f.label :first_name, class: "form-label" %>
+                    <%= f.text_field :first_name, class: "form-control" %>
+                  </div>
+                  <div class="col-md-6">
+                    <%= f.label :last_name, class: "form-label" %>
+                    <%= f.text_field :last_name, class: "form-control" %>
+                  </div>
+                </div>
+
+                <div class="soft-divider my-4"></div>
+
+                <h5 class="section-title mb-3">School</h5>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <%= f.label :major, class: "form-label" %>
+                    <%= f.text_field :major, class: "form-control" %>
+                  </div>
+                  <div class="col-md-6">
+                    <%= f.label :graduation_year, class: "form-label" %>
+                    <%= f.number_field :graduation_year, class: "form-control", min: 1900, max: 2100, step: 1 %>
+                  </div>
+                </div>
+
+                <div class="soft-divider my-4"></div>
+
+                <h5 class="section-title mb-3">Organization</h5>
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <%= f.label :role, class: "form-label" %>
+                    <%= f.select :role, User.roles.keys.map { |k| [k.titleize, k] }, {}, class: "form-select" %>
+                  </div>
+                  <div class="col-md-6">
+                    <%= f.label :status, class: "form-label" %>
+                    <%= f.select :status, User.statuses.keys.map { |k| [k.titleize, k] }, {}, class: "form-select" %>
+                  </div>
+                  <div class="col-md-6">
+                    <%= f.label :position, class: "form-label" %>
+                    <%= f.text_field :position, class: "form-control" %>
+                  </div>
+                  <div class="col-md-6">
+                    <%= f.label :t_shirt_size, "T-Shirt Size", class: "form-label" %>
+                    <%= f.select :t_shirt_size, ["XS","S","M","L","XL","XXL","XXXL"], { include_blank: true }, class: "form-select" %>
+                  </div>
+                  <div class="col-12">
+                    <%= f.label :headshot, class: "form-label" %>
+                    <%= f.file_field :headshot, class: "form-control" %>
+                  </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-4">
+                  <%= f.submit "Update User", class: "btn btn-gold text-dark-navy" %>
+                  <%= link_to "Cancel", users_path, class: "btn btn-secondary" %>
+                </div>
+              <% end %>
+            </div>
+
+            <!-- Side summary -->
+            <div class="col-md-5">
+              <div class="admin-card p-3 h-100">
+                <h6 class="section-title mb-3">Summary</h6>
+                <div class="mb-2"><span class="badge-soft px-2 py-1">Role: <%= @user.role.titleize %></span></div>
+                <div class="mb-2"><span class="badge-soft px-2 py-1">Status: <%= @user.status.titleize %></span></div>
+                <div class="mb-2"><span class="badge-soft px-2 py-1">Year: <%= @user.graduation_year || "—" %></span></div>
+                <div class="mb-2"><span class="badge-soft px-2 py-1">Major: <%= @user.major.presence || "—" %></span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right column left empty for symmetry on wide screens -->
+      <div class="col-lg-4"></div>
     </div>
   </div>
 </div>
