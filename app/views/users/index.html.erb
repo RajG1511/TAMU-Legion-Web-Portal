@@ -1,48 +1,40 @@
-<!-- ===== Header Strip ===== -->
+<!-- Top Heading -->
 <div class="container-fluid bg-dark-gray-blue text-white py-3">
   <h1 class="text-center font-primary-title">Members Dashboard</h1>
 </div>
 
-<!-- ===== Thin Gold Divider ===== -->
+<!-- Thin Gold Divider -->
 <div class="container-fluid bg-gold py-1"></div>
 
-<!-- ===== Main Split Section ===== -->
-<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100 border-bottom border-12 border-gold">
-  <div class="row">
+<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100">
+  <div class="row default-padding">
 
-    <!-- ========== LEFT: Actions + Update Log ========== -->
-    <div class="col-md-5 bg-legion-blue py-4">
-      <div class="default-padding-left">
-
-        <!-- Action Buttons (full width) -->
-        <div class="d-grid gap-3 px-4 mt-4 mb-4">
-          <%= link_to "Create User", new_user_path, class: "btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading" %>
+    <!-- Left column: actions + update log -->
+    <div class="col-md-5 col-lg-4 mb-4">
+      <div class="bg-legion-blue p-4 h-100">
+        <!-- Buttons -->
+        <div class="d-grid gap-3 mb-4">
+          <%= link_to "Create User", new_user_path, class: "btn white-btn-edit default-border-radius w-100 font-primary-heading" %>
 
           <% if current_user.exec? %>
             <%= button_to "Reset All Inactive",
-                  reset_inactive_users_path,
-                  method: :post,
-                  data: { confirm: "Are you sure you want to reset all inactive members to active?" },
-                  class: "btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading" %>
+                          reset_inactive_users_path,
+                          method: :post,
+                          data: { confirm: "Are you sure you want to reset all inactive members to active?" },
+                          class: "btn white-btn-edit default-border-radius w-100 font-primary-heading" %>
           <% end %>
 
-          <!-- User Guide modal trigger -->
-          <button type="button"
-                  class="btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading"
+          <button class="btn white-btn-edit default-border-radius w-100 font-primary-heading"
                   data-bs-toggle="modal" data-bs-target="#UsersGuideModal">
             User Guide: Managing Members
           </button>
         </div>
 
-        <!-- Update Log Table (scrollable) -->
-        <div class="table-responsive log-scroll-container" style="max-height: 1200px; overflow-y:auto;">
-          <table class="table table-bordered table-striped border-primary border-legion-blue mb-0">
+        <!-- Update Log -->
+        <div class="table-responsive log-scroll-container">
+          <table class="table table-bordered border-white">
             <thead>
-              <tr>
-                <th colspan="4" class="bg-white text-black border-white text-center h4 font-secondary-heading">
-                  Update Log
-                </th>
-              </tr>
+              <tr><th colspan="4" class="bg-white text-black text-center h5 font-secondary-heading">Update Log</th></tr>
               <tr>
                 <th class="bg-legion-blue text-white border-white font-secondary-body">Member(s)</th>
                 <th class="bg-legion-blue text-white border-white font-secondary-body">Updated By</th>
@@ -51,134 +43,103 @@
               </tr>
             </thead>
             <tbody>
-              <% (@user_versions || []).each do |v| %>
-                <tr class="border border-legion-blue">
-                  <td class="font-secondary-subheading"><%= v.try(:member_name) || v.try(:user)&.full_name || "-" %></td>
-                  <td class="font-secondary-subheading"><%= v.try(:updated_by_name) || v.try(:actor)&.full_name || current_user&.full_name || "-" %></td>
-                  <td class="font-secondary-subheading"><%= v.try(:change_type)&.to_s&.humanize || "Updated" %></td>
-                  <td class="font-secondary-subheading">
-                    <%= (v.try(:created_at) || Time.current).in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %>
-                  </td>
-                </tr>
-              <% end %>
-
-              <% if (@user_versions || []).empty? %>
-                <tr>
-                  <td colspan="4" class="text-center font-secondary-subheading">
-                    No user changes recorded yet.
-                  </td>
-                </tr>
-              <% end %>
+              <%# If you don’t have a versions table yet, keep the placeholder row %>
+              <tr>
+                <td colspan="4" class="text-center font-secondary-subheading">No user changes recorded yet.</td>
+              </tr>
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
 
-    <!-- ========== RIGHT: Search + All Members table ========== -->
-    <div class="col-md-7 bg-dark-navy text-white py-4">
-      <div class="default-padding-right">
+    <!-- Right column: all members -->
+    <div class="col-md-7 col-lg-8">
+      <h2 class="font-primary-heading">All Members</h2>
+      <hr class="thick-white-divider">
 
-        <!-- Section heading + divider -->
-        <h2 class="mb-2 font-primary-heading">All Members</h2>
-        <hr class="thick-white-divider mb-3">
-
-        <!-- Search strip + Edit Selected -->
-        <div class="bg-white p-3 mb-3 default-border-radius text-legion-blue">
-          <div class="d-flex gap-3 align-items-center justify-content-between flex-wrap">
-            <div class="flex-grow-1">
-              <label class="fw-bold font-secondary-body mb-1 d-block">Search For:</label>
-              <input id="member-search"
-                     type="text"
-                     class="form-control default-border-radius"
-                     placeholder="type a name, email, role, position, major, status…">
-            </div>
-
-            <div class="text-end mt-3 mt-md-0">
-              <%= form_with url: bulk_edit_users_path, method: :get, local: true, id: "bulk-edit-form" do %>
-                <button type="submit" class="btn btn-gold default-border-radius font-secondary-body">
-                  Edit Selected Users
-                </button>
+      <!-- Search + bulk edit bar -->
+      <div class="bg-white p-3 mb-3 default-border-radius">
+        <%= form_with url: bulk_edit_users_path, method: :get, local: true do %>
+          <div class="row g-2 align-items-center">
+            <div class="col">
+              <%= form_with url: users_path, method: :get, local: true do %>
+                <div class="input-group">
+                  <%= text_field_tag :q, @q, placeholder: "type a name, email, role, position, major, status...",
+                                     class: "form-control default-border-radius" %>
+                  <button class="btn btn-gold default-border-radius font-secondary-body" type="submit">Search</button>
+                </div>
               <% end %>
             </div>
+            <div class="col-auto">
+              <button class="btn btn-gold default-border-radius font-secondary-body" type="submit">
+                Edit Selected Users
+              </button>
+            </div>
           </div>
-        </div>
+        <% end %>
+      </div>
 
-        <!-- Members table (scrollable) -->
-        <div class="event-scroll-container px-1" style="max-height: 70vh; overflow-y:auto;">
-          <table class="table table-bordered table-striped bg-white text-legion-blue align-middle">
+      <!-- Users table -->
+      <div class="table-responsive">
+        <%= form_with url: bulk_edit_users_path, method: :get, local: true do %>
+          <table class="table table-bordered align-middle bg-white text-legion-blue">
             <thead class="bg-gray-100">
               <tr>
-                <th class="align-middle" style="width:42px;">
+                <th class="text-center">
                   <input type="checkbox" id="select-all" class="form-check-input">
                 </th>
-                <th class="font-secondary-body">Member-to-view</th>
-                <th class="font-secondary-body">Email</th>
-                <th class="font-secondary-body">Role</th>
-                <th class="font-secondary-body">Position</th>
-                <th class="font-secondary-body">Status</th>
-                <th class="font-secondary-body">Total Hours</th>
-                <th class="font-secondary-body">Actions</th>
+                <th>Member-to-view</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Position</th>
+                <th>Status</th>
+                <th>Total Hours</th>
+                <th class="text-center">Actions</th>
               </tr>
             </thead>
-            <tbody id="members-table-body">
+            <tbody>
               <% @users.each do |user| %>
-                <tr class="member-row">
-                  <!-- bulk select: append to the GET form above -->
-                  <td>
-                    <input type="checkbox"
-                           class="form-check-input user-checkbox"
-                           value="<%= user.id %>"
-                           form="bulk-edit-form"
-                           name="user_ids[]">
+                <tr>
+                  <td class="text-center">
+                    <%= check_box_tag "user_ids[]", user.id, false, class: "user-checkbox form-check-input" %>
                   </td>
-
-                  <!-- name links to show -->
-                  <td class="fw-semibold">
+                  <td>
                     <%= link_to user.full_name, user_path(user), class: "text-decoration-underline" %>
                   </td>
-
                   <td><%= user.email %></td>
-
                   <td>
-                    <span class="badge <%= user.exec? ? 'bg-powder-blue' : 'bg-cornflower-blue' %>">
-                      <%= user.role.humanize %>
-                    </span>
+                    <span class="badge <%= user.exec? ? 'bg-primary' : 'bg-secondary' %>"><%= user.role.humanize %></span>
                   </td>
-
-                  <td><%= user.position.presence || "-" %></td>
-
+                  <td><%= user.position.presence || '-' %></td>
                   <td>
-                    <span class="badge <%= user.active? ? 'bg-success' : 'bg-danger' %>">
-                      <%= user.status.humanize %>
-                    </span>
+                    <span class="badge <%= user.active? ? 'bg-success' : 'bg-danger' %>"><%= user.status.humanize %></span>
                   </td>
-
                   <td>
-                    <% hours = (user.respond_to?(:services) ? user.services.sum(:hours) : 0) %>
-                    <%= number_with_precision(hours, precision: 0) %>
+                    <%# adjust if you track hours differently %>
+                    <%= (defined?(user.services) && user.services.respond_to?(:sum)) ? user.services.sum(:hours) : 0 %>
                   </td>
-
-                  <td class="text-nowrap">
-                    <%= link_to "Edit", edit_user_path(user), class: "btn btn-gold btn-sm text-dark-navy me-2 default-border-radius" %>
-                    <%= link_to "Delete", delete_user_path(user), class: "btn btn-gold btn-sm text-dark-navy default-border-radius" %>
+                  <td class="text-center">
+                    <%= link_to "Edit", edit_user_path(user), class: "btn btn-gold btn-sm text-dark-navy font-secondary-body me-2" %>
+                    <%= link_to "Delete", delete_user_path(user), class: "btn btn-gold btn-sm text-dark-navy font-secondary-body" %>
                   </td>
                 </tr>
               <% end %>
             </tbody>
           </table>
-        </div>
 
+          <div class="mt-2">
+            <button class="btn btn-gold default-border-radius font-secondary-body" type="submit">
+              Edit Selected Users
+            </button>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ===== Thin Gold Divider ===== -->
-<div class="container-fluid bg-gold py-1"></div>
-
-<!-- ===== User Guide Modal ===== -->
+<!-- Users Guide Modal -->
 <div class="modal fade management-info-modal" id="UsersGuideModal" tabindex="-1" aria-labelledby="UsersGuideModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
@@ -187,11 +148,11 @@
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body font-secondary-subheading">
-        <p>Use the left panel to create users, reset inactive members, and view the update log. Use the right panel to search, select, and bulk-edit members.</p>
+        <p>This page lets execs search for members, bulk-edit selected members, and view user change logs.</p>
         <ul>
-          <li><strong>Edit Selected Users</strong> opens a bulk editor for the checked rows.</li>
-          <li><strong>Reset All Inactive</strong> sets all inactive users back to active.</li>
-          <li>The <strong>Update Log</strong> lists recent membership changes by user and time.</li>
+          <li>Use the search bar to find members by name, email, role, position, status, major, or grad year.</li>
+          <li>Select checkboxes then click <em>Edit Selected Users</em> to apply changes in bulk.</li>
+          <li>Create new users and reset inactive members using the left buttons.</li>
         </ul>
       </div>
       <div class="modal-footer">
@@ -201,25 +162,13 @@
   </div>
 </div>
 
-<!-- ===== Client-side helpers (select-all + search filter) ===== -->
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const selectAll = document.getElementById('select-all');
     const checkboxes = document.querySelectorAll('.user-checkbox');
     if (selectAll) {
-      selectAll.addEventListener('change', () => {
+      selectAll.addEventListener('change', function () {
         checkboxes.forEach(cb => cb.checked = selectAll.checked);
-      });
-    }
-
-    const search = document.getElementById('member-search');
-    const rows = document.querySelectorAll('#members-table-body tr.member-row');
-    if (search) {
-      search.addEventListener('input', () => {
-        const q = search.value.toLowerCase();
-        rows.forEach(row => {
-          row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
-        });
       });
     }
   });

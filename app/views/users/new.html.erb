@@ -1,21 +1,20 @@
+<!-- Header -->
 <div class="container-fluid bg-dark-gray-blue text-white py-3">
-  <h1 class="text-center font-primary-title">Create a User</h1>
+  <h1 class="text-center font-primary-title">New User</h1>
 </div>
 <div class="container-fluid bg-gold py-1"></div>
 
-<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100">
+<div class="container-fluid bg-dark-navy text-white py-4 min-vh-100">
   <div class="default-padding">
-
-    <% if flash[:error].present? %>
-      <div class="mb-3 p-3 rounded bg-danger text-white"><%= flash[:error] %></div>
-    <% end %>
-
-    <%= render "form" %>
-
-    <div class="mt-3">
-      <%= link_to "Back", users_path, class: "btn btn-outline-light default-border-radius" %>
+    <div class="bg-white text-legion-blue p-4 default-border-radius" style="max-width: 800px;">
+      <% if flash[:error].present? %>
+        <div class="mb-3 p-3 rounded bg-red-100 text-red-800"><%= flash[:error] %></div>
+      <% end %>
+      <%= render "form" %>
+      <div class="mt-3">
+        <%= link_to "Back", users_path, class: "btn btn-gold text-dark-navy" %>
+      </div>
     </div>
   </div>
 </div>
-<div class="container-fluid bg-gold py-1"></div>
 

@@ -1,98 +1,99 @@
 <%= form_with model: @user, local: true do |f| %>
   <% if @user.errors.any? %>
-    <div class="mb-3 p-3 rounded bg-danger text-white">
-      <p class="m-0"><strong><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</strong></p>
+    <div class="mb-3 p-3 rounded bg-red-100 text-red-800">
+      <p><strong><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</strong></p>
       <ul class="mb-0">
-        <% @user.errors.full_messages.each { |msg| concat content_tag(:li, msg) } %>
+        <% @user.errors.full_messages.each do |msg| %>
+          <li><%= msg %></li>
+        <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div class="event-card p-3">
-    <div class="row g-3">
-      <div class="col-md-6">
-        <%= f.label :email, class: "form-label" %>
-        <%= f.email_field :email, required: true, class: "form-control default-border-radius" %>
-      </div>
-
-      <div class="col-md-6">
-        <%= f.label :first_name, class: "form-label" %>
-        <%= f.text_field :first_name, required: true, class: "form-control default-border-radius" %>
-      </div>
-
-      <div class="col-md-6">
-        <%= f.label :last_name, class: "form-label" %>
-        <%= f.text_field :last_name, required: true, class: "form-control default-border-radius" %>
-      </div>
-
-      <% unless @user.persisted? %>
-        <div class="col-md-6">
-          <%= f.label :password, class: "form-label" %>
-          <%= f.password_field :password, autocomplete: "new-password", required: true, class: "form-control default-border-radius" %>
-        </div>
-        <div class="col-md-6">
-          <%= f.label :password_confirmation, class: "form-label" %>
-          <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true, class: "form-control default-border-radius" %>
-        </div>
-      <% end %>
-
-      <div class="col-md-4">
-        <%= f.label :graduation_year, "Graduation year", class: "form-label" %>
-        <%= f.number_field :graduation_year, min: 2020, step: 1, class: "form-control default-border-radius" %>
-      </div>
-
-      <div class="col-md-4">
-        <%= f.label :major, class: "form-label" %>
-        <%= f.text_field :major, class: "form-control default-border-radius" %>
-      </div>
-
-      <div class="col-md-4">
-        <%= f.label :t_shirt_size, "T-Shirt size", class: "form-label" %>
-        <%= f.select :t_shirt_size,
-            options_for_select(%w[XS S M L XL XXL XXXL], @user.t_shirt_size),
-            include_blank: true, class: "form-select default-border-radius" %>
-      </div>
-
-      <% if current_user&.exec? %>
-        <div class="col-md-4">
-          <%= f.label :status, class: "form-label" %>
-          <% statuses_for_select = User.statuses.keys.map { |s| [s.humanize, s] } %>
-          <%= f.select :status, options_for_select(statuses_for_select, @user.status || "active"), {}, class: "form-select default-border-radius" %>
-        </div>
-      <% end %>
-
-      <% if current_user&.president? %>
-        <div class="col-md-4">
-          <%= f.label :position, class: "form-label" %>
-          <%= f.text_field :position, class: "form-control default-border-radius" %>
-        </div>
-        <div class="col-md-4">
-          <%= f.label :role, class: "form-label" %>
-          <% roles_for_select = User.roles.except('nonmember').keys.map { |r| [r.humanize, r] } %>
-          <%= f.select :role, options_for_select(roles_for_select, @user.role || "member"), {}, class: "form-select default-border-radius" %>
-        </div>
-      <% else %>
-        <% unless @user.persisted? %>
-          <%= f.hidden_field :role, value: (@user.role || "member") %>
-        <% end %>
-      <% end %>
-
-      <div class="col-md-12">
-        <%= f.label :headshot, "Headshot", class: "form-label" %>
-        <%= f.file_field :headshot, class: "form-control default-border-radius" %>
-
-        <% if @user.headshot.attached? %>
-          <p class="mt-2">Current headshot:</p>
-          <%= image_tag @user.headshot, class: "img-fluid mb-2" %><br>
-          <%= f.check_box :remove_headshot, {}, "1", "0" %>
-          <%= f.label :remove_headshot, "Remove headshot" %>
-        <% end %>
-      </div>
+  <div class="row g-3">
+    <div class="col-md-6">
+      <%= f.label :email, class: "form-label" %>
+      <%= f.email_field :email, required: true, class: "form-control" %>
     </div>
 
-    <div class="mt-3">
-      <%= f.submit(@user.persisted? ? "Update User" : "Create User"),
-            class: "btn btn-gold text-dark-navy default-border-radius" %>
+    <div class="col-md-6">
+      <%= f.label :t_shirt_size, "T shirt size", class: "form-label" %>
+      <%= f.select :t_shirt_size,
+                   options_for_select(%w[XS S M L XL XXL XXXL], @user.t_shirt_size),
+                   { include_blank: true },
+                   class: "form-select" %>
+    </div>
+
+    <div class="col-md-6">
+      <%= f.label :first_name, class: "form-label" %>
+      <%= f.text_field :first_name, required: true, class: "form-control" %>
+    </div>
+
+    <div class="col-md-6">
+      <%= f.label :last_name, class: "form-label" %>
+      <%= f.text_field :last_name, required: true, class: "form-control" %>
+    </div>
+
+    <% unless @user.persisted? %>
+      <div class="col-md-6">
+        <%= f.label :password, class: "form-label" %>
+        <%= f.password_field :password, autocomplete: "new-password", required: true, class: "form-control" %>
+      </div>
+      <div class="col-md-6">
+        <%= f.label :password_confirmation, class: "form-label" %>
+        <%= f.password_field :password_confirmation, autocomplete: "new-password", required: true, class: "form-control" %>
+      </div>
+    <% end %>
+
+    <div class="col-md-6">
+      <%= f.label :graduation_year, "Graduation year", class: "form-label" %>
+      <%= f.number_field :graduation_year, min: 2020, step: 1, class: "form-control" %>
+    </div>
+
+    <div class="col-md-6">
+      <%= f.label :major, class: "form-label" %>
+      <%= f.text_field :major, class: "form-control" %>
+    </div>
+
+    <% if current_user&.exec? %>
+      <div class="col-md-6">
+        <%= f.label :status, class: "form-label" %>
+        <% statuses_for_select = User.statuses.keys.map { |s| [s.humanize, s] } %>
+        <%= f.select :status, options_for_select(statuses_for_select, @user.status || "active"), {}, class: "form-select" %>
+      </div>
+    <% end %>
+
+    <% if current_user&.president? %>
+      <div class="col-md-6">
+        <%= f.label :position, class: "form-label" %>
+        <%= f.text_field :position, class: "form-control" %>
+      </div>
+      <div class="col-md-6">
+        <%= f.label :role, class: "form-label" %>
+        <% roles_for_select = User.roles.except('nonmember').keys.map { |r| [r.humanize, r] } %>
+        <%= f.select :role, options_for_select(roles_for_select, @user.role || "member"), {}, class: "form-select" %>
+      </div>
+    <% else %>
+      <% unless @user.persisted? %>
+        <%= f.hidden_field :role, value: (@user.role || "member") %>
+      <% end %>
+    <% end %>
+
+    <div class="col-md-12">
+      <%= f.label :headshot, "Headshot", class: "form-label" %><br>
+      <%= f.file_field :headshot, class: "form-control" %>
+      <% if @user.headshot.attached? %>
+        <p class="mt-2 mb-1">Current active headshot:</p>
+        <%= image_tag @user.headshot, class: "img-fluid mb-2" %><br>
+        <div class="form-check">
+          <%= f.check_box :remove_headshot, {}, "1", "0", class: "form-check-input" %>
+          <%= f.label :remove_headshot, "Remove headshot", class: "form-check-label" %>
+        </div>
+      <% end %>
+    </div>
+
+    <div class="col-12">
+      <%= f.submit(@user.persisted? ? "Update User" : "Create User", class: "btn btn-gold text-dark-navy" ) %>
     </div>
   </div>
 <% end %>
