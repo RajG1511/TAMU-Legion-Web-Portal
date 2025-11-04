@@ -9,18 +9,31 @@ class UsersController < ApplicationController
   end
 
   def index
-    # Simple search across common fields
     @q = params[:q].to_s.strip
     scope = User.all
+
     if @q.present?
       like = "%#{@q}%"
-      scope = scope.where(
-        "first_name ILIKE :q OR last_name ILIKE :q OR email ILIKE :q OR role ILIKE :q OR status ILIKE :q OR position ILIKE :q OR major ILIKE :q OR CAST(graduation_year AS TEXT) ILIKE :q",
+
+      # Text columns only (safe for ILIKE)
+      text_scope = scope.where(
+        "first_name ILIKE :q OR last_name ILIKE :q OR email ILIKE :q OR position ILIKE :q OR major ILIKE :q OR CAST(graduation_year AS TEXT) ILIKE :q",
         q: like
       )
+
+      # Match enums by key names (since DB stores ints)
+      q_down = @q.downcase
+      role_ids   = User.roles.select   { |name, _| name.downcase.include?(q_down) }.values
+      status_ids = User.statuses.select{ |name, _| name.downcase.include?(q_down) }.values
+
+      scope = text_scope
+      scope = scope.or(User.where(role: role_ids))     if role_ids.any?
+      scope = scope.or(User.where(status: status_ids)) if status_ids.any?
     end
+
     @users = scope.order(:last_name, :first_name)
   end
+
 
   def show; end
 
