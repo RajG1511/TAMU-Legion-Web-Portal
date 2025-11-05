@@ -30,10 +30,10 @@
             <tbody>
               <% @user_versions.each do |v| %>
                 <tr class="border border-legion-blue">
-                  <td class="font-secondary-subheading"><%= v.user&.full_name || "(multiple)" %></td>
-                  <td class="font-secondary-subheading"><%= v.actor&.full_name %></td>
+                  <td class="font-secondary-subheading"><%= v.respond_to?(:user) && v.user.present? ? v.user.full_name : "(multiple)" %></td>
+                  <td class="font-secondary-subheading"><%= version_actor_name(v) %></td>
                   <td class="font-secondary-subheading"><%= v.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
-                  <td class="font-secondary-subheading"><%= v.change_type.to_s.humanize %></td>
+                  <td class="font-secondary-subheading"><%= version_change_label(v) %></td>
                 </tr>
               <% end %>
             </tbody>

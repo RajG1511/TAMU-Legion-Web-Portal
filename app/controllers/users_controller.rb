@@ -7,19 +7,22 @@ class UsersController < ApplicationController
     @committees = Committee.all.includes(committee_memberships: :user).order(:name)
   end
 
-  # index with safe search + total hours for the grid
   def index
     scope = User.left_joins(:services)
-      .select('users.*, COALESCE(SUM(CASE WHEN services.status = 1 THEN services.hours END), 0) AS total_hours')
-      .group('users.id')
-      .order(:last_name, :first_name)
+                .select('users.*, COALESCE(SUM(CASE WHEN services.status = 1 THEN services.hours END), 0) AS total_hours')
+                .group('users.id')
+                .order(:last_name, :first_name)
 
     scope = scope.merge(User.search(params[:q])) if params[:q].present?
     @users = scope
 
-    # log list
-    @user_versions = UserVersion.includes(:actor, :user).order(created_at: :desc).limit(50)
+    # OLD (problematic): includes(:actor)
+    # @user_versions = UserVersion.includes(:actor, :user).order(created_at: :desc).limit(50)
+
+    # NEW: schema-agnostic (no includes)
+    @user_versions = UserVersion.order(created_at: :desc).limit(50)
   end
+
 
   def show
     # service hours rollup and list
