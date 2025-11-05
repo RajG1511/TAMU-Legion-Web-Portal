@@ -1,30 +1,23 @@
-<!-- Top Heading -->
+<!-- Header -->
 <div class="container-fluid bg-dark-gray-blue text-white py-3">
   <h1 class="text-center font-primary-title">Members Dashboard</h1>
 </div>
+<div class="container-fluid bg-gold py-1"></div>
 
-<!-- Main Body Section -->
 <div class="container-fluid bg-gold py-2">
   <div class="row">
-
-    <!-- LEFT: Buttons + Update Log -->
-    <div class="col-md-5 bg-legion-blue py-4">
+    <!-- Left: buttons + log -->
+    <div class="col-md-5 bg-legion-blue text-white py-4">
       <div class="default-padding-left">
-
         <div class="d-grid gap-3 px-4 mt-4 mb-4">
           <%= link_to "Create User", new_user_path, class: "btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading" %>
-          <%= button_to "Reset All Inactive", reset_inactive_users_path, method: :post,
-                class: "btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading",
-                data: { turbo: false, confirm: "Reset all inactive members to active?" } %>
-          <button type="button" class="btn white-btn-edit default-border-radius btn-lg font-primary-heading w-100"
-                  data-bs-toggle="modal" data-bs-target="#UserGuideModal">
-            User Guide: Managing Members
-          </button>
+          <%= button_to "Reset All Inactive", reset_inactive_users_path, method: :post, class: "btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading", data: { confirm: "Reset all inactive to active?" } %>
+          <button type="button" class="btn white-btn-edit default-border-radius btn-lg font-primary-heading w-100" data-bs-toggle="modal" data-bs-target="#UserGuideModal">User Guide: Managing Members</button>
         </div>
 
-        <!-- Update Log -->
-        <div class="table-responsive log-scroll-container" style="max-height: 1200px; overflow-y: auto;">
-          <table class="table table-bordered table-striped border-primary border-legion-blue">
+        <!-- Member Update Log -->
+        <div class="table-responsive log-scroll-container" style="max-height: 600px; overflow-y:auto;">
+          <table class="table table-bordered table-striped border-primary border-legion-blue mb-0">
             <thead>
               <tr><th colspan="4" class="bg-white text-black border-white text-center h4 font-secondary-heading">Member Update Log</th></tr>
               <tr>
@@ -35,122 +28,107 @@
               </tr>
             </thead>
             <tbody>
-              <% if @user_versions.any? %>
-                <% @user_versions.each do |v| %>
-                  <tr class="border border-legion-blue">
-                    <td class="font-secondary-subheading"><%= v.target_user&.full_name || "(deleted user)" %></td>
-                    <td class="font-secondary-subheading"><%= v.user.full_name %></td>
-                    <td class="font-secondary-subheading"><%= v.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
-                    <td class="font-secondary-subheading"><%= v.change_type.to_s.humanize %></td>
-                  </tr>
-                <% end %>
-              <% else %>
-                <tr><td colspan="4" class="text-center font-secondary-body">No user changes recorded yet.</td></tr>
+              <% @user_versions.each do |v| %>
+                <tr class="border border-legion-blue">
+                  <td class="font-secondary-subheading"><%= v.user&.full_name || "(multiple)" %></td>
+                  <td class="font-secondary-subheading"><%= v.actor&.full_name %></td>
+                  <td class="font-secondary-subheading"><%= v.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
+                  <td class="font-secondary-subheading"><%= v.change_type.to_s.humanize %></td>
+                </tr>
               <% end %>
             </tbody>
           </table>
         </div>
-
       </div>
     </div>
 
-    <!-- RIGHT: Search + Table -->
+    <!-- Right: filter + grid -->
     <div class="col-md-7 bg-dark-navy text-white py-4">
       <div class="default-padding-right">
         <h2 class="mb-2 font-primary-heading">All Members</h2>
         <hr class="thick-white-divider mb-2">
 
-        <!-- Filter/Search Bar -->
-        <div class="bg-white p-3 mb-4 default-border-radius">
-          <%= form_with url: users_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue" do %>
+        <!-- Filter bar (search) -->
+        <div class="bg-white p-3 mb-3 default-border-radius">
+          <%= form_with url: users_path, method: :get, local: true, class: "row g-2 align-items-center text-legion-blue", id: "user-search-form" do %>
             <div class="col-auto"><span class="fw-bold font-secondary-body">Filter By</span></div>
             <div class="col">
-              <%= text_field_tag :q, @q, class: "form-control default-border-radius", placeholder: "name, email, role, status, position, major, grad year" %>
+              <%= text_field_tag :q, params[:q], placeholder: "name, email, role, status, position, major, grad year", class: "form-control" %>
             </div>
             <div class="col-auto">
               <%= submit_tag "Search", class: "btn btn-gold text-dark-navy default-border-radius font-secondary-body" %>
             </div>
             <div class="col-auto">
-              <button id="top-bulk-edit" class="btn btn-gold text-dark-navy default-border-radius font-secondary-body">Edit Selected Users</button>
+              <button type="button" id="top-bulk-edit" class="btn btn-gold text-dark-navy default-border-radius font-secondary-body">Edit Selected Users</button>
             </div>
           <% end %>
         </div>
 
-        <!-- Members Table -->
-        <%= form_with url: bulk_edit_users_path, method: :get, local: true, id: "bulk-form" do %>
-          <div class="resource-scroll-container">
-            <table class="table table-bordered table-striped border-primary border-legion-blue align-middle">
-              <thead>
+        <!-- Members table -->
+        <div class="table-responsive">
+          <table class="table table-dark table-striped align-middle">
+            <thead class="text-white">
+              <tr>
+                <th class="text-center"><input type="checkbox" id="check-all"></th>
+                <th>Member-to-view</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Position</th>
+                <th>Status</th>
+                <th>Total Hours</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @users.each do |user| %>
                 <tr>
-                  <th class="bg-legion-blue text-white text-center"><input type="checkbox" id="select-all"></th>
-                  <th class="bg-legion-blue text-white">Member-to-view</th>
-                  <th class="bg-legion-blue text-white">Email</th>
-                  <th class="bg-legion-blue text-white">Role</th>
-                  <th class="bg-legion-blue text-white">Position</th>
-                  <th class="bg-legion-blue text-white">Status</th>
-                  <th class="bg-legion-blue text-white">Total Hours</th>
-                  <th class="bg-legion-blue text-white">Actions</th>
+                  <td class="text-center"><%= check_box_tag "user_ids[]", user.id, false, class: "user-checkbox form-check-input" %></td>
+                  <td><%= link_to user.full_name, user_path(user), class: "text-white text-decoration-underline" %></td>
+                  <td><%= user.email %></td>
+                  <td><span class="badge bg-secondary"><%= user.role.humanize %></span></td>
+                  <td><%= user.position.presence || "-" %></td>
+                  <td><span class="badge <%= user.active? ? 'bg-success' : 'bg-secondary' %>"><%= user.status.humanize %></span></td>
+                  <td><%= number_with_precision(user[:total_hours].to_f, precision: 1) %></td>
+                  <td class="d-flex gap-2">
+                    <%= link_to "Edit", edit_user_path(user), class: "btn btn-gold btn-sm text-dark-navy" %>
+                    <%= link_to "Delete", delete_user_path(user), class: "btn btn-gold btn-sm text-dark-navy" %>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                <% @users.each do |u| %>
-                  <tr>
-                    <td class="text-center"><%= check_box_tag "user_ids[]", u.id, false, class: "user-checkbox form-check-input" %></td>
-                    <td><%= link_to u.full_name, user_path(u), class: "link-light text-decoration-underline" %></td>
-                    <td><%= u.email %></td>
-                    <td><span class="badge bg-secondary"><%= u.role.humanize %></span></td>
-                    <td><%= u.position.presence || "-" %></td>
-                    <td><span class="badge <%= u.active? ? 'bg-success' : 'bg-secondary' %>"><%= u.status.humanize %></span></td>
-                    <td><%= number_with_precision(u.services.approved.sum(:hours), precision: 1) %></td>
-                    <td class="text-nowrap">
-                      <%= link_to "Edit", edit_user_path(u), class: "btn btn-gold btn-sm text-dark-navy font-secondary-body" %>
-                      <%= link_to "Delete", delete_user_path(u), class: "btn btn-gold btn-sm text-dark-navy font-secondary-body" %>
-                    </td>
-                  </tr>
-                <% end %>
-              </tbody>
-            </table>
-          </div>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Bottom bulk edit button (still available) -->
+        <%= form_with url: bulk_edit_users_path, method: :get, local: true, id: "bulk-edit-form" do %>
+          <div id="bulk-edit-selected"></div>
+          <%= submit_tag "Edit Selected Users", class: "btn btn-gold text-dark-navy mt-2" %>
         <% end %>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Guide Modal (short) -->
-<div class="modal fade edit-info-modal" id="UserGuideModal" tabindex="-1" aria-labelledby="UserGuideModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title font-primary-heading">Members Dashboard Guide</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body font-secondary-subheading">
-        <ul>
-          <li>Use the search bar to filter members.</li>
-          <li>Check boxes → “Edit Selected Users” for bulk updates.</li>
-          <li>Reset All Inactive sets every inactive user to active.</li>
-        </ul>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const all = document.getElementById("select-all");
-  const topBtn = document.getElementById("top-bulk-edit");
-  if (all) all.addEventListener("change", () => {
-    document.querySelectorAll(".user-checkbox").forEach(cb => cb.checked = all.checked);
+  // select-all
+  document.getElementById("check-all")?.addEventListener("change", (e) => {
+    document.querySelectorAll(".user-checkbox").forEach(cb => cb.checked = e.target.checked);
   });
-  if (topBtn) topBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    document.getElementById("bulk-form").submit();
+
+  // send selected IDs to bulk_edit (top button)
+  function pushSelectedToHiddenForm() {
+    const holder = document.getElementById("bulk-edit-selected");
+    holder.innerHTML = "";
+    document.querySelectorAll(".user-checkbox:checked").forEach(cb => {
+      const input = document.createElement("input");
+      input.type = "hidden"; input.name = "user_ids[]"; input.value = cb.value;
+      holder.appendChild(input);
+    });
+  }
+
+  document.getElementById("top-bulk-edit")?.addEventListener("click", () => {
+    pushSelectedToHiddenForm();
+    document.getElementById("bulk-edit-form").submit();
   });
-});
 </script>
 
