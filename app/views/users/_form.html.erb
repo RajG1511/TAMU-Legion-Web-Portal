@@ -1,85 +1,91 @@
-<%= form_with model: @user, local: true do |f| %>
-  <% if @user.errors.any? %>
-    <div class="mb-3 p-3 rounded bg-red-100 text-red-800">
-      <p><strong><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</strong></p>
-      <ul class="mb-0">
-        <% @user.errors.full_messages.each do |msg| %>
-          <li><%= msg %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
+<div class="container-fluid bg-dark-navy text-white min-vh-100 px-0">
+  <div class="container-fluid bg-dark-gray-blue text-white py-3">
+    <h2 class="text-center font-primary-title"><%= @user.persisted? ? "Update a Member" : "Create a Member" %></h2>
+  </div>
+  <div class="container-fluid bg-gold py-1"></div>
 
-  <div class="row g-3">
-    <div class="col-md-6">
-      <%= f.label :email, class: "form-label" %>
-      <%= f.email_field :email, required: true, class: "form-control" %>
-    </div>
+  <div class="container my-4 p-4 border border-4 border-white bg-dark-navy text-white default-border-radius">
+    <%= form_with model: @user, local: true do |f| %>
 
-    <div class="col-md-6">
-      <%= f.label :t_shirt_size, "T shirt size", class: "form-label" %>
-      <%= f.select :t_shirt_size,
-                   options_for_select(%w[XS S M L XL XXL XXXL], @user.t_shirt_size),
-                   { include_blank: true },
-                   class: "form-select" %>
-    </div>
-
-    <div class="col-md-6">
-      <%= f.label :first_name, class: "form-label" %>
-      <%= f.text_field :first_name, required: true, class: "form-control" %>
-    </div>
-
-    <div class="col-md-6">
-      <%= f.label :last_name, class: "form-label" %>
-      <%= f.text_field :last_name, required: true, class: "form-control" %>
-    </div>
-
-    <div class="col-md-6">
-      <%= f.label :graduation_year, "Graduation year", class: "form-label" %>
-      <%= f.number_field :graduation_year, min: 2020, step: 1, class: "form-control" %>
-    </div>
-
-    <div class="col-md-6">
-      <%= f.label :major, class: "form-label" %>
-      <%= f.text_field :major, class: "form-control" %>
-    </div>
-
-    <% if current_user&.exec? %>
-      <div class="col-md-6">
-        <%= f.label :status, class: "form-label" %>
-        <% statuses_for_select = User.statuses.keys.map { |s| [s.humanize, s] } %>
-        <%= f.select :status, options_for_select(statuses_for_select, @user.status || "active"), {}, class: "form-select" %>
-      </div>
-    <% end %>
-
-    <% if current_user&.president? %>
-      <div class="col-md-6">
-        <%= f.label :position, class: "form-label" %>
-        <%= f.text_field :position, class: "form-control" %>
-      </div>
-      <div class="col-md-6">
-        <%= f.label :role, class: "form-label" %>
-        <% roles_for_select = User.roles.except('nonmember').keys.map { |r| [r.humanize, r] } %>
-        <%= f.select :role, options_for_select(roles_for_select, @user.role || "member"), {}, class: "form-select" %>
-      </div>
-    <% end %>
-
-    <div class="col-md-12">
-      <%= f.label :headshot, "Headshot", class: "form-label" %><br>
-      <%= f.file_field :headshot, class: "form-control" %>
-      <% if @user.headshot.attached? %>
-        <p class="mt-2 mb-1">Current active headshot:</p>
-        <%= image_tag @user.headshot, class: "img-fluid mb-2" %><br>
-        <div class="form-check">
-          <%= f.check_box :remove_headshot, {}, "1", "0", class: "form-check-input" %>
-          <%= f.label :remove_headshot, "Remove headshot", class: "form-check-label" %>
+      <% if @user.errors.any? %>
+        <div class="container-fluid bg-gold text-dark-navy py-2 mb-3">
+          <p class="text-center mb-0 h5">Please fill out all required fields.</p>
         </div>
       <% end %>
-    </div>
 
-    <div class="col-12">
-      <%= f.submit(@user.persisted? ? "Update User" : "Create User", class: "btn btn-gold text-dark-navy" ) %>
-    </div>
+      <!-- Section 1 -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <%= f.label :first_name, "First name", class: "form-label font-primary-heading mb-1 me-2" %>
+          <%= f.text_field :first_name, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :last_name, "Last name", class: "form-label font-primary-heading mb-1 me-2" %>
+          <%= f.text_field :last_name, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+      </div>
+
+      <!-- Section 2 -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <%= f.label :email, "Email", class: "form-label font-primary-heading mb-1 me-2" %>
+          <%= f.email_field :email, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :position, "Position", class: "form-label font-primary-heading mb-1 me-2" %>
+          <%= f.text_field :position, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+      </div>
+
+      <!-- Section 3 -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <%= f.label :graduation_year, "Graduation Year", class: "form-label font-primary-heading mb-1 me-2" %>
+          <%= f.number_field :graduation_year, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :major, "Major", class: "form-label font-primary-heading mb-1 me-2" %>
+          <%= f.text_field :major, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :t_shirt_size, "T-Shirt Size", class: "form-label font-primary-heading mb-1 me-2" %>
+          <%= f.select :t_shirt_size, %w[XS S M L XL XXL XXXL], { include_blank: true }, class: "form-select form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+      </div>
+
+      <!-- Section 4: Role/Status (exec/president) -->
+      <div class="row mb-4">
+        <% if current_user&.exec? %>
+          <div class="col-md-4">
+            <%= f.label :status, "Status", class: "form-label font-primary-heading mb-1 me-2" %>
+            <%= f.select :status, User.statuses.keys.map { |s| [s.humanize, s] }, {}, class: "form-select form-dark default-border-radius font-secondary-subheading" %>
+          </div>
+        <% end %>
+        <% if current_user&.president? %>
+          <div class="col-md-4">
+            <%= f.label :role, "Role", class: "form-label font-primary-heading mb-1 me-2" %>
+            <%= f.select :role, User.roles.keys.map { |r| [r.humanize, r] }, {}, class: "form-select form-dark default-border-radius font-secondary-subheading" %>
+          </div>
+        <% end %>
+        <div class="col-md-8">
+          <%= f.label :headshot, "Member Photo", class: "form-label font-primary-heading mb-1 me-2" %>
+          <%= f.file_field :headshot, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+          <% if @user.headshot.attached? %>
+            <label class="mt-2 font-secondary-body">
+              <%= check_box_tag "user[remove_headshot]", "1" %> Remove current headshot
+            </label>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Submit / Back -->
+      <div class="d-flex justify-content-start gap-2 mt-4">
+        <%= f.submit (@user.persisted? ? "Update Member" : "Create Member"), class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+        <%= link_to "← Back to Dashboard", users_path, class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+      </div>
+    <% end %>
   </div>
-<% end %>
+
+  <div class="container-fluid bg-gold py-1"></div>
+</div>
 

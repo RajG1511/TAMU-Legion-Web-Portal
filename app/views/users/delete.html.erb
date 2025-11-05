@@ -1,25 +1,22 @@
-<%= render "shared/page_header", title: "Delete User", back_path: users_path %>
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title">Delete Member</h1>
+</div>
+<div class="container-fluid bg-gold py-1"></div>
 
-<div class="page-wrap d-flex align-items-start pt-5 pb-5">
-  <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-lg-7">
-        <div class="admin-card p-4">
-          <div class="d-flex align-items-center gap-3 mb-3">
-            <div class="confirm-hero">!</div>
-            <div>
-              <h4 class="section-title mb-1">Confirm deletion</h4>
-              <div class="text-muted">This cannot be undone.</div>
-            </div>
-          </div>
-          <p>Are you sure you want to delete <strong><%= @user.first_name %> <%= @user.last_name %></strong>?</p>
-          <div class="d-flex gap-2">
-            <%= button_to "Delete user", user_path(@user), method: :delete, class: "btn btn-danger" %>
-            <%= link_to "Cancel", users_path, class: "btn btn-secondary" %>
-          </div>
-        </div>
+<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100 border-bottom border-12 border-gold">
+  <div class="default-padding">
+    <%= link_to "← Back to Dashboard", users_path, class: "btn btn-gold text-dark-navy default-border-radius mb-3 font-secondary-body" %>
+
+    <div class="p-4 border border-4 border-white bg-dark-navy default-border-radius" style="max-width: 720px;">
+      <p class="font-secondary-subheading">
+        Are you sure you want to delete <strong><%= @user.full_name %></strong>? This action cannot be undone.
+      </p>
+      <div class="d-flex gap-2 mt-3">
+        <%= button_to "Confirm Delete", user_path(@user), method: :delete, class: "btn btn-gold text-dark-navy font-secondary-body" %>
+        <%= link_to "Back", users_path, class: "btn btn-outline-light font-secondary-body" %>
       </div>
     </div>
   </div>
 </div>
+<div class="container-fluid bg-gold py-1"></div>
 
