@@ -24,30 +24,28 @@ class UsersController < ApplicationController
   end
 
   def directory
-      @q = params[:q].to_s.strip
+    @q = params[:q].to_s.strip
 
-      scope = User.members.active
-                  .select(:id, :first_name, :last_name, :email, :role, :position, :major, :graduation_year)
-                  .order(:first_name, :last_name)
-
-      if @q.present?
-        pattern = "%#{@q.downcase}%"
-        scope = scope.where(
-          "LOWER(first_name) ILIKE :p OR LOWER(last_name) ILIKE :p OR LOWER(email) ILIKE :p OR LOWER(position) ILIKE :p OR LOWER(major) ILIKE :p OR CAST(graduation_year AS TEXT) ILIKE :p",
-          p: pattern
-        )
-        # Optional: if someone types an enum role exactly (member/exec/president),
-        # we’ll also filter by that role.
-        if User.roles.key?(@q.downcase)
-          scope = scope.or(
-            User.members.active.where(role: @q.downcase)
+    scope = User.members.active
                 .select(:id, :first_name, :last_name, :email, :role, :position, :major, :graduation_year)
-          )
-        end
-      end
+                .order(:first_name, :last_name)
 
-      @users = scope
+    if @q.present?
+      pattern = "%#{@q.downcase}%"
+      scope = scope.where(
+        "LOWER(first_name) ILIKE :p OR LOWER(last_name) ILIKE :p OR LOWER(email) ILIKE :p OR LOWER(position) ILIKE :p OR LOWER(major) ILIKE :p OR CAST(graduation_year AS TEXT) ILIKE :p",
+        p: pattern
+      )
+
+      if User.roles.key?(@q.downcase)
+        scope = scope.or(
+          User.members.active.where(role: @q.downcase)
+              .select(:id, :first_name, :last_name, :email, :role, :position, :major, :graduation_year)
+        )
+      end
     end
+
+    @users = scope
   end
 
 
