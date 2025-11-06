@@ -102,6 +102,7 @@ class UsersController < ApplicationController
 
   def destroy
     name = @user.full_name
+    log_user_change(@user, :deleted, summary: "Member deleted (#{name})")
     if @user.destroy
       flash[:success] = "User deleted."
     else
