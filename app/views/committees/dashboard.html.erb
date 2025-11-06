@@ -1,0 +1,69 @@
+<h1>Committee Dashboard</h1>
+
+<p><%= link_to "New Committee", new_committee_path %></p>
+
+<% for committee in @committees %>
+
+    <h1><%= committee.name %> Committee</h1>
+
+    <p><%= link_to "Edit Committee", edit_committee_path(committee) %></p>
+    <p><%= link_to "Delete Committee", delete_committee_path(committee) %></p>
+
+    <section>
+        <p><%= committee.description %></p>
+    </section>
+
+    <section>
+        <h2><%= committee.section1_heading %></h2>
+        <p><%= committee.section1_body %></p>
+        <% if committee.primary_image.present? %>
+            <%= image_tag committee.primary_image.variant(resize_to_limit: [500, 500]) %>
+        <% end %>
+    </section>
+
+    <section>
+        <h2><%= committee.section2_heading %></h2>
+        <p><%= committee.section2_body %></p>
+        <% if committee.secondary_image.present? %>
+            <%= image_tag committee.secondary_image.variant(resize_to_limit: [500, 500]) %>
+        <% end %>
+    </section>
+
+    <section>
+        <h2>Members:</h2>
+        <ul>
+        <% committee.users.each do |member| %>
+            <li>
+                <% if member.image_url.present? %>
+                    <img src="<%= member.image_url %>">
+                <% end %>
+                <p><%= member.full_name %></p>
+            </li>
+        <% end %>
+        </ul>
+    </section>
+<% end %>
+
+<div class="table-responsive log-scroll-container" style="max-height: 1200px; overflow-y: auto;">
+    <table class="table table-bordered table-striped border-primary border-legion-blue">
+        <thead>
+            <tr><th colspan="4" class="bg-white text-black border-white text-center h4 font-secondary-heading">Committee Update Log</th></tr>
+            <tr>
+                <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Committee</th>
+                <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Updated By</th>
+                <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Timestamp</th>
+                <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Change Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% @committee_versions.each do |version| %>
+                <tr class="border border-legion-blue">
+                    <td class="font-secondary-subheading"><%= version.name %></td>
+                    <td class="font-secondary-subheading"><%= version.user.first_name %> <%= version.user.last_name %></td>
+                    <td class="font-secondary-subheading"><%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
+                    <td class="font-secondary-subheading"><%= version.change_type.capitalize %></td>
+                </tr>
+            <% end %>
+        </tbody>
+    </table>
+</div>

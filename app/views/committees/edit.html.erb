@@ -1,3 +1,16 @@
 <h1>Edit Committee</h1>
 
 <%= render "form" %>
+
+<% if current_user&.exec? %>
+    <%= form_with url: committee_committee_memberships_path(@committee), method: :post, local: true do %>
+        <h2>Add Member</h2>
+        <%= select_tag :user_id, options_from_collection_for_select(@non_members, :id, :full_name), prompt: "Select User" %>
+        <%= submit_tag "Add Member" %>
+    <% end %>
+    <%= form_with url: committee_committee_membership_path(@committee, 0), method: :delete, local: true do %>
+        <h2>Remove Member</h2>
+        <%= select_tag :user_id, options_from_collection_for_select(@members, :id, :full_name), prompt: "Select User" %>
+        <%= submit_tag "Remove Member" %>
+    <% end %>
+<% end %>

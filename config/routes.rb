@@ -44,7 +44,9 @@ Rails.application.routes.draw do
        member do
             get :delete
        end
-
+    collection do 
+         get :dashboard
+    end
     resources :committee_memberships, only: [ :create, :destroy ]
   end
 

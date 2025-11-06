@@ -1,27 +1,11 @@
 <h1>Committees</h1>
 
-<% if current_user&.exec? %>
-    <div><%= link_to "Create New Committee", new_committee_path %></div>
-<% end %>
+<h2>Select a committee for more information</h2>
 
 <ul id="committee-list">
     <% @committees.each do |committee| %>
         <li>
-            <h2><%= committee.name %> Committee</h2>
-            <p><%= link_to "View More About This Committee", committee_path(committee) %></p>
-            <div>
-                <strong>Members:</strong>
-                <ul>
-                <% committee.users.each do |member| %>
-                    <li>
-                        <% if member.headshot.present? %>
-                            <%= image_tag member.headshot %>
-                        <% end %>
-                        <p><%= member.full_name %></p>
-                    </li>
-                <% end %>
-                </ul>
-            </div>
+            <%= link_to committee.name, committee_path(committee) %>
         </li>
     <% end %>
 </ul>
