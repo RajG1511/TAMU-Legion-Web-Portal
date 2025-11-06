@@ -23,6 +23,33 @@ class UsersController < ApplicationController
     @user_versions = UserVersion.order(created_at: :desc).limit(50)
   end
 
+  def directory
+      @q = params[:q].to_s.strip
+
+      scope = User.members.active
+                  .select(:id, :first_name, :last_name, :email, :role, :position, :major, :graduation_year)
+                  .order(:first_name, :last_name)
+
+      if @q.present?
+        pattern = "%#{@q.downcase}%"
+        scope = scope.where(
+          "LOWER(first_name) ILIKE :p OR LOWER(last_name) ILIKE :p OR LOWER(email) ILIKE :p OR LOWER(position) ILIKE :p OR LOWER(major) ILIKE :p OR CAST(graduation_year AS TEXT) ILIKE :p",
+          p: pattern
+        )
+        # Optional: if someone types an enum role exactly (member/exec/president),
+        # we’ll also filter by that role.
+        if User.roles.key?(@q.downcase)
+          scope = scope.or(
+            User.members.active.where(role: @q.downcase)
+                .select(:id, :first_name, :last_name, :email, :role, :position, :major, :graduation_year)
+          )
+        end
+      end
+
+      @users = scope
+    end
+  end
+
 
   def show
     # service hours rollup and list

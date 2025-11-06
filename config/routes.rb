@@ -88,6 +88,7 @@ Rails.application.routes.draw do
 
   # Member Center main page
   get "member_center", to: "home#member_center", as: :member_center
+  get "/member_directory", to: "users#directory", as: :member_directory
 
   # Gallery management (exec/president only)
   scope :member_center do
