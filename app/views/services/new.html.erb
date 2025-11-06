@@ -1,31 +1,60 @@
-<h1>Submit a Service</h1>
+<!-- Top Heading -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title">Submit a Service</h1>
+</div>
 
-<%= form_with model: @service, local: true do |form| %>
-  <div>
-    <%= form.label :name %><br>
-    <%= form.text_field :name %>
+<!-- Gold Bar Divider Row -->
+<div class="container-fluid bg-gold py-2"></div>
+
+<!-- Main Body Section -->
+<div class="container-fluid bg-dark-navy py-3">
+  <div class="row justify-content-center">
+    <div class="col-md-8 text-white py-3">
+      <div class="default-padding-left default-padding-right">
+
+        <%= form_with model: @service, local: true, class: "needs-validation" do |form| %>
+          
+          <div class="mb-2">
+            <%= form.label :name, class: "form-label text-gold" %>
+            <%= form.text_field :name, required: true, class: "form-control form-control-lg text-dark" %>
+          </div>
+
+          <div class="mb-2">
+            <%= form.label :hours, "Number of Hours", class: "form-label text-gold" %>
+            <%= form.number_field :hours, step: 0.1, required: true, min: 0.1,
+                  class: "form-control form-control-lg text-dark" %>
+          </div>
+
+          <div class="mb-2">
+            <%= form.label :date_performed, class: "form-label text-gold" %>
+            <%= form.date_field :date_performed, required: true, class: "form-control form-control-lg text-dark" %>
+          </div>
+
+          <div class="mb-2">
+            <%= form.label :committee, class: "form-label text-gold" %>
+            <%= form.select :committee,
+                  Service::COMMITTEES.map { |c| [c.titleize, c] },
+                  { prompt: "Select a committee" },
+                  { required: true, class: "form-select form-select-lg text-dark" } %>
+          </div>
+
+          <div class="mb-3">
+            <%= form.label :description, class: "form-label text-gold" %>
+            <%= form.text_area :description, rows: 3, required: true, class: "form-control form-control-lg text-dark" %>
+          </div>
+
+          <!-- Buttons -->
+          <div class="d-flex justify-content-between mt-3">
+            <%= form.submit "Create Service",
+                class: "btn btn-lg bg-gold text-dark font-secondary-body px-4" %>
+            <%= link_to "Back",
+                services_path,
+                class: "btn btn-lg bg-gold text-dark font-secondary-body px-4" %>
+          </div>
+
+        <% end %>
+
+      </div>
+    </div>
   </div>
-
-  <div>
-    <%= form.label :description %><br>
-    <%= form.text_area :description %>
-  </div>
-
-  <div>
-    <%= form.label :hours %><br>
-    <%= form.number_field :hours, step: 0.1 %>
-  </div>
-
-  <div>
-    <%= form.label :date_performed %><br>
-    <%= form.date_field :date_performed %>
-  </div>
-
-  <div>
-    <%= form.label :committee %><br>
-    <%= form.select :committee, Service::COMMITTEES.map { |c| [c.titleize, c] },
-                    prompt: "Select a committee" %>
-  </div>
-
-  <%= form.submit "Submit Service" %>
-<% end %>
+</div>

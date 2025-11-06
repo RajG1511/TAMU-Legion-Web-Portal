@@ -1,0 +1,20 @@
+<%# app/views/kaminari/_paginator.html.erb %>
+<nav class="d-flex justify-content-between mt-3">
+  <div>
+    <% if current_page > 1 %>
+      <%= link_to 'Previous', url_for(params.to_unsafe_h.merge(page: current_page - 1)),
+                  class: "btn btn-lg bg-gold text-dark font-secondary-body" %>
+    <% else %>
+      <span class="btn btn-lg bg-secondary text-dark font-secondary-body disabled">Previous</span>
+    <% end %>
+  </div>
+
+  <div>
+    <% if current_page < total_pages %>
+      <%= link_to 'Next', url_for(params.to_unsafe_h.merge(page: current_page + 1)),
+                  class: "btn btn-lg bg-gold text-dark font-secondary-body" %>
+    <% else %>
+      <span class="btn btn-lg bg-secondary text-dark font-secondary-body disabled">Next</span>
+    <% end %>
+  </div>
+</nav>

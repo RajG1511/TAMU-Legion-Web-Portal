@@ -1,47 +1,71 @@
-<h1>My Service Requests</h1>
+<!-- Top Heading -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title">My Service Requests</h1>
+</div>
 
-<% if notice.present? %>
-  <p style="color: green;"><%= notice %></p>
-<% end %>
-<% if alert.present? %>
-  <p style="color: red;"><%= alert %></p>
-<% end %>
+<!-- Gold Divider Bar -->
+<div class="container-fluid bg-gold py-2"></div>
 
-<% if @services.blank? %>
-  <p>You have no service requests.</p>
-<% else %>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Hours</th>
-        <th>Date performed</th>
-        <th>Committee</th>
-        <th>Status</th>
-        <th>Rejection Reason</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @services.each do |service| %>
-        <tr>
-          <td><%= service.name %></td>
-          <td><%= service.description %></td>
-          <td><%= service.hours %></td>
-          <td><%= service.date_performed %></td>
-          <td><%= service.committee.present? ? service.committee.titleize : "—" %>
-          <td><%= service.status %></td>
-          <td>
-            <% if service.rejected? %>
-              <%= service.rejection_reason.presence || "No reason provided" %>
-            <% else %>
-              —
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
-<% end %>
+<!-- Main Body Section -->
+<div class="container-fluid bg-dark-navy py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="default-padding-left default-padding-right">
 
-<%= link_to "Submit New Service Request", new_service_path %>
+        <% if @services.blank? %>
+          <p class="text-muted">You have no service requests.</p>
+        <% else %>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped border-primary border-legion-blue">
+              <thead>
+                <tr>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Name</th>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Description</th>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Hours</th>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Date Performed</th>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Committee</th>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Status</th>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Rejection Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @services.each do |service| %>
+                  <tr class="border border-legion-blue">
+                    <td class="font-secondary-subheading"><%= service.name %></td>
+                    <td class="font-secondary-subheading"><%= service.description %></td>
+                    <td class="font-secondary-subheading"><%= service.hours %></td>
+                    <td class="font-secondary-subheading"><%= service.date_performed.strftime("%b %d, %Y") %></td>
+                    <td class="font-secondary-subheading"><%= service.committee.present? ? service.committee.titleize : "—" %></td>
+                    <td class="font-secondary-subheading <%= service.status == "approved" ? "text-success" : service.status == "rejected" ? "text-danger" : "text-warning" %>">
+                      <%= service.status.capitalize %>
+                    </td>
+                    <td class="font-secondary-subheading">
+                      <% if service.rejected? %>
+                        <%= service.rejection_reason.presence || "No reason provided" %>
+                      <% else %>
+                        —
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination controls -->
+          
+          <%= paginate @services %>
+          
+        <% end %>
+
+        <!-- Submit New Service Request Button -->
+        <div class="mt-3 text-center">
+          <%= link_to "Submit New Service Request",
+              new_service_path,
+              class: "btn btn-lg bg-gold text-dark font-secondary-body" %>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
