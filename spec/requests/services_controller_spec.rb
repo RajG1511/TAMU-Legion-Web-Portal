@@ -1,13 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe ServicesController, type: :request do
+  include Devise::Test::IntegrationHelpers
+
   let(:member) { create(:user, role: :member) }
-  let(:exec)   { create(:user, role: :exec) }
-  let(:service) { create(:service, user: member) }
+  let(:exec)   { create(:user, :exec) }
 
   describe "GET /services" do
     context "as a member" do
-      before { sign_in member }
+      before { sign_in member, scope: :user }
 
       it "shows only their own services" do
         own_service = create(:service, user: member)
@@ -21,7 +22,7 @@ RSpec.describe ServicesController, type: :request do
     end
 
     context "as an exec" do
-      before { sign_in exec }
+      before { sign_in exec, scope: :user }
 
       it "shows all services" do
         service1 = create(:service)
@@ -34,7 +35,7 @@ RSpec.describe ServicesController, type: :request do
   end
 
   describe "POST /services" do
-    before { sign_in member }
+    before { sign_in member, scope: :user }
 
     it "creates a new service request" do
       expect {
@@ -48,7 +49,7 @@ RSpec.describe ServicesController, type: :request do
   end
 
   describe "PATCH /services/:id/approve" do
-    before { sign_in exec }
+    before { sign_in exec, scope: :user }
 
     it "approves a service" do
       service = create(:service, status: :pending)
@@ -58,7 +59,7 @@ RSpec.describe ServicesController, type: :request do
   end
 
   describe "PATCH /services/:id/reject" do
-    before { sign_in exec }
+    before { sign_in exec, scope: :user }
 
     it "rejects a service with a reason" do
       service = create(:service, status: :pending)
@@ -69,16 +70,26 @@ RSpec.describe ServicesController, type: :request do
   end
 
   describe "GET /services/dashboard" do
-    before { sign_in exec }
+    before { sign_in exec, scope: :user }
 
     it "shows pending services and committee totals" do
-      create(:service, status: :pending, committee: "events")
-      create(:service, status: :approved, committee: "resources", hours: 5)
+      # Pending services (for display in @services)
+      create(:service, status: :pending, committee: "Brotherhood", hours: 3)
+      create(:service, status: :pending, committee: "Social", hours: 5)
+
+      # Approved services (for @committee_totals)
+      create(:service, status: :approved, committee: "Brotherhood", hours: 3)
+      create(:service, status: :approved, committee: "Social", hours: 5)
 
       get dashboard_services_path
       expect(response).to have_http_status(:ok)
+
+      # All displayed services must be pending
       expect(assigns(:services).all?(&:pending?)).to be true
-      expect(assigns(:committee_totals)["resources"]).to eq(5)
+
+      # Totals only include approved services
+      expect(assigns(:committee_totals)["Brotherhood"]).to eq(3)
+      expect(assigns(:committee_totals)["Social"]).to eq(5)
     end
   end
 end

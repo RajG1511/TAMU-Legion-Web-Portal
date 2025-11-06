@@ -21,7 +21,7 @@ RSpec.describe "Member Center UI", type: :system do
     it "shows welcome message and quick links but hides admin options" do
       visit member_center_path
       expect(page).to have_content("Welcome John")
-      expect(page).to have_link("Submit Service Hours")
+      expect(page).to have_link("View Service Hours")
       expect(page).not_to have_content("Admin Access")
       expect(page).not_to have_link("Manage Gallery & Caption")
     end
@@ -43,6 +43,7 @@ RSpec.describe "Member Center UI", type: :system do
       expect(page).to have_content("Admin Access")
       expect(page).to have_link("Events Dashboard")
       expect(page).to have_link("Resources Dashboard")
+      expect(page).to have_link("Service Dashboard")
     end
 
     it "opens and submits the Manage Gallery & Caption modal" do

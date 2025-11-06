@@ -3,25 +3,45 @@ class ServicesController < ApplicationController
   before_action :require_exec_or_president, only: [:approve, :reject, :dashboard]
 
   def index
-    if current_user.exec? || current_user.president?
-      @services = Service.order(date_performed: :desc).page(params[:page]).per(10)
-    else
-      @services = current_user.services.order(date_performed: :desc).page(params[:page]).per(10)
+    # Base scope
+    @services = if current_user.exec? || current_user.president?
+                  Service.all
+                else
+                  current_user.services
+                end
+
+    # Filtering by committee
+    if params[:committee].present?
+      @services = @services.where(committee: params[:committee])
     end
+
+    # Sorting by date
+    if params[:sort].present?
+      sort_direction = params[:sort] == "asc" ? :asc : :desc
+      @services = @services.order(date_performed: sort_direction)
+    else
+      @services = @services.order(date_performed: :desc)
+    end
+
+    # No pagination — display all for scrolling
   end
 
-  def dashboard
-    # Pending requests for the right-hand column
-    @services = Service.pending.recent
 
-    # All requests (approved, rejected, pending) for the log on the left
+  def dashboard
+    # Filter by committee if parameter is provided
+    if params[:committee_id].present?
+      @services = Service.pending.recent.where(committee: params[:committee_id])
+    else
+      @services = Service.pending.recent
+    end
+
+    # All requests for the log (left side)
     @all_services = Service.includes(:user).order(created_at: :desc)
 
     # Totals of approved hours grouped by committee
-    @committee_totals = Service.approved
-                               .group(:committee)
-                               .sum(:hours)
+    @committee_totals = Service.approved.group(:committee).sum(:hours)
   end
+
 
   def my_services
     @services = current_user.services.order(date_performed: :desc).page(params[:page]).per(10)
@@ -36,7 +56,7 @@ class ServicesController < ApplicationController
     if @service.save
       redirect_to services_path, notice: "Service request submitted."
     else
-      flash[:error] = "Service request not created: " + @service.errors.full_messages.to_sentence
+      flash.now[:alert] = "Please fill out all required fields."
       render :new
     end
   end
