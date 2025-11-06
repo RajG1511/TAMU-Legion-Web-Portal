@@ -1,6 +1,13 @@
 class UsersController < ApplicationController
-  before_action :require_exec!, only: [:index, :show, :new, :create, :edit, :update, :delete, :destroy, :bulk_edit, :bulk_update, :reset_inactive]
+  before_action :require_exec!, only: [:index, :new, :create, :edit, :update, :delete, :destroy, :bulk_edit, :bulk_update, :reset_inactive]
   before_action :set_user,      only: [:show, :edit, :update, :delete, :destroy]
+  before_action :ensure_self_or_exec!, only: :show
+
+  
+  def ensure_self_or_exec!
+    return if current_user&.exec? || current_user&.id.to_s == params[:id]
+    redirect_to member_directory_path, alert: "You can only view your own profile."
+  end
 
   def public_index
     @execs = User.where(role: "exec").order(:last_name, :first_name)
@@ -96,12 +103,14 @@ class UsersController < ApplicationController
   def destroy
     name = @user.full_name
     if @user.destroy
-      log_user_change(@user, :deleted, summary: "Member deleted (#{name})")
       flash[:success] = "User deleted."
     else
-      # typically blocked by dependent: :restrict_with_error (to preserve logs)
-      flash[:error] = @user.errors.full_messages.to_sentence.presence || "Cannot delete this user because there are audit log references."
+      flash[:error] = @user.errors.full_messages.to_sentence.presence ||
+                      "Couldn’t delete this user."
     end
+    redirect_to users_path
+  rescue ActiveRecord::InvalidForeignKey
+    flash[:error] = "Couldn’t delete due to FK; run latest migrations."
     redirect_to users_path
   end
 

@@ -1,17 +1,27 @@
+<!-- app/views/users/show.html.erb -->
 <div class="container-fluid bg-dark-gray-blue text-white py-3">
   <h2 class="text-center font-primary-title"><%= @user.full_name %></h2>
 </div>
+
 <div class="container-fluid bg-gold py-1"></div>
 
 <div class="container bg-dark-navy text-white py-4">
   <p class="font-secondary-body mb-1"><strong>Email:</strong> <%= @user.email %></p>
-  <p class="font-secondary-body mb-1"><strong>Role:</strong> <%= @user.role.humanize %> — <strong>Status:</strong> <%= @user.status.humanize %></p>
+  <p class="font-secondary-body mb-1"><strong>Role:</strong> <%= @user.role.humanize %> – <strong>Status:</strong> <%= @user.status.humanize %></p>
   <p class="font-secondary-body mb-3"><strong>Approved Service Hours:</strong> <%= number_with_precision(@approved_hours, precision: 1) %></p>
 
   <h5 class="font-primary-heading mt-4">Service History</h5>
   <div class="table-responsive">
     <table class="table table-dark table-striped">
-      <thead><tr><th>Name</th><th>Committee</th><th>Status</th><th>Hours</th><th>Date</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Committee</th>
+          <th>Status</th>
+          <th>Hours</th>
+          <th>Date</th>
+        </tr>
+      </thead>
       <tbody>
         <% @services.each do |s| %>
           <tr>
@@ -19,14 +29,21 @@
             <td><%= s.committee.present? ? s.committee.humanize : "-" %></td>
             <td><%= s.status.humanize %></td>
             <td><%= number_with_precision(s.hours, precision: 1) %></td>
-            <td><%= s.date_performed&.strftime("%m/%d/%Y") %></td>
+            <td><%= s.date_performed&.strftime("%m/%d/%y") %></td>
           </tr>
         <% end %>
       </tbody>
     </table>
   </div>
 
-  <%= link_to "← Back to Members", users_path, class: "btn btn-gold text-dark-navy mt-2" %>
+  <% back_path =
+       if params[:from] == "directory"
+         member_directory_path
+       else
+         current_user&.exec? ? users_path : member_directory_path
+       end %>
+  <%= link_to "← Back", back_path,
+              class: "btn btn-gold text-dark-navy default-border-radius mt-2" %>
 </div>
-<div class="container-fluid bg-gold py-1"></div>
 
+<div class="container-fluid bg-gold py-1"></div>

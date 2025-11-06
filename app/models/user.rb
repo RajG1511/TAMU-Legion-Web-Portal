@@ -14,7 +14,7 @@ class User < ApplicationRecord
   has_many :committee_versions
   has_many :resource_versions
   has_many :event_versions
-  has_many :user_versions, dependent: :restrict_with_error # keep logs; block deletes
+  has_many :user_versions, dependent: :nullify  # keep logs; block deletes
   has_many_attached :gallery_photos, dependent: :destroy
   has_one_attached :headshot
 

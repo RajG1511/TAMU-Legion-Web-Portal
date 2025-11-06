@@ -23,7 +23,9 @@
         </div>
         <div class="col-auto">
           <!-- Members can only view their own profile; button links to current_user’s page -->
-          <%= link_to "View Member’s Profile", user_path(current_user), class: "btn btn-gold text-dark-navy font-secondary-body default-border-radius" %>
+          <% if current_user %>
+            <%= link_to "View Member’s Profile", user_path(current_user, from: "directory"), class: "btn btn-gold text-dark-navy font-secondary-body default-border-radius" %>
+          <% end %>
         </div>
       <% end %>
     </div>
