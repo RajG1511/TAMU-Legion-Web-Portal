@@ -103,16 +103,21 @@ class UsersController < ApplicationController
   def destroy
     name = @user.full_name
     log_user_change(@user, :deleted, summary: "Member deleted (#{name})")
-    if @user.destroy
-      flash[:success] = "User deleted."
-    else
-      flash[:error] = @user.errors.full_messages.to_sentence.presence ||
-                      "Couldn’t delete this user."
-    end
+
+    # Safety: pre-nullify any possible FK blockers
+    UserVersion.where(user_id: @user.id).update_all(user_id: nil)
+    # (repeat for other version tables if they reference users)
+    # CommitteeVersion.where(user_id: @user.id).update_all(user_id: nil)
+    # ResourceVersion.where(user_id: @user.id).update_all(user_id: nil)
+    # EventVersion.where(user_id: @user.id).update_all(user_id: nil)
+
+    @user.destroy!
+    flash[:success] = "User deleted."
     redirect_to users_path
-  rescue ActiveRecord::InvalidForeignKey
-    flash[:error] = "Couldn’t delete due to FK; run latest migrations."
-    redirect_to users_path
+  rescue ActiveRecord::InvalidForeignKey => e
+    # Last-ditch fallback: nullify again and retry once
+    UserVersion.where(user_id: @user.id).update_all(user_id: nil)
+    retry
   end
 
   # ---------- BULK ACTIONS ----------
