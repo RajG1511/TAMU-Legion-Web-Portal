@@ -1,4 +1,4 @@
-web: env RUBY_DEBUG_OPEN=true bin/rails server
+web: env RUBY_DEBUG_OPEN=true bin/rails server -p ${PORT:-3000} -b ${BINDING:-0.0.0.0}
 js: yarn build --watch
 css: yarn build:css --watch
 js: yarn build --watch

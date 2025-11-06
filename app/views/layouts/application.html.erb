@@ -33,32 +33,60 @@
 
   <body class="d-flex flex-column min-vh-100">
     <!-- Navbar -->
-    <nav class="navbar bg-white px-4 mt-4">
-      <div class="container-fluid d-flex align-items-center justify-content-between flex-nowrap border-bottom-dark-navy mb-2">
+    <nav class="navbar navbar-expand-lg bg-white px-4 mt-4">
+      <div class="container-fluid border-bottom-dark-navy mb-2">
         <!-- Logo on the left -->
         <%= link_to root_path, class: "d-flex align-items-center me-4" do %>
           <img src="/Logos/legion large blue.png" alt="TAMU Legion Logo" class="navbar-logo" style="height:50px;">
         <% end %>
 
-        <!-- Navbar links -->
-        <ul class="nav font-primary-heading">
-          <% nav_links = {
-            "Home" => root_path,
-            "About Us" => about_path,
-            "Recruitment" => recruitment_path,
-            "Members" => members_path,
-            "Committees" => committees_path,
-            "Contact Us" => contact_path,
-            "Member Center" => member_center_path
-          } %>
+        <!-- Hamburger button on the right for mobile view -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-          <% nav_links.each do |name, path| %>
-            <% active_class = current_page?(path) ? "active-link" : "" %>
-            <li class="nav-item">
-              <%= link_to name, path, class: "nav-link text-dark-navy #{active_class}" %>
-            </li>
-          <% end %>
-        </ul>
+        <!-- Collapsible navbar links -->
+        <div class="collapse navbar-collapse" id="mainNavbar">
+          <!-- Navbar links -->
+          <ul class="navbar-nav font-primary-heading ms-auto">
+            <% nav_links = {
+              "Home" => root_path,
+              "About Us" => about_path,
+              "Recruitment" => recruitment_path,
+              "Members" => members_path,
+              "Committees" => committees_path,
+              "Contact Us" => contact_path,
+              "Member Center" => member_center_path
+            } %>
+
+            <% nav_links.each do |name, path| %>
+              <% if name == "Committees" %>
+                <!-- Committees dropdown -->
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle text-dark-navy" href="#" id="committeesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" data-turbo="false">
+                    Committees
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-legion" aria-labelledby="committeesDropdown">
+                    <% if @nav_committees.present? %>
+                      <% @nav_committees.each do |committee| %>
+                        <li><%= link_to committee.name, committee_path(committee), class: "dropdown-item dropdown-item-legion" %></li>
+                      <% end %>
+                      <li><hr class="dropdown-divider dropdown-divider-legion"></li>
+                      <li><%= link_to "All Committees", committees_path, class: "dropdown-item dropdown-item-legion" %></li>
+                    <% else %>
+                      <li><span class="dropdown-item-text text-muted">No Committees</span></li>
+                    <% end %>
+                  </ul>
+                </li>
+              <% else %>
+                <% active_class = current_page?(path) ? "active-link" : "" %>
+                <li class="nav-item">
+                  <%= link_to name, path, class: "nav-link text-dark-navy #{active_class}" %>
+                </li>
+              <% end %>
+            <% end %>
+          </ul>
+        </div>
       </div>
     </nav>
 
