@@ -359,21 +359,6 @@ input[type="number"].form-dark::-webkit-outer-spin-button {
    RESOURCE ELEMENTS
    ------------------------------ */
 
-/* General container for all resource cards */
-.resource-card-btn {
-  position: relative;
-  height: 60px; /* consistent height */
-  display: flex; /* horizontal split for file buttons */
-  width: 100%;
-  background-color: #081436;
-  border: none;
-  gap: 6px;
-}
-
-.resource-card-btn-file:hover {
-  border: 2px solid #ffffff;
-}
-
 /* Main link-type button */
 .resource-btn {
   flex: 1; /* fill entire container */
@@ -390,43 +375,17 @@ input[type="number"].form-dark::-webkit-outer-spin-button {
 .resource-btn:hover {
   background-color: #081436;
   color: #ffffff;
-}
-
-/* File-type sub-buttons */
-.resource-sub-btn {
-  flex: 1; /* split evenly */
-  display: flex; /* make them flex containers */
-  align-items: center; /* vertical centering */
-  justify-content: center; /* horizontal centering */
-  text-align: center;
-  background-color: white;
-  color: #081436;
-  text-decoration: none;
-  border: none;
-  height: 58px; /* fill container height */
-}
-
-.view-file-border {
-  border-right: 2px solid #081436;
-}
-
-.resource-sub-btn:hover {
-  background-color: #081436;
-  color: #ffffff;
+  border-color: #ffffff;
 }
 
 /* Execs Only text color */
 .execs-text {
   background-color: #dbc296 !important; /* gold for execs-only */
+  border-color: #dbc296 !important;
 }
 
 .execs-text:hover {
   background-color: #081436 !important;
-}
-
-/* Responsive */
-@media (max-width: 576px) {
-  .resource-card-btn { height: 100px; }
 }
 
 /* ------------------------------
