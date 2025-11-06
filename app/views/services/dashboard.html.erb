@@ -210,7 +210,7 @@
                   </p>
 
                   <!-- Collapsible Reject Form -->
-                  <div class="collapse mt-3" id="reject-form-<%= service.id %>">
+                  <div class="collapse mt-3 hidden" id="reject-form-<%= service.id %>">
                     <%= form_with model: service, url: reject_service_path(service), method: :patch, local: true, class: "row g-2 align-items-center" do |f| %>
                       <div class="col-12">
                         <%= f.text_area :rejection_reason,
@@ -295,3 +295,11 @@
     </div>
   </div>
 </div>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  document.querySelectorAll(".collapse").forEach((el) => {
+    new bootstrap.Collapse(el, { toggle: false });
+  });
+});
+</script>
