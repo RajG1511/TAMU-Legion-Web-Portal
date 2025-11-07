@@ -39,6 +39,7 @@
 .border-gold            { border-color: #dbc296 !important; }
 .border-powder-blue     { border-color: #8fccff !important; }
 .border-cornflower-blue { border-color: #4b6fcb !important; }
+.border-white           { border-color: #ffffff !important; }
 
 /* ------------------------------
    TYPOGRAPHY
@@ -113,7 +114,7 @@
 }
 
 .committee-scroll-container {
-  max-height: 200px;
+  max-height: 600px;
   overflow-y: auto;
   padding-right: 8px;
 }
@@ -150,6 +151,7 @@
 .edit-scroll-container::-webkit-scrollbar-track {
   background-color: #0f296b;
 }
+
 
 /* ------------------------------
    CARDS
@@ -325,14 +327,16 @@
   border: 2px solid #ffffff !important;
 }
 
-.white-btn-resources {
+.white-btn-resources,
+.white-btn-committee {
   background-color: #ffffff !important;
   color: #081436 !important;
   border-radius: 0 !important;
   border: 2px solid #081436 !important;
 }
 
-.white-btn-resources:hover {
+.white-btn-resources:hover,
+.white-btn-committee:hover {
   background-color: #081436 !important;
   color: #ffffff !important;
   border-radius: 0 !important;
@@ -529,49 +533,6 @@ input[type="number"].form-dark::-webkit-outer-spin-button {
   background-color: #0f296b ; /* Legion Blue */
   border-radius: 0;
   border: 2px solid white; /* space around thumb */
-}
-
-/* Committees dropdown */
-
-.dropdown-menu-legion {
-  border-radius: 0;
-  border: 2px solid #0f296b;
-  background-color: #ffffff;
-  min-width: 14rem;
-  margin-top: 0.25rem;
-  padding: 0.25rem 0;
-}
-
-.dropdown-item-legion {
-  font-size: 1rem;
-  font-family: 'Public Sans', sans-serif;
-  font-weight: 600;
-  color: #081436 !important;               
-  padding: 0.5rem 1rem;
-}
-
-.dropdown-item-legion:hover,
-.dropdown-item-legion:focus {
-  background-color: #324158 !important;
-  color: #ffffff !important;
-}
-
-.dropdown-divider-legion {
-  border-top: 2px solid #0f296b !important;
-}
-
-.navbar .dropdown-toggle {
-  padding: 0.5rem 1rem;
-}
-
-.navbar .dropdown-toggle.show,
-.navbar .dropdown-toggle:focus {
-  background-color: #0f296b !important;
-  color: #ffffff !important;
-}
-
-.navbar .collapse {
-  visibility: visible !important;     /* undo Tailwind's visibility: collapse */
 }
 
 /* ------------------------------
