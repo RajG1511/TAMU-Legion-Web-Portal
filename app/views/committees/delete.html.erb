@@ -1,14 +1,136 @@
-<h1>Delete Committee</h1>
+<!-- Full Page Wrapper -->
+<div class="container-fluid bg-dark-navy text-white min-vh-100 px-0">
 
-<p>Are you sure you want to delete this committee?</p>
+  <!-- Header Strip -->
+  <div class="container-fluid bg-dark-gray-blue text-white py-3">
+    <h2 class="text-center font-primary-title">Delete Committee</h2>
+  </div>
 
-<p><strong>Name:</strong> <%= @committee.name %></p>
-<p><strong>Description:</strong> <%= @committee.description %></p>
+  <!-- Gold Divider -->
+  <div class="container-fluid bg-gold py-1"></div>
 
-<p>This action cannot be undone.</p>
+  <!-- Confirmation Panel -->
+  <div class="container my-4 p-4 border border-4 border-white bg-dark-navy text-white default-border-radius">
 
-<%= form_with url: committee_path(@committee), method: :delete do %>
-    <div>
-        <%= submit_tag "Delete" %>
+    <!-- Warning Banner -->
+    <div class="container-fluid bg-gold text-dark-navy py-2 mb-4">
+      <p class="text-center mb-0 h5">
+        This action cannot be undone. Deleting <strong><%= @committee.name %></strong> will permanently remove it.
+      </p>
     </div>
-<% end %>
+
+    <!-- Summary Grid -->
+    <div class="row g-4">
+      <!-- Left: Details -->
+      <div class="col-lg-7">
+        <h3 class="font-primary-heading mb-2">Committee Summary</h3>
+        <hr class="thick-white-divider mb-3">
+
+        <dl class="row mb-0 font-secondary-subheading">
+          <dt class="col-sm-4 text-gold">Name</dt>
+          <dd class="col-sm-8"><%= @committee.name %></dd>
+
+          <dt class="col-sm-4 text-gold">Description</dt>
+          <dd class="col-sm-8"><%= @committee.description.presence || "—" %></dd>
+
+          <% if @committee.section1_heading.present? || @committee.section1_body.present? %>
+            <dt class="col-sm-4 text-gold">Section 1</dt>
+            <dd class="col-sm-8">
+              <% if @committee.section1_heading.present? %>
+                <strong><%= @committee.section1_heading %></strong><br>
+              <% end %>
+              <%= @committee.section1_body.presence || "—" %>
+            </dd>
+          <% end %>
+
+          <% if @committee.section2_heading.present? || @committee.section2_body.present? %>
+            <dt class="col-sm-4 text-gold">Section 2</dt>
+            <dd class="col-sm-8">
+              <% if @committee.section2_heading.present? %>
+                <strong><%= @committee.section2_heading %></strong><br>
+              <% end %>
+              <%= @committee.section2_body.presence || "—" %>
+            </dd>
+          <% end %>
+        </dl>
+      </div>
+
+      <!-- Right: Images -->
+      <div class="col-lg-5">
+        <h3 class="font-primary-heading mb-2">Images</h3>
+        <hr class="thick-white-divider mb-3">
+
+        <div class="d-grid gap-3">
+          <div>
+            <p class="mb-2 font-secondary-body text-gold">Primary Image</p>
+            <% if @committee.primary_image.attached? %>
+              <%= image_tag @committee.primary_image.variant(resize_to_limit: [600, 400]),
+                            class: "img-fluid border border-2 border-white default-border-radius" %>
+            <% else %>
+              <div class="p-3 bg-legion-blue default-border-radius">No primary image</div>
+            <% end %>
+          </div>
+
+          <div>
+            <p class="mb-2 font-secondary-body text-gold">Secondary Image</p>
+            <% if @committee.secondary_image.attached? %>
+              <%= image_tag @committee.secondary_image.variant(resize_to_limit: [600, 400]),
+                            class: "img-fluid border border-2 border-white default-border-radius" %>
+            <% else %>
+              <div class="p-3 bg-legion-blue default-border-radius">No secondary image</div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Members Preview -->
+    <div class="mt-4">
+      <h3 class="font-primary-heading mb-2">Members</h3>
+      <hr class="thick-white-divider mb-3">
+
+      <% total = @committee.users.size %>
+      <% preview = @committee.users.limit(6) %>
+
+      <% if total.zero? %>
+        <p class="font-secondary-subheading">No members are currently assigned.</p>
+      <% else %>
+        <div class="d-flex flex-wrap gap-3">
+          <% preview.each do |member| %>
+            <div class="d-flex align-items-center bg-legion-blue p-2 default-border-radius" style="gap: 10px;">
+              <% if member.try(:headshot).present? %>
+                <%= image_tag member.headshot, class: "rounded-circle", style: "width:40px; height:40px; object-fit:cover;" %>
+              <% elsif member.try(:image_url).present? %>
+                <img src="<%= member.image_url %>" class="rounded-circle" style="width:40px; height:40px; object-fit:cover;">
+              <% else %>
+                <div class="rounded-circle bg-white" style="width:40px; height:40px;"></div>
+              <% end %>
+              <span class="font-secondary-subheading"><%= member.full_name %></span>
+            </div>
+          <% end %>
+        </div>
+
+        <% if total > preview.count %>
+          <p class="mt-2 font-secondary-subheading text-gold">
+            + <%= total - preview.count %> more
+          </p>
+        <% end %>
+      <% end %>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-start gap-2 mt-4">
+      <%= form_with url: committee_path(@committee), method: :delete, local: true do %>
+        <%= submit_tag "Delete Committee",
+            class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading",
+            data: { confirm: "Are you absolutely sure? This cannot be undone." } %>
+      <% end %>
+
+      <%= link_to "Cancel", dashboard_committees_path,
+          class: "btn white-btn-edit default-border-radius font-primary-heading" %>
+    </div>
+  </div>
+
+  <!-- Gold Footer Strip -->
+  <div class="container-fluid bg-gold py-1"></div>
+</div>
