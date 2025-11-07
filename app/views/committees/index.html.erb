@@ -1,27 +1,44 @@
-<h1>Committees</h1>
+<% content_for :title, "Committees" %>
 
-<% if current_user&.exec? %>
-    <div><%= link_to "Create New Committee", new_committee_path %></div>
-<% end %>
+<!-- Header -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title mb-0">Committees</h1>
+</div>
 
-<ul id="committee-list">
-    <% @committees.each do |committee| %>
-        <li>
-            <h2><%= committee.name %> Committee</h2>
-            <p><%= link_to "View More About This Committee", committee_path(committee) %></p>
-            <div>
-                <strong>Members:</strong>
-                <ul>
-                <% committee.users.each do |member| %>
-                    <li>
-                        <% if member.headshot.present? %>
-                            <%= image_tag member.headshot %>
-                        <% end %>
-                        <p><%= member.full_name %></p>
-                    </li>
-                <% end %>
-                </ul>
-            </div>
-        </li>
+<!-- Gold Divider -->
+<div class="container-fluid bg-gold py-1"></div>
+
+<!-- Body -->
+<section class="container-fluid bg-dark-navy text-white py-5">
+  <div class="container">
+    <p class="text-center font-secondary-subheading mb-4">
+      Select a committee for more information.
+    </p>
+
+    <% if @committees.any? %>
+      <div class="row g-3">
+        <% @committees.each do |committee| %>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+            <%= link_to committee_path(committee),
+                  class: "btn white-btn-resources text-legion-blue w-100 py-4 default-border-radius d-flex align-items-center justify-content-center font-primary-heading" do %>
+              <span class="me-2"><%= committee.name %></span>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-center font-secondary-subheading mb-0">No committees yet.</p>
     <% end %>
-</ul>
+
+    <% if current_user&.exec? %>
+      <div class="text-center mt-4">
+        <%= link_to "Open Committees Dashboard",
+                    dashboard_committees_path,
+                    class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<!-- Footer Gold Strip -->
+<div class="container-fluid bg-gold py-1"></div>

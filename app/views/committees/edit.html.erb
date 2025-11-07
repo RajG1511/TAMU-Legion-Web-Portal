@@ -1,3 +1,62 @@
-<h1>Edit Committee</h1>
-
 <%= render "form" %>
+
+<% if current_user&.exec? %>
+  <!-- Gold Divider -->
+  <div class="container-fluid bg-gold py-1"></div>
+
+  <!-- Light panel spanning the section -->
+  <section class="container-fluid bg-white text-dark py-4">
+    <div class="container">
+      <h2 class="font-primary-heading mb-2 text-dark-navy">Membership Management</h2>
+      <hr class="thick-white-divider mb-4" style="border-color:#0f296b !important;">
+
+      <p class="font-secondary-subheading mb-4 text-legion-blue">
+        Add or remove members from the <strong><%= @committee.name %></strong> committee.
+      </p>
+
+      <div class="row g-4">
+        <!-- Add Member -->
+        <div class="col-md-6">
+          <h3 class="h5 font-primary-heading text-dark-navy mb-3">Add Member</h3>
+          <%= form_with url: committee_committee_memberships_path(@committee), method: :post, local: true do %>
+            <div class="mb-3">
+              <%= label_tag :user_id, "Select User", class: "form-label font-secondary-body text-dark-navy" %>
+              <%= select_tag :user_id,
+                    options_from_collection_for_select(@non_members, :id, :full_name),
+                    prompt: "Choose a user",
+                    class: "form-select default-border-radius" %>
+            </div>
+            <%= submit_tag "Add Member",
+                  class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+          <% end %>
+        </div>
+
+        <!-- Remove Member -->
+        <div class="col-md-6">
+          <h3 class="h5 font-primary-heading text-dark-navy mb-3">Remove Member</h3>
+          <%= form_with url: committee_committee_membership_path(@committee, 0), method: :delete, local: true do %>
+            <div class="mb-3">
+              <%= label_tag :user_id, "Select Member", class: "form-label font-secondary-body text-dark-navy" %>
+              <%= select_tag :user_id,
+                    options_from_collection_for_select(@members, :id, :full_name),
+                    prompt: "Choose a member",
+                    class: "form-select default-border-radius" %>
+            </div>
+            <%= submit_tag "Remove Member",
+                  class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Back to Dashboard -->
+      <div class="mt-4">
+        <%= link_to "Back to Dashboard",
+                    dashboard_committees_path,
+                    class: "btn white-btn-edit default-border-radius font-primary-heading" %>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gold Footer Strip -->
+  <div class="container-fluid bg-gold py-1"></div>
+<% end %>

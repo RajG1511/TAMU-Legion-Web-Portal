@@ -1,37 +1,129 @@
-<%= form_for @committee do |f| %>
-    <div>
-        <%= f.label :name %><br>
-        <%= f.text_field :name, required: true %>
-    </div>
+<!-- Full Page Wrapper -->
+<div class="container-fluid bg-dark-navy text-white min-vh-100 px-0">
 
-    <div>
-        <%= f.label :description %><br>
-        <%= f.text_area :description %>
-    </div>
+  <!-- Header Strip -->
+  <div class="container-fluid bg-dark-gray-blue text-white py-3">
+    <h2 class="text-center font-primary-title">
+      <%= @committee.persisted? ? "Update a Committee" : "Create a Committee" %>
+    </h2>
+  </div>
 
-    <div>
-        <%= f.label :section1_heading, "Section 1 Heading" %><br>  
-        <%= f.text_field :section1_heading %><br>
-        <%= f.label :section1_body, "Section 1 Body" %><br>
-        <%= f.text_area :section1_body %>  
-    </div>
+  <!-- Gold Divider -->
+  <div class="container-fluid bg-gold py-1"></div>
 
+  <!-- Form Container -->
+  <div class="container my-4 p-4 border border-4 border-white bg-dark-navy text-white default-border-radius">
 
-    <div>
-        <%= f.label :section2_heading, "Section 2 Heading" %><br>  
-        <%= f.text_field :section2_heading %><br>
-        <%= f.label :section2_body, "Section 2 Body" %><br>
-        <%= f.text_area :section2_body %>  
-    </div>
+    <%= form_with model: @committee, local: true, html: { multipart: true } do |f| %>
 
-    <div>
-        <%= f.label :primary_image %><br>
-        <%= f.file_field :primary_image %><br>
-        <%= f.label :secondary_image %><br>
-        <%= f.file_field :secondary_image %>
-    </div>
+      <!-- Top-level error banner -->
+      <% if @committee.errors.any? %>
+        <div class="container-fluid bg-gold text-dark-navy py-2 mb-3">
+          <p class="text-center mb-0 h5">Please fill out all required fields.</p>
+        </div>
 
-    <div>
-        <%= f.submit %>
-    </div>
-<% end %>
+        <!-- Full error list -->
+        <div class="visually-hidden">
+          <ul>
+            <% @committee.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <!-- Section 1: Name -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center">
+            <%= f.label :name, "Committee Name", class: "form-label font-primary-heading mb-1 me-2" %>
+          </div>
+          <%= f.text_field :name, required: true, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+        <div class="col-md-6">
+          <div class="d-flex align-items-center">
+            <%= f.label :description, "Short Description", class: "form-label font-primary-heading mb-1 me-2" %>
+            <i class="bi bi-info-circle text-white"
+               data-bs-toggle="tooltip"
+               data-bs-placement="right"
+               title="A one or two sentence summary that appears on cards."></i>
+          </div>
+          <%= f.text_field :description, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+      </div>
+
+      <hr class="border-white border-4">
+
+      <!-- Section 2: Content Section 1 -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <%= f.label :section1_heading, "Section 1 Heading", class: "form-label font-primary-heading" %>
+          <%= f.text_field :section1_heading, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :section1_body, "Section 1 Body", class: "form-label font-primary-heading" %>
+          <%= f.text_area :section1_body, rows: 4, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+      </div>
+
+      <hr class="border-white border-4">
+
+      <!-- Section 3: Content Section 2 -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <%= f.label :section2_heading, "Section 2 Heading", class: "form-label font-primary-heading" %>
+          <%= f.text_field :section2_heading, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :section2_body, "Section 2 Body", class: "form-label font-primary-heading" %>
+          <%= f.text_area :section2_body, rows: 4, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+      </div>
+
+      <hr class="border-white border-4">
+
+      <!-- Section 4: Images -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <%= f.label :primary_image, "Primary Image", class: "form-label font-primary-heading" %>
+          <%= f.file_field :primary_image, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+
+          <% if @committee.primary_image.attached? %>
+            <div class="mt-2">
+              <p class="font-secondary-body mb-1">Current image:</p>
+              <%= image_tag @committee.primary_image.variant(resize_to_limit: [500, 500]),
+                            class: "img-fluid border border-2 border-white default-border-radius" %>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="col-md-6">
+          <%= f.label :secondary_image, "Secondary Image", class: "form-label font-primary-heading" %>
+          <%= f.file_field :secondary_image, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+
+          <% if @committee.secondary_image.attached? %>
+            <div class="mt-2">
+              <p class="font-secondary-body mb-1">Current image:</p>
+              <%= image_tag @committee.secondary_image.variant(resize_to_limit: [500, 500]),
+                            class: "img-fluid border border-2 border-white default-border-radius" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+      <!-- Submit + Back -->
+      <div class="d-flex justify-content-start gap-2 mt-4">
+        <%= f.submit (@committee.persisted? ? "Update Committee" : "Create Committee"),
+                     class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+
+        <%= link_to "Back to Dashboard",
+                    dashboard_committees_path,
+                    class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+      </div>
+
+    <% end %>
+  </div>
+
+  <!-- Gold Footer Strip -->
+  <div class="container-fluid bg-gold py-1"></div>
+</div>

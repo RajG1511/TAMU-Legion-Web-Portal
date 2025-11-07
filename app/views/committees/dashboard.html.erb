@@ -1,0 +1,137 @@
+<!-- Top Heading -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title">Committees Dashboard</h1>
+</div>
+
+<!-- Main Body Section -->
+<div class="container-fluid bg-gold py-2">
+  <div class="row">
+
+    <!-- Left Column: buttons and update log -->
+    <div class="col-md-5 bg-legion-blue py-4">
+      <div class="default-padding-left">
+
+        <!-- Full-width Create / Member View / Guide -->
+        <div class="d-grid gap-3 px-4 mt-4 mb-4">
+          <%= link_to "Create New Committee", new_committee_path, class: "btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading" %>
+          <%= link_to "View Member Committees", committees_path, class: "btn white-btn-edit default-border-radius btn-lg w-100 font-primary-heading" %>
+          <button type="button" class="btn white-btn-edit default-border-radius btn-lg font-primary-heading w-100"
+                  data-bs-toggle="modal" data-bs-target="#UserGuideModal">
+            User Guide: Managing Committees
+          </button>
+        </div>
+
+        <!-- Committee Update Log Table -->
+        <div class="table-responsive log-scroll-container" style="max-height: 1200px; overflow-y: auto;">
+          <table class="table table-bordered table-striped border-primary border-legion-blue">
+            <thead>
+              <tr>
+                <th colspan="4" class="bg-white text-black border-white text-center h4 font-secondary-heading">
+                  Committee Update Log
+                </th>
+              </tr>
+              <tr>
+                <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Committee</th>
+                <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Updated By</th>
+                <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Timestamp</th>
+                <th scope="col" class="bg-legion-blue text-white border-white font-secondary-body">Change Type</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @committee_versions.each do |version| %>
+                <tr class="border border-legion-blue">
+                  <td class="font-secondary-subheading"><%= version.name %></td>
+                  <td class="font-secondary-subheading"><%= version.user.first_name %> <%= version.user.last_name %></td>
+                  <td class="font-secondary-subheading">
+                    <%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %>
+                  </td>
+                  <td class="font-secondary-subheading"><%= version.change_type.capitalize %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Column: All Committees list -->
+    <div class="col-md-7 bg-dark-navy text-white py-4">
+      <div class="default-padding-right">
+
+        <!-- Section Heading with Divider -->
+        <h2 class="mb-2 font-primary-heading">All Committees</h2>
+        <hr class="thick-white-divider mb-2">
+
+        <!-- Scrollable Committee Cards -->
+        <div class="event-scroll-container">
+          <ul class="list-unstyled">
+            <% @committees.each do |committee| %>
+              <li class="event-card mb-4 p-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                  <h3 class="mb-0 text-white font-primary-title"><%= committee.name %></h3>
+
+                  <!-- Actions -->
+                  <div class="d-flex gap-2">
+                    <%= link_to "Edit", edit_committee_path(committee), class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
+                    <%= link_to "Delete", delete_committee_path(committee), class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
+                    <%= link_to "Member View", committee_path(committee), class: "btn btn-gold text-dark-navy btn-sm font-secondary-body" %>
+                  </div>
+                </div>
+
+                <!-- Brief details -->
+                <% if committee.description.present? %>
+                  <p class="text-white mb-1 font-secondary-subheading">
+                    <strong>Description:</strong> <%= truncate(committee.description, length: 200) %>
+                  </p>
+                <% end %>
+
+                <p class="text-white mb-0 font-primary-heading">
+                  <strong>Members:</strong> <%= committee.users.size %>
+                </p>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- User Guide Modal -->
+<div class="modal fade edit-info-modal" id="UserGuideModal" tabindex="-1" aria-labelledby="UserGuideModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title font-primary-heading" id="UserGuideModalLabel">Committees Dashboard Guide</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body font-secondary-subheading">
+        <p>Welcome to the Committees Dashboard Guide! Manage committee content and membership here.</p>
+
+        <h6 class="font-secondary-body text-gold mt-4">Navigating the Committees Dashboard</h6>
+        <ul class="font-secondary-subheading">
+          <li>Use the left panel to create a committee, jump to the member-facing page, or read this guide.</li>
+          <li>The update log shows what changed, who changed it, and when.</li>
+          <li>On the right, each card shows a committee with quick actions.</li>
+        </ul>
+
+        <h6 class="text-gold mt-4 font-secondary-body">Card Actions</h6>
+        <ul class="font-secondary-subheading">
+          <li><strong>Edit</strong> opens the edit page (also where you manage membership).</li>
+          <li><strong>Delete</strong> directs you to the delete page for the committee.</li>
+          <li><strong>Member View</strong> opens the public/member-facing page.</li>
+        </ul>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="modal">Close</button>
+      </div>
+
+    </div>
+  </div>
+</div>
