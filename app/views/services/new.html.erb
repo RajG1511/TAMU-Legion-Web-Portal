@@ -92,9 +92,9 @@
               title="Select the committee this service request belongs to."></i>
           </div>
           <%= f.select :committee,
-              options_for_select([["Select a Committee",""]] + Service.distinct.pluck(:committee).compact.map { |c| [c.titleize, c] }, @service.committee),
-              {},
-              class: "form-select form-dark default-border-radius font-secondary-subheading" %>
+            options_for_select(Service::COMMITTEES.map { |c| [c, c] }, @service.committee),
+            { prompt: "Select a Committee" },
+            class: "form-select form-dark default-border-radius font-secondary-subheading" %>
         </div>
       </div>
 
