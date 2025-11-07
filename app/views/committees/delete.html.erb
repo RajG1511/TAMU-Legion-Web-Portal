@@ -14,81 +14,21 @@
 
     <!-- Warning Banner -->
     <div class="container-fluid bg-gold text-dark-navy py-2 mb-4">
-      <p class="text-center mb-0 h5">
+      <p class="text-center mb-0 h5 font-primary-heading">
         This action cannot be undone. Deleting <strong><%= @committee.name %></strong> will permanently remove it.
       </p>
     </div>
 
-    <!-- Summary Grid -->
-    <div class="row g-4">
-      <!-- Left: Details -->
-      <div class="col-lg-7">
-        <h3 class="font-primary-heading mb-2">Committee Summary</h3>
-        <hr class="thick-white-divider mb-3">
-
-        <dl class="row mb-0 font-secondary-subheading">
-          <dt class="col-sm-4 text-gold">Name</dt>
-          <dd class="col-sm-8"><%= @committee.name %></dd>
-
-          <dt class="col-sm-4 text-gold">Description</dt>
-          <dd class="col-sm-8"><%= @committee.description.presence || "—" %></dd>
-
-          <% if @committee.section1_heading.present? || @committee.section1_body.present? %>
-            <dt class="col-sm-4 text-gold">Section 1</dt>
-            <dd class="col-sm-8">
-              <% if @committee.section1_heading.present? %>
-                <strong><%= @committee.section1_heading %></strong><br>
-              <% end %>
-              <%= @committee.section1_body.presence || "—" %>
-            </dd>
-          <% end %>
-
-          <% if @committee.section2_heading.present? || @committee.section2_body.present? %>
-            <dt class="col-sm-4 text-gold">Section 2</dt>
-            <dd class="col-sm-8">
-              <% if @committee.section2_heading.present? %>
-                <strong><%= @committee.section2_heading %></strong><br>
-              <% end %>
-              <%= @committee.section2_body.presence || "—" %>
-            </dd>
-          <% end %>
-        </dl>
-      </div>
-
-      <!-- Right: Images -->
-      <div class="col-lg-5">
-        <h3 class="font-primary-heading mb-2">Images</h3>
-        <hr class="thick-white-divider mb-3">
-
-        <div class="d-grid gap-3">
-          <div>
-            <p class="mb-2 font-secondary-body text-gold">Primary Image</p>
-            <% if @committee.primary_image.attached? %>
-              <%= image_tag @committee.primary_image.variant(resize_to_limit: [600, 400]),
-                            class: "img-fluid border border-2 border-white default-border-radius" %>
-            <% else %>
-              <div class="p-3 bg-legion-blue default-border-radius">No primary image</div>
-            <% end %>
-          </div>
-
-          <div>
-            <p class="mb-2 font-secondary-body text-gold">Secondary Image</p>
-            <% if @committee.secondary_image.attached? %>
-              <%= image_tag @committee.secondary_image.variant(resize_to_limit: [600, 400]),
-                            class: "img-fluid border border-2 border-white default-border-radius" %>
-            <% else %>
-              <div class="p-3 bg-legion-blue default-border-radius">No secondary image</div>
-            <% end %>
-          </div>
-        </div>
-      </div>
+    <!-- Committee Name & Description -->
+    <div class="mb-4">
+      <h2 class="font-primary-title"><%= @committee.name.presence || "Committee Name: No data provided" %></h2>
+      <p class="font-secondary-subheading"><%= "Description: " + @committee.description.presence || "No data provided" %></p>
     </div>
+    <hr class="thick-white-divider">
 
-    <!-- Members Preview -->
-    <div class="mt-4">
-      <h3 class="font-primary-heading mb-2">Members</h3>
-      <hr class="thick-white-divider mb-3">
-
+    <!-- Members -->
+    <div class="mb-4">
+      <h4 class="font-primary-heading mb-2 text-gold">Members</h4>
       <% total = @committee.users.size %>
       <% preview = @committee.users.limit(6) %>
 
@@ -97,7 +37,7 @@
       <% else %>
         <div class="d-flex flex-wrap gap-3">
           <% preview.each do |member| %>
-            <div class="d-flex align-items-center bg-legion-blue p-2 default-border-radius" style="gap: 10px;">
+            <div class="d-flex align-items-center bg-dark-navy p-2 border-white default-border-radius" style="gap:10px;">
               <% if member.try(:headshot).present? %>
                 <%= image_tag member.headshot, class: "rounded-circle", style: "width:40px; height:40px; object-fit:cover;" %>
               <% elsif member.try(:image_url).present? %>
@@ -109,12 +49,55 @@
             </div>
           <% end %>
         </div>
-
         <% if total > preview.count %>
-          <p class="mt-2 font-secondary-subheading text-gold">
-            + <%= total - preview.count %> more
-          </p>
+          <p class="mt-2 font-secondary-subheading text-gold">+ <%= total - preview.count %> more</p>
         <% end %>
+      <% end %>
+    </div>
+    <hr class="thick-white-divider">
+
+    <!-- Section 1 -->
+    <div class="mb-4">
+      <h4 class="text-gold font-primary-heading mb-2">Section I</h4>
+      <p class="font-secondary-subheading mb-1">
+        <%= "Heading: #{@committee.section1_heading.presence || 'No data provided'}" %>
+      </p>
+      <p class="font-secondary-subheading">
+        <%= "Body: #{@committee.section1_body.presence || 'No data provided'}" %>
+      </p>
+    </div>
+    <hr class="thick-white-divider">
+
+    <!-- Section 2 -->
+    <div class="mb-4">
+      <h4 class="text-gold font-primary-heading mb-2">Section II</h4>
+      <p class="font-secondary-subheading mb-1">
+        <%= "Heading: #{@committee.section2_heading.presence || 'No data provided'}" %>
+      </p>
+      <p class="font-secondary-subheading">
+        <%= "Body: #{@committee.section2_body.presence || 'No data provided'}" %>
+      </p>
+    </div>
+    <hr class="thick-white-divider">
+
+    <!-- Images -->
+    <div class="mb-4">
+      <h4 class="text-gold font-primary-heading mb-1">Primary Image</h4>
+      <% if @committee.primary_image.attached? %>
+        <%= image_tag @committee.primary_image.variant(resize_to_limit: [600, 400]),
+                      class: "img-fluid border border-2 border-white default-border-radius mb-2" %>
+      <% else %>
+        <div class="p-3 bg-dark-navy border-white default-border-radius mb-2">No data provided</div>
+      <% end %>
+
+      <hr class="thick-white-divider">
+
+      <h4 class="text-gold font-primary-heading mb-1">Secondary Image</h4>
+      <% if @committee.secondary_image.attached? %>
+        <%= image_tag @committee.secondary_image.variant(resize_to_limit: [600, 400]),
+                      class: "img-fluid border border-2 border-white default-border-radius mb-2" %>
+      <% else %>
+        <div class="p-3 bg-dark-navy border-white default-border-radius mb-2">No data provided</div>
       <% end %>
     </div>
 
@@ -127,7 +110,7 @@
       <% end %>
 
       <%= link_to "Cancel", dashboard_committees_path,
-          class: "btn white-btn-edit default-border-radius font-primary-heading" %>
+          class: "btn btn-gold default-border-radius font-primary-heading" %>
     </div>
   </div>
 

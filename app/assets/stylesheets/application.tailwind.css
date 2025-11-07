@@ -112,10 +112,17 @@
   padding-right: 8px;
 }
 
+.committee-scroll-container {
+  max-height: 200px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
 .event-scroll-container::-webkit-scrollbar,
 .edit-scroll-container::-webkit-scrollbar,
 .log-scroll-container::-webkit-scrollbar,
-.resource-scroll-container::-webkit-scrollbar { width: 8px; }
+.resource-scroll-container::-webkit-scrollbar,
+.committee-scroll-container::-webkit-scrollbar { width: 8px; }
 
 .log-scroll-container::-webkit-scrollbar-thumb {
   background-color: #0f296b;
@@ -128,13 +135,15 @@
 
 .event-scroll-container::-webkit-scrollbar-thumb,
 .edit-scroll-container::-webkit-scrollbar-thumb,
-.resource-scroll-container::-webkit-scrollbar-thumb {
+.resource-scroll-container::-webkit-scrollbar-thumb,
+.committee-scroll-container::-webkit-scrollbar-thumb {
   background-color: #dbc296;
   border-radius: 0;
 }
 
 .event-scroll-container::-webkit-scrollbar-track,
-.resource-scroll-container::-webkit-scrollbar-track {
+.resource-scroll-container::-webkit-scrollbar-track,
+.committee-scroll-container::-webkit-scrollbar-track {
   background-color: #081436;
 }
 

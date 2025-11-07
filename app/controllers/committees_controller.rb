@@ -23,7 +23,7 @@ class CommitteesController < ApplicationController
      if @committee.save
           log_committee_version("created")
           flash[:success] = "Committee #{@committee.name} created."
-          redirect_to committee_path(@committee)
+          redirect_to dashboard_committees_path
      else
           flash[:error] = "Committee not created."
           render :new
@@ -38,7 +38,7 @@ class CommitteesController < ApplicationController
           if @committee.update(committee_params)
                log_committee_version("updated")
           flash[:success] = "Committee #{@committee.name} updated."
-          redirect_to committee_path(@committee)
+          redirect_to dashboard_committees_path
           else
                flash[:error] = "Committee not updated."
           render :edit
@@ -54,7 +54,7 @@ class CommitteesController < ApplicationController
           @committee.destroy
      # log_committee_version("deleted")
      flash[:success] = "Committee #{@committee.name} deleted."
-     redirect_to committees_path
+     redirect_to dashboard_committees_path
      end
 
      private

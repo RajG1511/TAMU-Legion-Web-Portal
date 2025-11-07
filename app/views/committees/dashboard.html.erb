@@ -38,14 +38,22 @@
               </tr>
             </thead>
             <tbody>
-              <% @committee_versions.each do |version| %>
-                <tr class="border border-legion-blue">
-                  <td class="font-secondary-subheading"><%= version.name %></td>
-                  <td class="font-secondary-subheading"><%= version.user.first_name %> <%= version.user.last_name %></td>
-                  <td class="font-secondary-subheading">
-                    <%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %>
+              <% if @committee_versions.any? %>
+                <% @committee_versions.each do |version| %>
+                  <tr class="border border-legion-blue">
+                    <td class="font-secondary-subheading"><%= version.name %></td>
+                    <td class="font-secondary-subheading"><%= version.user.first_name %> <%= version.user.last_name %></td>
+                    <td class="font-secondary-subheading">
+                      <%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %>
+                    </td>
+                    <td class="font-secondary-subheading"><%= version.change_type.capitalize %></td>
+                  </tr>
+                <% end %>
+              <% else %>
+                <tr>
+                  <td colspan="4" class="text-center text-black font-secondary-subheading py-3">
+                    No committee update logs available.
                   </td>
-                  <td class="font-secondary-subheading"><%= version.change_type.capitalize %></td>
                 </tr>
               <% end %>
             </tbody>
@@ -61,10 +69,10 @@
 
         <!-- Section Heading with Divider -->
         <h2 class="mb-2 font-primary-heading">All Committees</h2>
-        <hr class="thick-white-divider mb-2">
+        <hr class="thick-white-divider mb-4">
 
         <!-- Scrollable Committee Cards -->
-        <div class="event-scroll-container">
+        <div class="committee-scroll-container">
           <ul class="list-unstyled">
             <% @committees.each do |committee| %>
               <li class="event-card mb-4 p-3">
@@ -79,16 +87,16 @@
                   </div>
                 </div>
 
+                <p class="text-white mb-0 font-primary-heading">
+                  <strong>Members:</strong> <%= committee.users.size %>
+                </p>
+
                 <!-- Brief details -->
                 <% if committee.description.present? %>
                   <p class="text-white mb-1 font-secondary-subheading">
                     <strong>Description:</strong> <%= truncate(committee.description, length: 200) %>
                   </p>
                 <% end %>
-
-                <p class="text-white mb-0 font-primary-heading">
-                  <strong>Members:</strong> <%= committee.users.size %>
-                </p>
               </li>
             <% end %>
           </ul>
@@ -115,9 +123,9 @@
 
         <h6 class="font-secondary-body text-gold mt-4">Navigating the Committees Dashboard</h6>
         <ul class="font-secondary-subheading">
-          <li>Use the left panel to create a committee, jump to the member-facing page, or read this guide.</li>
+          <li>Use the left panel to create a committee or jump to the member-facing pagee.</li>
           <li>The update log shows what changed, who changed it, and when.</li>
-          <li>On the right, each card shows a committee with quick actions.</li>
+          <li>On the right panel, each card shows a committee with quick actions.</li>
         </ul>
 
         <h6 class="text-gold mt-4 font-secondary-body">Card Actions</h6>

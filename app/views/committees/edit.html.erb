@@ -1,62 +1,214 @@
-<%= render "form" %>
-
+<!-- Full Page Wrapper -->
 <% if current_user&.exec? %>
+<div class="container-fluid bg-dark-navy text-white min-vh-100 px-0">
+
+  <!-- Header -->
+  <div class="container-fluid bg-dark-gray-blue text-white py-3">
+    <h2 class="text-center font-primary-title">
+      <%= @committee.persisted? ? "Update a Committee" : "Create a Committee" %>
+    </h2>
+  </div>
+
   <!-- Gold Divider -->
   <div class="container-fluid bg-gold py-1"></div>
 
-  <!-- Light panel spanning the section -->
-  <section class="container-fluid bg-white text-dark py-4">
-    <div class="container">
-      <h2 class="font-primary-heading mb-2 text-dark-navy">Membership Management</h2>
-      <hr class="thick-white-divider mb-4" style="border-color:#0f296b !important;">
+  <!-- Main Two-Column Section -->
+  <div class="container my-4">
+    <div class="row">
+      
+      <!-- LEFT COLUMN: Committee Details Form -->
+      <div class="col-lg-7 border border-4 border-white bg-dark-navy text-white p-4 default-border-radius">
 
-      <p class="font-secondary-subheading mb-4 text-legion-blue">
-        Add or remove members from the <strong><%= @committee.name %></strong> committee.
-      </p>
+        <%= form_with model: @committee, local: true, html: { multipart: true } do |f| %>
 
-      <div class="row g-4">
-        <!-- Add Member -->
-        <div class="col-md-6">
-          <h3 class="h5 font-primary-heading text-dark-navy mb-3">Add Member</h3>
-          <%= form_with url: committee_committee_memberships_path(@committee), method: :post, local: true do %>
-            <div class="mb-3">
-              <%= label_tag :user_id, "Select User", class: "form-label font-secondary-body text-dark-navy" %>
-              <%= select_tag :user_id,
-                    options_from_collection_for_select(@non_members, :id, :full_name),
-                    prompt: "Choose a user",
-                    class: "form-select default-border-radius" %>
+          <% if @committee.errors.any? %>
+            <div class="container-fluid bg-gold text-dark-navy py-2 mb-3">
+              <p class="text-center mb-0 h5">Please fill out all required fields.</p>
             </div>
-            <%= submit_tag "Add Member",
-                  class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
-          <% end %>
-        </div>
-
-        <!-- Remove Member -->
-        <div class="col-md-6">
-          <h3 class="h5 font-primary-heading text-dark-navy mb-3">Remove Member</h3>
-          <%= form_with url: committee_committee_membership_path(@committee, 0), method: :delete, local: true do %>
-            <div class="mb-3">
-              <%= label_tag :user_id, "Select Member", class: "form-label font-secondary-body text-dark-navy" %>
-              <%= select_tag :user_id,
-                    options_from_collection_for_select(@members, :id, :full_name),
-                    prompt: "Choose a member",
-                    class: "form-select default-border-radius" %>
+            <div class="visually-hidden">
+              <ul>
+                <% @committee.errors.full_messages.each do |msg| %>
+                  <li><%= msg %></li>
+                <% end %>
+              </ul>
             </div>
-            <%= submit_tag "Remove Member",
-                  class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
           <% end %>
-        </div>
+
+          <!-- Row 1: Name + Description -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <div class="d-flex align-items-center">
+                <%= f.label :name, "Committee Name", class: "form-label font-primary-heading mb-1 me-2" %>
+                <i class="bi text-white invisible">i</i>
+              </div>
+              <%= f.text_field :name, required: true,
+                  class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+            </div>
+
+            <div class="col-md-6">
+              <div class="d-flex align-items-center">
+                <%= f.label :description, "Short Description", class: "form-label font-primary-heading mb-1 me-2" %>
+                <i class="bi bi-info-circle text-white"
+                   data-bs-toggle="tooltip"
+                   title="A one or two sentence summary describing the committee’s purpose and key responsibilities."></i>
+              </div>
+              <%= f.text_field :description,
+                  class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+            </div>
+          </div>
+
+          <hr class="border-white border-4">
+
+          <!-- Row 2: Two-column content -->
+          <div class="row">
+            <!-- Left Side -->
+            <div class="col-md-6 pe-md-4" style="border-right: 4px solid #464F68;">
+              <div class="mb-4">
+                <div class="d-flex align-items-center">
+                  <%= f.label :section1_heading, "Section 1 Heading", class: "form-label font-primary-heading mb-1 me-2" %>
+                  <i class="bi bi-info-circle text-white"
+                     data-bs-toggle="tooltip"
+                     title="The title or main topic for the first content section."></i>
+                </div>
+                <%= f.text_field :section1_heading,
+                    class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+              </div>
+
+              <div class="mb-4">
+                <div class="d-flex align-items-center">
+                  <%= f.label :section1_body, "Section 1 Body", class: "form-label font-primary-heading mb-1 me-2" %>
+                  <i class="bi bi-info-circle text-white"
+                     data-bs-toggle="tooltip"
+                     title="Detailed text describing the committee’s goals or recent activities."></i>
+                </div>
+                <%= f.text_area :section1_body, rows: 4,
+                    class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+              </div>
+
+              <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <%= f.label :primary_image, "Primary Image", class: "form-label font-primary-heading mb-1 me-2" %>
+                  <i class="bi bi-info-circle text-white"
+                     data-bs-toggle="tooltip"
+                     title="Main image associated with Section 1."></i>
+                </div>
+                <%= f.file_field :primary_image,
+                    class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+
+                <% if @committee.primary_image.attached? %>
+                  <div class="mt-2">
+                    <p class="font-secondary-body mb-1">Current image:</p>
+                    <%= image_tag @committee.primary_image.variant(resize_to_limit: [500, 500]),
+                                  class: "img-fluid border border-2 border-white default-border-radius" %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+
+            <!-- Right Side -->
+            <div class="col-md-6 ps-md-4">
+              <div class="mb-4">
+                <div class="d-flex align-items-center">
+                  <%= f.label :section2_heading, "Section 2 Heading", class: "form-label font-primary-heading mb-1 me-2" %>
+                  <i class="bi bi-info-circle text-white"
+                     data-bs-toggle="tooltip"
+                     title="The title or topic for the second content section."></i>
+                </div>
+                <%= f.text_field :section2_heading,
+                    class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+              </div>
+
+              <div class="mb-4">
+                <div class="d-flex align-items-center">
+                  <%= f.label :section2_body, "Section 2 Body", class: "form-label font-primary-heading mb-1 me-2" %>
+                  <i class="bi bi-info-circle text-white"
+                     data-bs-toggle="tooltip"
+                     title="Additional section text for further details or highlights."></i>
+                </div>
+                <%= f.text_area :section2_body, rows: 4,
+                    class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+              </div>
+
+              <div class="mb-3">
+                <div class="d-flex align-items-center">
+                  <%= f.label :secondary_image, "Secondary Image", class: "form-label font-primary-heading mb-1 me-2" %>
+                  <i class="bi bi-info-circle text-white"
+                     data-bs-toggle="tooltip"
+                     title="Secondary image associated with Section 2."></i>
+                </div>
+                <%= f.file_field :secondary_image,
+                    class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+
+                <% if @committee.secondary_image.attached? %>
+                  <div class="mt-2">
+                    <p class="font-secondary-body mb-1">Current image:</p>
+                    <%= image_tag @committee.secondary_image.variant(resize_to_limit: [500, 500]),
+                                  class: "img-fluid border border-2 border-white default-border-radius" %>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          
+          <div class="d-flex justify-content-start gap-2 mt-4">
+            <%= f.submit (@committee.persisted? ? "Update Committee" : "Create Committee"),
+                  class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+
+            <%= link_to "← Back to Dashboard",
+                  dashboard_committees_path,
+                  class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+          </div>
+        <% end %>
       </div>
 
-      <!-- Back to Dashboard -->
-      <div class="mt-4">
-        <%= link_to "Back to Dashboard",
-                    dashboard_committees_path,
-                    class: "btn white-btn-edit default-border-radius font-primary-heading" %>
+      <!-- RIGHT COLUMN: Membership Management -->
+      <div class="col-lg-5 bg-white text-dark p-4 default-border-radius mt-4 mt-lg-0">
+        <h2 class="font-primary-title mb-1 text-dark-navy">Membership Management</h2>
+
+        <p class="font-secondary-subheading mb-4 text-legion-blue">
+          Add or remove members from the <strong><%= @committee.name %></strong> committee.
+        </p>
+
+        <div class="row g-4">
+          <!-- Add Member -->
+          <div class="col-12">
+            <%= form_with url: committee_committee_memberships_path(@committee), method: :post, local: true do %>
+              <div class="mb-3">
+                <%= label_tag :user_id, "Add Member", class: "form-label font-secondary-body text-dark-navy" %>
+                <%= select_tag :user_id,
+                      options_from_collection_for_select(@non_members, :id, :full_name),
+                      prompt: "Choose a user",
+                      class: "form-select text-dark-navy border-dark-navy default-border-radius" %>
+              </div>
+              <%= submit_tag "Add Member",
+                    class: "btn white-btn-committee default-border-radius font-primary-heading" %>
+            <% end %>
+          </div>
+
+          <hr class="mb-2" style="border-color:#0f296b !important; border-width: 4px;">
+
+          <!-- Remove Member -->
+          <div class="col-12">
+            <%= form_with url: committee_committee_membership_path(@committee, 0), method: :delete, local: true do %>
+              <div class="mb-3">
+                <%= label_tag :user_id, "Remove Member", class: "form-label font-secondary-body text-dark-navy" %>
+                <%= select_tag :user_id,
+                      options_from_collection_for_select(@members, :id, :full_name),
+                      prompt: "Choose a member",
+                      class: "form-select border-dark-navy text-dark-navy default-border-radius" %>
+              </div>
+              <%= submit_tag "Remove Member",
+                    class: "btn white-btn-committee default-border-radius font-primary-heading" %>
+            <% end %>
+          </div>
+        </div>
+
       </div>
+
     </div>
-  </section>
+  </div>
 
-  <!-- Gold Footer Strip -->
+  <!-- Footer Divider -->
   <div class="container-fluid bg-gold py-1"></div>
-<% end %>
+</div>
+<% end %> <!-- closes if current_user&.exec? -->
