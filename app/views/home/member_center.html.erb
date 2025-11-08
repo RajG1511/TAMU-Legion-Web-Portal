@@ -1,3 +1,9 @@
+<% if Announcement.current.message.present? %>
+  <div class="alert alert-warning text-center">
+    <strong>Announcement:</strong> <%= Announcement.current.message %>
+  </div>
+<% end %>
+
 <!-- Top Header -->
 <div class="container-fluid bg-dark-gray-blue text-white py-3">
   <div class="default-padding-left">
@@ -206,11 +212,9 @@
 </div>
 
 
-
 <!-- Page Management Modal -->
 <div class="modal fade" id="pageManagementModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
-    <!-- NOTE: removed stray comma and moved inline style into proper attribute -->
     <div class="modal-content bg-dark-navy text-white default-border-radius" style="border: 1px solid white;">
       
       <!-- Modal Header -->
@@ -230,12 +234,34 @@
         <p>For additional guidance on how to use the Member Center, please refer to the User Guide below.</p>
       </div>
 
-      <!-- Modal Footer (sibling of .modal-body; full-width border will align) -->
+      <!-- Modal Footer -->
       <div class="modal-footer" style="border-top: 1px solid white;">
-        <a href="/Files/Legion_Website_Help_Guide_V.2.pdf" target="_blank" class="btn btn-gold font-secondary-body">
+        <% if Announcement.current.message.present? %>
+          <!-- End Announcement button -->
+          <%= button_to "End Announcement",
+                        end_announcement_path,
+                        method: :delete,
+                        class: "btn btn-gold text-dark-navy font-secondary-body",
+                        data: { turbo_confirm: "Are you sure you want to end the announcement?" } %>
+        <% else %>
+          <!-- Add Announcement button -->
+          <button type="button"
+                  class="btn btn-gold text-dark-navy font-secondary-body"
+                  data-bs-toggle="modal"
+                  data-bs-target="#announcementModal">
+            Add Announcement
+          </button>
+        <% end %>
+
+        <!-- Existing buttons -->
+        <a href="/Files/Legion_Website_Help_Guide_V.2.pdf"
+          target="_blank"
+          class="btn btn-gold font-secondary-body">
           Open User Guide (PDF)
         </a>
-        <button type="button" class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="modal">
+        <button type="button"
+                class="btn btn-gold text-dark-navy font-secondary-body"
+                data-bs-dismiss="modal">
           Close
         </button>
       </div>
@@ -243,3 +269,23 @@
   </div> 
 </div>
 
+<!-- Announcement Modal -->
+<div class="modal fade" id="announcementModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark-navy text-white default-border-radius" style="border: 1px solid white;">
+      <div class="modal-header" style="border-bottom: 1px solid white;">
+        <h5 class="modal-title">Add Announcement</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with model: Announcement.current, url: announcements_path, method: :post, local: true do |f| %>
+          <div class="mb-3">
+            <%= f.label :message, "Announcement Message", class: "form-label" %>
+            <%= f.text_area :message, class: "form-control", rows: 3 %>
+          </div>
+          <%= f.submit "Publish", class: "btn btn-gold text-dark-navy font-secondary-body" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

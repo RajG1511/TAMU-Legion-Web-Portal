@@ -1,3 +1,9 @@
+<% if Announcement.current.message.present? %>
+  <div class="alert alert-warning text-center">
+    <strong>Announcement:</strong> <%= Announcement.current.message %>
+  </div>
+<% end %>
+
 <% content_for :title, "Home" %>
 
 <div class="wix-top-line"></div>
