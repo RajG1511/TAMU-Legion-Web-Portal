@@ -38,10 +38,13 @@
                 </tr>
               </thead>
               <tbody>
-                <% Service::COMMITTEES.each do |committee| %>
+                <% Committee.order(:name).each do |committee| %>
                   <tr class="border border-legion-blue">
-                    <td class="font-secondary-subheading"><%= committee.titleize %></td>
-                    <td class="font-secondary-subheading"><%= @committee_totals[committee] || 0 %></td>
+                    <!-- Committee Name -->
+                    <td class="font-secondary-subheading"><%= committee.name.titleize %></td>
+
+                    <!-- Total Approved Hours for this Committee -->
+                    <td class="font-secondary-subheading"><%= @committee_totals[committee.name] || 0 %></td>
                   </tr>
                 <% end %>
               </tbody>
@@ -136,11 +139,8 @@
 
             <div class="col">
               <%= select_tag :committee_id,
-                  options_for_select(
-                    [["All", ""]] + Service::COMMITTEES.map { |c| [c.titleize, c] },
-                    params[:committee_id]
-                  ),
-                  include_blank: false,
+                  options_from_collection_for_select(Committee.order(:name), :id, :name, params[:committee_id]),
+                  include_blank: "All",
                   class: "form-select default-border-radius text-legion-blue" %>
             </div>
 
@@ -173,7 +173,7 @@
                       </h3>
                       <p class="text-gold mb-2 font-primary-heading">
                         Service: <%= service.name %> |
-                        <%= service.committee.present? ? service.committee.titleize : "No Committee" %>
+                        <%= service.committee.present? ? service.committee.name : "No Committee" %>
                       </p>
                     </div>
 
