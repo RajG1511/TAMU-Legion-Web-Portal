@@ -17,7 +17,7 @@
   <div class="row flex-grow-1">
 
     <!-- Left Column Containing Photo Gallery, Caption, Sign Out, Exec Buttons -->
-    <div class="col-md-5 bg-legion-blue py-4 px-4">
+    <div class="col-md-5 bg-legion-blue py-4 px-4 min-vh-100">
     <div class="default-padding-left">
 
       <!-- Sign Out + Manage Gallery Buttons -->
@@ -66,7 +66,7 @@
 
 
     <!-- Right Column Containg Quick Links and Admin Access -->
-    <div class="col-md-7 bg-dark-navy text-white py-4 px-4">
+    <div class="col-md-7 bg-dark-navy text-white py-4 px-4 min-vh-100">
       <div class="default-padding-right">
         <div class="mb-5">
           <div class="mb-5">
@@ -77,7 +77,7 @@
             <% quick_links = [
                 ["Resources", resources_path],
                 ["View Service Hours", services_path],
-                ["Google Photos", "#"],
+                ["Google Photos", "https://photos.google.com/share/AF1QipNYcJkP1oEbcHGInXz_-kOwcBVw7fWq9Oy3Q1uFLs_VBAuSoI20pGc9HoJeVysk4g?pli=1&key=Q2VkcXR1TEpvaUJvbzNwc3cxRmxDM1otTTZETEt3"],
                 ["Upcoming Events", events_path],
                 ["Member Directory", "#"]
               ] %>
@@ -85,7 +85,10 @@
             <div class="row g-3 mb-4">
               <% quick_links.each do |name, path| %>
                 <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                  <%= link_to name, path, class: "btn white-btn-member-center font-primary-heading w-100" %>
+                  <%= link_to name, path,
+                        class: "btn white-btn-member-center font-primary-heading w-100",
+                        target: (path.start_with?("http") ? "_blank" : nil),
+                        rel: (path.start_with?("http") ? "noopener" : nil) %>
                 </div>
               <% end %>
             </div>
