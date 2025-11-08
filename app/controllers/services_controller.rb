@@ -11,8 +11,8 @@ class ServicesController < ApplicationController
                 end
 
     # Filtering by committee
-    if params[:committee].present?
-      @services = @services.where(committee: params[:committee])
+    if params[:committee_id].present?
+      @services = @services.where(committee_id: params[:committee_id])
     end
 
     # Sorting by date
@@ -30,7 +30,7 @@ class ServicesController < ApplicationController
   def dashboard
     # Filter by committee if parameter is provided
     if params[:committee_id].present?
-      @services = Service.pending.recent.where(committee: params[:committee_id])
+      @services = Service.pending.recent.where(committee_id: params[:committee_id])
     else
       @services = Service.pending.recent
     end
@@ -39,7 +39,7 @@ class ServicesController < ApplicationController
     @all_services = Service.includes(:user).order(created_at: :desc)
 
     # Totals of approved hours grouped by committee
-    @committee_totals = Service.approved.group(:committee).sum(:hours)
+    @committee_totals = Service.approved.joins(:committee).group('committees.name').sum(:hours)
   end
 
 
@@ -79,7 +79,7 @@ class ServicesController < ApplicationController
   private
 
   def service_params
-    params.require(:service).permit(:name, :description, :hours, :date_performed, :committee)
+    params.require(:service).permit(:name, :description, :hours, :date_performed, :committee_id)
   end
 
   def require_exec_or_president
