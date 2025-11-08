@@ -172,7 +172,7 @@
         <div class="row g-4">
           <!-- Add Member -->
           <div class="col-12">
-            <%= form_with url: committee_committee_memberships_path(@committee), method: :post, local: true do %>
+            <%= form_with url: committee_committee_memberships_path(@committee), method: :post, local: true, html: { id: "add-member-form" }  do %>
               <div class="mb-3">
                 <%= label_tag :user_id, "Add Member", class: "form-label font-secondary-body text-dark-navy" %>
                 <%= select_tag :user_id,
@@ -189,7 +189,7 @@
 
           <!-- Remove Member -->
           <div class="col-12">
-            <%= form_with url: committee_committee_membership_path(@committee, 0), method: :delete, local: true do %>
+            <%= form_with url: committee_committee_membership_path(@committee, 0), method: :delete, local: true, html: { id: "remove-member-form" } do %>
               <div class="mb-3">
                 <%= label_tag :user_id, "Remove Member", class: "form-label font-secondary-body text-dark-navy" %>
                 <%= select_tag :user_id,
