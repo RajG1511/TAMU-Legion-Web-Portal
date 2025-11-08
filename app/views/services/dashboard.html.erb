@@ -183,14 +183,17 @@
                           approve_service_path(service),
                           method: :patch,
                           class: "btn btn-gold text-dark-navy btn-sm service-action-btn font-secondary-body",
-                          data: { confirm: "Are you sure you want to approve this request?" } %>
+                          data: { confirm: "Are you sure you want to approve this request?" },
+                          form: { "data-turbo" => "false" } %>
 
+                      <!-- Reject Button -->
                       <button
                         type="button"
                         class="btn btn-gold text-dark-navy btn-sm service-action-btn font-secondary-body"
                         data-bs-toggle="collapse"
                         data-bs-target="#reject-form-<%= service.id %>"
-                        data-turbo="false">
+                        data-turbo="false"
+                        onclick="event.stopPropagation();">
                         Reject
                       </button>
                     </div>
@@ -212,7 +215,13 @@
 
                   <!-- Collapsible Reject Form -->
                   <div class="collapse mt-3" id="reject-form-<%= service.id %>" data-turbo="false">
-                    <%= form_with model: service, url: reject_service_path(service), method: :patch, local: true, class: "row g-2 align-items-center" do |f| %>
+                    <%= form_with model: service,
+                          url: reject_service_path(service),
+                          method: :patch,
+                          local: true,
+                          data: { turbo: false },
+                          class: "row g-2 align-items-center" do |f| %>
+
                       <div class="col-12">
                         <%= f.text_area :rejection_reason,
                             placeholder: "Reason for rejection",
@@ -233,12 +242,14 @@
                           class="btn btn-gold text-dark-navy btn-sm font-secondary-body"
                           data-bs-toggle="collapse"
                           data-bs-target="#reject-form-<%= service.id %>"
-                          data-turbo="false">
+                          data-turbo="false"
+                          onclick="event.stopPropagation();">
                           Cancel
                         </button>
                       </div>
                     <% end %>
                   </div>
+
                 </li>
               <% end %>
             </ul>
