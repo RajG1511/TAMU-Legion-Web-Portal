@@ -69,7 +69,7 @@ RSpec.describe "Committees", type: :system do
 
     # Check committee page content
     expect(page).to have_content('Test Committee')
-    expect(page).to have_current_path(committee_path(committee))
+    expect(page).to have_current_path(dashboard_committees_path)
 
     # Edit the committee
     visit edit_committee_path(committee)
@@ -77,7 +77,7 @@ RSpec.describe "Committees", type: :system do
     click_button 'Update Committee'
 
     expect(page).to have_content('Updated description for test committee')
-    expect(page).to have_current_path(committee_path(committee))
+    expect(page).to have_current_path(dashboard_committees_path)
 
     # Delete the committee
     visit delete_committee_path(committee)
@@ -87,7 +87,7 @@ RSpec.describe "Committees", type: :system do
     expect(page).to have_content('Committee Test Committee deleted.')
 
     # check that the committee is no longer in the list
-    within('#committee-list') do
+    within('#committees-list') do
          expect(page).not_to have_content('Test Committee')
     end
   end
