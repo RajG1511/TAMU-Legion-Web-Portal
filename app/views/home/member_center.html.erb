@@ -224,13 +224,21 @@
       </div>
 
       <!-- Modal Body -->
-      <div class="modal-body">
+      <div class="modal-body font-secondary-subheading">
         <p>Welcome to the User Guide. As an Admin, you have access to the following features:</p>
         <ul>
           <li>Editing public-facing views</li>
           <li>Updating member data and processing requests</li>
           <li>Managing resources, events, and other Member Center features</li>
         </ul>
+
+        <h6 class="font-secondary-body text-gold mt-4">Navigating the Member Center</h6>
+        <ul class="font-secondary-subheading">
+          <li>The left sidebar allows you to modify the photo gallery and associated caption by adding/removing photos and editing the caption.</li>
+          <li>The <strong>Add Announcement</strong> button allows you to create an announcement that will be displayed on the home page and member center for all users to see.</li>
+          <li>Announcements can then be unpublished at any time by clicking the <strong>End Announcement</strong> button. If no announcement is present, the button will be hidden.</li>
+        </ul>
+
         <p>For additional guidance on how to use the Member Center, please refer to the User Guide below.</p>
       </div>
 
@@ -280,8 +288,8 @@
       <div class="modal-body">
         <%= form_with model: Announcement.current, url: announcements_path, method: :post, local: true do |f| %>
           <div class="mb-3">
-            <%= f.label :message, "Announcement Message", class: "form-label" %>
-            <%= f.text_area :message, class: "form-control", rows: 3 %>
+            <%= f.label :message, "Announcement Message (appears on Home & Member Center)", class: "form-label font-secondary-heading" %>
+            <%= f.text_area :message, class: "form-control form-dark", rows: 3 %>
           </div>
           <%= f.submit "Publish", class: "btn btn-gold text-dark-navy font-secondary-body" %>
         <% end %>
