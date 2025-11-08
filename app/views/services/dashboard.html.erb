@@ -116,149 +116,162 @@
     </div>
 
     <!-- RIGHT COLUMN — Pending Service Requests -->
-    <div class="col-md-7 bg-dark-navy text-white py-4">
-      <div class="default-padding-right">
+<div class="col-md-7 bg-dark-navy text-white py-4">
+  <div class="default-padding-right">
 
-        <!-- Section Heading -->
-        <h2 class="mb-2 font-primary-heading">Pending Service Requests</h2>
-        <hr class="thick-white-divider mb-2">
+    <!-- Section Heading -->
+    <h2 class="mb-2 font-primary-heading">Pending Service Requests</h2>
+    <hr class="thick-white-divider mb-2">
 
-        <!-- Filter Bar -->
-        <div class="bg-white p-3 mb-4 default-border-radius">
-          <%= form_with url: dashboard_services_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue" do %>
+    <!-- Filter Bar -->
+    <div class="bg-white p-3 mb-4 default-border-radius">
+      <%= form_with url: dashboard_services_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue" do %>
 
-            <!-- Label -->
-            <div class="col-auto">
-              <span class="fw-bold font-secondary-body">Filter By</span>
-            </div>
-
-            <!-- Committee Dropdown -->
-            <div class="col-auto">
-              <label for="committee_filter" class="form-label mb-0 font-secondary-subheading">Committee:</label>
-            </div>
-
-            <div class="col">
-              <%= select_tag :committee_id,
-                  options_from_collection_for_select(Committee.order(:name), :id, :name, params[:committee_id]),
-                  include_blank: "All",
-                  class: "form-select default-border-radius text-legion-blue" %>
-            </div>
-
-            <!-- Filter Button -->
-            <div class="col-auto">
-              <%= submit_tag "Filter", class: "btn btn-gold text-dark-navy default-border-radius font-secondary-body" %>
-            </div>
-
-          <% end %>
+        <!-- Label -->
+        <div class="col-auto">
+          <span class="fw-bold font-secondary-body">Filter By</span>
         </div>
 
-        <!-- Pending Requests List -->
-        <% if @services.blank? %>
-          <p class="text-white font-secondary-subheading">No pending service requests.</p>
-        <% else %>
-          <div class="event-scroll-container">
-            <ul class="list-unstyled">
+        <!-- Committee Dropdown -->
+        <div class="col-auto">
+          <label for="committee_filter" class="form-label mb-0 font-secondary-subheading">Committee:</label>
+        </div>
 
-              <% @services.each do |service| %>
-                <% next unless service.status == "pending" %>
+        <div class="col">
+          <%= select_tag :committee_id,
+              options_from_collection_for_select(Committee.order(:name), :id, :name, params[:committee_id]),
+              include_blank: "All",
+              class: "form-select default-border-radius text-legion-blue" %>
+        </div>
 
-                <!-- Service Request Card -->
-                <li class="event-card service-event-card mb-4 p-3">
-                  <div class="d-flex justify-content-between align-items-start mb-2">
+        <!-- Filter Button -->
+        <div class="col-auto">
+          <%= submit_tag "Filter", class: "btn btn-gold text-dark-navy default-border-radius font-secondary-body" %>
+        </div>
 
-                    <!-- Submitter Info -->
-                    <div>
-                      <h3 class="mb-0 text-white font-primary-title">
-                        <%= service.user.present? ? "#{service.user.first_name} #{service.user.last_name}" : "Unknown" %>
-                      </h3>
-                      <p class="text-gold mb-2 font-primary-heading">
-                        Service: <%= service.name %> |
-                        <%= service.committee.present? ? service.committee.name : "No Committee" %>
-                      </p>
+      <% end %>
+    </div>
+
+    <!-- Pending Requests List -->
+    <% if @services.blank? %>
+      <p class="text-white font-secondary-subheading">No pending service requests.</p>
+    <% else %>
+      <div class="event-scroll-container">
+        <ul class="list-unstyled">
+
+          <% @services.each do |service| %>
+            <% next unless service.status == "pending" %>
+
+            <!-- Service Request Card -->
+            <li class="event-card service-event-card mb-4 p-3">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+
+                <!-- Submitter Info -->
+                <div>
+                  <h3 class="mb-0 text-white font-primary-title">
+                    <%= service.user.present? ? "#{service.user.first_name} #{service.user.last_name}" : "Unknown" %>
+                  </h3>
+                  <p class="text-gold mb-2 font-primary-heading">
+                    Service: <%= service.name %> |
+                    <%= service.committee.present? ? service.committee.name : "No Committee" %>
+                  </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2">
+                  <%= button_to "Approve",
+                      approve_service_path(service),
+                      method: :patch,
+                      class: "btn btn-gold text-dark-navy btn-sm service-action-btn font-secondary-body",
+                      data: { confirm: "Are you sure you want to approve this request?" },
+                      form: { "data-turbo" => "false" } %>
+
+                  <!-- Reject Button -->
+                  <button
+                    type="button"
+                    class="btn btn-gold text-dark-navy btn-sm service-action-btn font-secondary-body toggle-reject-form"
+                    data-service-id="<%= service.id %>">
+                    Reject
+                  </button>
+                </div>
+              </div>
+
+              <!-- Service Details -->
+              <p class="text-white mb-1 font-secondary-body">
+                <strong>Hours Performed:</strong> <%= service.hours %>
+              </p>
+              <p class="text-white mb-0 font-secondary-body">
+                <strong>Date Performed:</strong>
+                <%= service.date_performed.present? ? service.date_performed.strftime("%B %d, %Y") : service.created_at.strftime("%B %d, %Y") %>
+              </p>
+              <p class="text-white mt-3 font-secondary-subheading">
+                Description: <%= service.description %>
+              </p>
+
+              <!-- Rejection Form (hidden by default) -->
+              <div class="reject-form mt-3" id="reject-form-<%= service.id %>" style="display: none;">
+                <%= form_with model: service,
+                      url: reject_service_path(service),
+                      method: :patch,
+                      local: true,
+                      data: { turbo: false },
+                      class: "row g-2 align-items-center" do |f| %>
+
+                    <div class="col-12">
+                      <%= f.text_area :rejection_reason,
+                          placeholder: "Reason for rejection",
+                          required: true,
+                          rows: 3,
+                          class: "form-control rejection-reason text-white font-secondary-subheading" %>
                     </div>
 
-                    <!-- Action Buttons -->
-                    <div class="d-flex gap-2">
-                      <%= button_to "Approve",
-                          approve_service_path(service),
-                          method: :patch,
-                          class: "btn btn-gold text-dark-navy btn-sm service-action-btn font-secondary-body",
-                          data: { confirm: "Are you sure you want to approve this request?" },
-                          form: { "data-turbo" => "false" } %>
+                    <div class="col-auto">
+                      <%= f.submit "Submit Rejection",
+                          class: "btn btn-gold text-dark-navy btn-sm font-secondary-body",
+                          data: { confirm: "Submit rejection for this service request?" } %>
+                    </div>
 
-                      <!-- Reject Button -->
+                    <div class="col-auto">
                       <button
                         type="button"
-                        class="btn btn-gold text-dark-navy btn-sm service-action-btn font-secondary-body"
-                        data-bs-toggle="collapse"
-                        data-bs-target="#reject-form-<%= service.id %>"
-                        data-turbo="false"
-                        onclick="event.stopPropagation();">
-                        Reject
+                        class="btn btn-gold text-dark-navy btn-sm font-secondary-body cancel-reject-form"
+                        data-service-id="<%= service.id %>">
+                        Cancel
                       </button>
                     </div>
-                  </div>
-
-                  <!-- Service Details -->
-                  <p class="text-white mb-1 font-secondary-body">
-                    <strong>Hours Performed:</strong> <%= service.hours %>
-                  </p>
-                  <p class="text-white mb-0 font-secondary-body">
-                    <strong>Date Performed:</strong>
-                    <%= service.date_performed.present? ?
-                        service.date_performed.strftime("%B %d, %Y") :
-                        service.created_at.strftime("%B %d, %Y") %>
-                  </p>
-                  <p class="text-white mt-3 font-secondary-subheading">
-                    Description: <%= service.description %>
-                  </p>
-
-                  <!-- Collapsible Reject Form -->
-                  <div class="collapse mt-3" id="reject-form-<%= service.id %>" data-turbo="false">
-                    <%= form_with model: service,
-                          url: reject_service_path(service),
-                          method: :patch,
-                          local: true,
-                          data: { turbo: false },
-                          class: "row g-2 align-items-center" do |f| %>
-
-                      <div class="col-12">
-                        <%= f.text_area :rejection_reason,
-                            placeholder: "Reason for rejection",
-                            required: true,
-                            rows: 3,
-                            class: "form-control rejection-reason text-white font-secondary-subheading" %>
-                      </div>
-
-                      <div class="col-auto">
-                        <%= f.submit "Submit Rejection",
-                            class: "btn btn-gold text-dark-navy btn-sm font-secondary-body",
-                            data: { confirm: "Submit rejection for this service request?" } %>
-                      </div>
-
-                      <div class="col-auto">
-                        <button
-                          type="button"
-                          class="btn btn-gold text-dark-navy btn-sm font-secondary-body"
-                          data-bs-toggle="collapse"
-                          data-bs-target="#reject-form-<%= service.id %>"
-                          data-turbo="false"
-                          onclick="event.stopPropagation();">
-                          Cancel
-                        </button>
-                      </div>
-                    <% end %>
-                  </div>
-
-                </li>
-              <% end %>
-            </ul>
-          </div>
-        <% end %>
+                <% end %>
+              </div>
+            </li>
+          <% end %>
+        </ul>
       </div>
-    </div>
+    <% end %>
   </div>
 </div>
+
+<!-- JavaScript to toggle rejection forms -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Toggle reject form when "Reject" button clicked
+  document.querySelectorAll(".toggle-reject-form").forEach(button => {
+    button.addEventListener("click", () => {
+      const id = button.dataset.serviceId;
+      const form = document.getElementById(`reject-form-${id}`);
+      form.style.display = form.style.display === "none" ? "block" : "none";
+    });
+  });
+
+  // Cancel button hides the form
+  document.querySelectorAll(".cancel-reject-form").forEach(button => {
+    button.addEventListener("click", () => {
+      const id = button.dataset.serviceId;
+      const form = document.getElementById(`reject-form-${id}`);
+      form.style.display = "none";
+    });
+  });
+});
+</script>
+
 
 <!-- User Guide Modal -->
 <div
