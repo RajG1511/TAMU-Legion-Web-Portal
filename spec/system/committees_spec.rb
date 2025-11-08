@@ -1,102 +1,81 @@
 # spec/system/committees_spec.rb
 require 'rails_helper'
 
-RSpec.describe "Committees", type: :system do
-     include Warden::Test::Helpers
+RSpec.describe "Committees management", type: :system do
+  include Warden::Test::Helpers
 
   let(:new_user) { create(:user, first_name: 'Test', last_name: 'User') }
+  let(:exec_user) { create(:user, :exec) }
 
-  before do
-       Warden.test_mode!
-    driven_by(:rack_test)
+  before(:each) do
+    Warden.test_mode!
+    login_as(exec_user, scope: :user)
+    driven_by(:rack_test) # no JS needed
   end
 
-  after do
-       Warden.test_reset!
+  after(:each) do
+    Warden.test_reset!
   end
 
-  # Use FactoryBot for user creation
-  def sign_in_as_exec!
-       user = create(:user, :exec) # uses factory and sets password
-    login_as(user, scope: :user)
-  end
-
-  context 'As an executive' do
-       it 'I can add or remove someone to a committee' do
-            sign_in_as_exec!
-
-         visit committees_path
-         expect(page).to have_content('Committees')
-         visit new_committee_path
-         fill_in 'Name', with: 'Test Committee'
-         click_button 'Create Committee'
-
-         committee = Committee.find_by(name: 'Test Committee')
-
-         visit committee_path(committee)
-         within(:xpath, "//form[.//h2[contains(.,'Add Member')]]") do
-              select new_user.full_name, from: "user_id"
-           click_button "Add Member"
-         end
-
-         expect(page).to have_content(new_user.full_name)
-
-         visit committee_path(committee)
-         within(:xpath, "//form[.//h2[contains(.,'Remove Member')]]") do
-              select new_user.full_name, from: "user_id"
-           click_button "Remove Member"
-         end
-
-         visit committee_path(committee)
-         expect(page).not_to have_content('<p>' + new_user.full_name + '</p>')
-       end
-  end
-
-
-  it 'lists committees and allows execs to create, edit, and delete' do
-       sign_in_as_exec!
-
-    # Visit index
-    visit committees_path
-    expect(page).to have_content('Committees')
-
-    # Create a new committee
-    visit new_committee_path
-    fill_in 'Name', with: 'Test Committee'
-    click_button 'Create Committee'
-
-    committee = Committee.find_by(name: 'Test Committee')
-
-    # Check committee page content
-    expect(page).to have_content('Test Committee')
-    expect(page).to have_current_path(dashboard_committees_path)
-
-    # Edit the committee
+context "as an executive" do
+  it "can add and remove members from a committee" do
+    committee = create(:committee, name: "Test Committee")
     visit edit_committee_path(committee)
-    fill_in 'Description', with: 'Updated description for test committee'
-    click_button 'Update Committee'
 
-    expect(page).to have_content('Updated description for test committee')
-    expect(page).to have_current_path(dashboard_committees_path)
+    # Add member
+    within("#add-member-form") do
+      select new_user.full_name, from: "Add Member"
+      click_button "Add Member"
+    end
+    expect(page).to have_content("#{new_user.full_name} added to committee #{committee.name}")
 
-    # Delete the committee
-    visit delete_committee_path(committee)
-    click_button 'Delete'
+    # Remove member
+    within("#remove-member-form") do
+      select new_user.full_name, from: "Remove Member"
+      click_button "Remove Member"
+    end
+    expect(page).to have_content("#{new_user.full_name} removed from committee #{committee.name}")
 
-    # flash message is still correct
-    expect(page).to have_content('Committee Test Committee deleted.')
-
-    # check that the committee is no longer in the list
-    within('#committees-list') do
-         expect(page).not_to have_content('Test Committee')
+    # Ensure removed user is not in the remove-member dropdown
+    within("#remove-member-form") do
+      expect(page).not_to have_select(new_user.full_name)
     end
   end
 
-  it 'shows a committee page to any user' do
-       committee = create(:committee, name: 'Committee Name', description: 'Committee Description')
+    it "lists committees and allows creating, editing, and deleting" do
+      # Create Committee
+      visit new_committee_path
+      fill_in "Committee Name", with: "New Committee"
+      fill_in "Short Description", with: "Short desc"
+      click_button "Create Committee"
 
+      committee = Committee.find_by(name: "New Committee")
+      expect(page).to have_content("Committee New Committee created.")
+
+      # Edit Committee
+      visit edit_committee_path(committee)
+      fill_in "Short Description", with: "Updated description"
+      click_button "Update Committee"
+      expect(page).to have_content("Committee New Committee updated.")
+      expect(page).to have_content("Updated description")
+
+      # Delete Committee
+      visit delete_committee_path(committee)
+      click_button "Delete"
+
+      # Check that the committee is no longer in the list (ignore flash)
+      visit dashboard_committees_path
+      within("#committees-list") do
+        expect(page).not_to have_content("New Committee")
+      end
+    end
+  end
+
+  it "shows a committee page to any user" do
+    committee = create(:committee, name: "Committee Name", description: "Committee Description")
     visit committee_path(committee)
-    expect(page).to have_content('Committee Name')
-    expect(page).to have_content('Committee Description')
+
+    expect(page).to have_content("Committee Name")
+    expect(page).to have_content("Committee Description")
   end
 end

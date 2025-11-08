@@ -6,13 +6,17 @@ RSpec.describe ServicesController, type: :request do
   let(:member) { create(:user, role: :member) }
   let(:exec)   { create(:user, :exec) }
 
+  # Create some committees for use in tests
+  let!(:brotherhood) { create(:committee, name: "Brotherhood") }
+  let!(:social) { create(:committee, name: "Social") }
+
   describe "GET /services" do
     context "as a member" do
       before { sign_in member, scope: :user }
 
       it "shows only their own services" do
-        own_service = create(:service, user: member)
-        other_service = create(:service) # belongs to someone else
+        own_service = create(:service, user: member, committee: brotherhood)
+        other_service = create(:service, committee: social) # belongs to someone else
 
         get services_path
         expect(response).to have_http_status(:ok)
@@ -25,8 +29,8 @@ RSpec.describe ServicesController, type: :request do
       before { sign_in exec, scope: :user }
 
       it "shows all services" do
-        service1 = create(:service)
-        service2 = create(:service)
+        service1 = create(:service, committee: brotherhood)
+        service2 = create(:service, committee: social)
 
         get services_path
         expect(assigns(:services)).to match_array([service1, service2])
@@ -39,7 +43,7 @@ RSpec.describe ServicesController, type: :request do
 
     it "creates a new service request" do
       expect {
-        post services_path, params: { service: attributes_for(:service) }
+        post services_path, params: { service: attributes_for(:service, committee_id: brotherhood.id) }
       }.to change(Service, :count).by(1)
 
       expect(response).to redirect_to(services_path)
@@ -52,7 +56,7 @@ RSpec.describe ServicesController, type: :request do
     before { sign_in exec, scope: :user }
 
     it "approves a service" do
-      service = create(:service, status: :pending)
+      service = create(:service, status: :pending, committee: brotherhood)
       patch approve_service_path(service)
       expect(service.reload.status).to eq("approved")
     end
@@ -62,7 +66,7 @@ RSpec.describe ServicesController, type: :request do
     before { sign_in exec, scope: :user }
 
     it "rejects a service with a reason" do
-      service = create(:service, status: :pending)
+      service = create(:service, status: :pending, committee: brotherhood)
       patch reject_service_path(service), params: { service: { rejection_reason: "Not valid" } }
       expect(service.reload.status).to eq("rejected")
       expect(service.rejection_reason).to eq("Not valid")
@@ -73,13 +77,13 @@ RSpec.describe ServicesController, type: :request do
     before { sign_in exec, scope: :user }
 
     it "shows pending services and committee totals" do
-      # Pending services (for display in @services)
-      create(:service, status: :pending, committee: "Brotherhood", hours: 3)
-      create(:service, status: :pending, committee: "Social", hours: 5)
+      # Pending services
+      create(:service, status: :pending, committee: brotherhood, hours: 3)
+      create(:service, status: :pending, committee: social, hours: 5)
 
-      # Approved services (for @committee_totals)
-      create(:service, status: :approved, committee: "Brotherhood", hours: 3)
-      create(:service, status: :approved, committee: "Social", hours: 5)
+      # Approved services for totals
+      create(:service, status: :approved, committee: brotherhood, hours: 3)
+      create(:service, status: :approved, committee: social, hours: 5)
 
       get dashboard_services_path
       expect(response).to have_http_status(:ok)
@@ -88,8 +92,8 @@ RSpec.describe ServicesController, type: :request do
       expect(assigns(:services).all?(&:pending?)).to be true
 
       # Totals only include approved services
-      expect(assigns(:committee_totals)["Brotherhood"]).to eq(3)
-      expect(assigns(:committee_totals)["Social"]).to eq(5)
+      expect(assigns(:committee_totals)[brotherhood.name]).to eq(3)
+      expect(assigns(:committee_totals)[social.name]).to eq(5)
     end
   end
 end
