@@ -9,8 +9,8 @@ class UsersController < ApplicationController
   end
 
   def index
-     show_inactive = params[:show_inactive] == "1"
-     @users = show_inactive ? User.all : User.active
+     @show_inactive = params[:show_inactive] == "1"
+     @users = @show_inactive ? User.all : User.active
   end
 
   def show; end
