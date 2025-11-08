@@ -91,10 +91,12 @@
               data-bs-placement="right"
               title="Select the committee this service request belongs to."></i>
           </div>
-          <%= f.select :committee,
-            options_for_select(Service::COMMITTEES.map { |c| [c, c] }, @service.committee),
-            { prompt: "Select a Committee" },
-            class: "form-select form-dark default-border-radius font-secondary-subheading" %>
+          <%= f.collection_select :committee_id,
+              Committee.order(:name),
+              :id,
+              :name,
+              { prompt: "Select a Committee" },
+              class: "form-select default-border-radius form-dark text-legion-blue font-secondary-subheading" %>
         </div>
       </div>
 
