@@ -10,12 +10,14 @@ class UsersController < ApplicationController
   end
 
   def public_index
-    @execs = User.where(role: "exec").order(:last_name, :first_name)
-    @committees = Committee.all.includes(committee_memberships: :user).order(:name)
+    @execs = User.where(role: [:exec, :president], status: :active).order(:last_name, :first_name)
+    @committees = Committee.all.includes(:active_users).order(:name)
   end
 
   def index
-    scope = User.left_joins(:services)
+    @show_inactive = params[:show_inactive] == "1"
+    @users = @show_inactive ? User.all : User.active
+    scope = @users.left_joins(:services)
                 .select('users.*, COALESCE(SUM(CASE WHEN services.status = 1 THEN services.hours END), 0) AS total_hours')
                 .group('users.id')
                 .order(:last_name, :first_name)

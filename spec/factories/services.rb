@@ -5,7 +5,7 @@ FactoryBot.define do
     description { "Some description" }
     hours       { 2 }
     date_performed { Date.today }
-    committee   { "events" }   # pick one of your valid committees
+    committee   { "Brotherhood" }   # pick one of your valid committees
     status      { :pending }   # default status
   end
 end

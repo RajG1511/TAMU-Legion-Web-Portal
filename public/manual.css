@@ -2,6 +2,7 @@
    TAMU LEGION BRANDING — CUSTOM STYLESHEET
    ========================================================= */
 
+
 /* ------------------------------
    COLOR UTILITIES
    ------------------------------ */
@@ -24,6 +25,8 @@
 .text-gold            { color: #dbc296 !important; }
 .text-powder-blue     { color: #8fccff !important; }
 .text-cornflower-blue { color: #4b6fcb !important; }
+.text-white           { color: #ffffff !important; }
+.text-black           { color: #000000 !important; }
 
 /* Borders */
 .border-legion-blue     { border-color: #0f296b !important; }
@@ -32,6 +35,7 @@
 .border-gold            { border-color: #dbc296 !important; }
 .border-powder-blue     { border-color: #8fccff !important; }
 .border-cornflower-blue { border-color: #4b6fcb !important; }
+.border-white           { border-color: #ffffff !important; }
 
 /* ------------------------------
    TYPOGRAPHY
@@ -62,6 +66,17 @@
 .default-padding-left { padding-left: 3vw !important; padding-right: 1vw !important; }
 .default-padding-right { padding-right: 3vw !important; padding-left: 1vw !important; }
 
+.gold-divider {
+  height: 10px;                  /* thickness */
+  background-color: #dbc296;     /* exact gold */
+  width: 100%;                   /* full width */
+  margin: 0;                     /* optional spacing */
+  border: none;                  /* remove any border */
+}
+
+
+
+/* Accessibility helper */
 .visually-hidden {
   position: absolute !important;
   height: 1px; width: 1px;
@@ -76,18 +91,46 @@
 .event-scroll-container, .resource-scroll-container {
   max-height: 1200px; overflow-y: auto; padding-right: 8px;
 }
+
+.committee-scroll-container {
+  max-height: 600px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
 .event-scroll-container::-webkit-scrollbar,
 .edit-scroll-container::-webkit-scrollbar,
 .log-scroll-container::-webkit-scrollbar,
-.resource-scroll-container::-webkit-scrollbar { width: 8px; }
-.log-scroll-container::-webkit-scrollbar-thumb { background-color: #0f296b; border-radius: 0; }
-.log-scroll-container::-webkit-scrollbar-track { background-color: white; }
+.resource-scroll-container::-webkit-scrollbar,
+.committee-scroll-container::-webkit-scrollbar { width: 8px; }
+
+.log-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #0f296b;
+  border-radius: 0;
+}
+
+.log-scroll-container::-webkit-scrollbar-track {
+  background-color: white;
+}
+
 .event-scroll-container::-webkit-scrollbar-thumb,
 .edit-scroll-container::-webkit-scrollbar-thumb,
-.resource-scroll-container::-webkit-scrollbar-thumb { background-color: #dbc296; border-radius: 0; }
+.resource-scroll-container::-webkit-scrollbar-thumb,
+.committee-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #dbc296;
+  border-radius: 0;
+}
+
 .event-scroll-container::-webkit-scrollbar-track,
-.resource-scroll-container::-webkit-scrollbar-track { background-color: #081436; }
-.edit-scroll-container::-webkit-scrollbar-track { background-color: #0f296b; }
+.resource-scroll-container::-webkit-scrollbar-track,
+.committee-scroll-container::-webkit-scrollbar-track {
+  background-color: #081436;
+}
+
+.edit-scroll-container::-webkit-scrollbar-track {
+  background-color: #0f296b;
+}
+
 
 /* ------------------------------
    CARDS
@@ -100,7 +143,19 @@
 }
 .event-card:hover, .resource-card:hover { border: 4px solid #dcb296 !important; }
 
-.resource-card-member { display: flex; flex-direction: column; height: 120px; border: none; margin: 0; }
+.event-card:hover,
+.resource-card:hover {
+  border: 4px solid #dbc296 !important;
+}
+
+/* Member resource card */
+.resource-card-member {
+  display: flex;
+  flex-direction: column;
+  height: 120px;
+  border: none;
+  margin: 0;
+}
 
 .edit-card {
   background-color: #0f296b !important;
@@ -118,17 +173,137 @@
 .edit-textarea::-webkit-scrollbar { width: 10px; }
 .edit-textarea::-webkit-scrollbar-thumb { background-color: #ffffff; border-radius: 0px; border: 4px solid #0f296b; }
 
+  .rejection-reason {
+    background-color: #081436; /* dark navy */
+    color: #ffffff !important;
+    border: 2px solid #ffffff;
+    border-radius: 0;
+  }
+
+  .rejection-reason::placeholder { color: #cccccc !important; }
+  .rejection-reason:focus { background-color: #081436 !important; color: #ffffff !important; }
+  .rejection-reason:hover { border-color: #dbc296 !important; }
+
 /* ------------------------------
    BUTTONS
    ------------------------------ */
 .btn-gold { background-color: #dbc296 !important; color: #081436 !important; font-weight: bold; border-radius: 0 !important; }
 .btn-gold:hover { background-color: #081436 !important; color: #dcb296 !important; border-color: #dcb296 !important; }
 
-.white-btn, .white-btn-member-center { background-color: #ffffff !important; font-weight: bold; border-radius: 0 !important; }
-.white-btn-member-center:hover { background-color: #081436 !important; border: 2px solid #ffffff !important; color: #ffffff !important; }
+.btn-gold {
+  background-color: #dbc296 !important;
+  color: #081436 !important;
+  font-weight: bold;
+  border-radius: 0 !important;
+}
+
+.btn-gold:hover {
+  background-color: #081436 !important;
+  color: #dbc296 !important;
+  border-color: #dbc296 !important;
+}
+
+.btn-legion-blue {
+  background-color: #0f296b !important;
+  color: #ffffff !important;
+  font-weight: bold;
+  border-radius: 0 !important;
+  border-color: white !important;
+}
+
+.btn-legion-blue:hover {
+  background-color: #ffffff !important;
+  color: #0f296b !important;
+  border-color: #0f296b !important;
+}
+
+.btn-submit-service{
+  background-color: #0f296b !important;
+  color: #ffffff !important;
+  font-weight: bold;
+  border-radius: 0 !important;
+  border-color: white !important;
+}
+
+.btn-submit-service:hover {
+  background-color: #ffffff !important;
+  color: #0f296b !important;
+  border-left-color: #0f296b !important;
+}
+
+.white-btn,
 .white-btn-member-center {
-  display: flex !important; align-items: center !important; justify-content: center !important;
-  text-align: center !important; height: 60px !important; padding: 0 !important; color: #081436 !important; border: 2px solid #081436 !important; font-weight: bold !important; line-height: normal !important;
+  background-color: #ffffff !important;
+  font-weight: bold;
+  border-radius: 0 !important;
+}
+
+.white-btn-member-center:hover {
+  background-color: #081436 !important;
+  font-weight: bold;
+  border-radius: 0 !important;
+  border: 2px solid #ffffff !important;
+  color: #ffffff !important;
+}
+
+.white-btn-member-center {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  height: 60px !important;
+  padding: 0 !important;
+  color: #081436 !important;
+  border: 2px solid #081436 !important;
+  font-weight: bold !important;
+  line-height: normal !important;
+}
+
+.white-btn {
+  color: #0f296b !important;
+  border: 2px solid #0f296b !important;
+}
+
+.white-btn-login {
+  background-color: #ffffff !important;
+  color: #0f296b !important;
+  border: 2px solid #0f296b !important;
+}
+
+.white-btn-login:hover {
+  background-color: #0f296b !important;
+  color: #ffffff !important;
+  border: 2px solid #ffffff !important;
+}
+
+.white-btn-edit {
+  background-color: #ffffff !important;
+  color: #0f296b !important;
+  border-radius: 0 !important;
+  border: 2px solid #0f296b !important;
+}
+
+.white-btn-edit:hover {
+  background-color: #0f296b !important;
+  color: #ffffff !important;
+  border-radius: 0 !important;
+  border: 2px solid #ffffff !important;
+}
+
+.white-btn-resources,
+.white-btn-committee {
+  background-color: #ffffff !important;
+  color: #081436 !important;
+  border-radius: 0 !important;
+  border: 2px solid #081436 !important;
+}
+
+.white-btn-resources:hover,
+.white-btn-committee:hover {
+  background-color: #081436 !important;
+  color: #ffffff !important;
+  border-radius: 0 !important;
+  border: 2px solid #ffffff !important;
 }
 .white-btn { color: #0f296b !important; border: 2px solid #0f296b !important; }
 .white-btn-login { background-color: #ffffff !important; color: #0f296b !important; border: 2px solid #0f296b !important; }
@@ -145,21 +320,53 @@
 .form-dark::placeholder { color: #cccccc !important; }
 .form-dark option { background-color: #ffffff !important; color: #0f296b !important; }
 .form-dark:hover { border-color: #dbc296 !important; }
-input[type="datetime-local"]::-webkit-calendar-picker-indicator { filter: invert(1) brightness(2); }
+
+/* Chrome, Edge, Safari */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1) brightness(2); /* makes icon white */
+  opacity: 1;
+}
+
+/* Optional: change arrow color (only works in some browsers) */
+input[type="number"].form-dark::-webkit-inner-spin-button,
+input[type="number"].form-dark::-webkit-outer-spin-button {
+  filter: invert(1) brightness(2);
+}
+
 
 /* ------------------------------
    RESOURCE ELEMENTS
    ------------------------------ */
-.resource-card-btn { position: relative; height: 60px; display: flex; width: 100%; background-color: #081436; border: none; gap: 6px; }
-.resource-card-btn-file:hover { border: 2px solid #ffffff; }
-.resource-btn { flex: 1; height: 100%; background-color: #ffffff; color: #081436; display: flex; align-items: center; justify-content: center; text-decoration: none; border: 2px solid #ffffff; }
-.resource-btn:hover { background-color: #081436; color: #ffffff; }
-.resource-sub-btn { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; background-color: white; color: #081436; text-decoration: none; border: none; height: 58px; }
-.view-file-border { border-right: 2px solid #081436; }
-.resource-sub-btn:hover { background-color: #081436; color: #ffffff; }
-.execs-text { background-color: #dbc296 !important; }
-.execs-text:hover { background-color: #081436 !important; }
-@media (max-width: 576px) { .resource-card-btn { height: 100px; } }
+
+/* Main link-type button */
+.resource-btn {
+  flex: 1; /* fill entire container */
+  height: 100%;
+  background-color: #ffffff;
+  color: #081436;
+  display: flex; /* make it a flex container */
+  align-items: center; /* vertical centering */
+  justify-content: center; /* horizontal centering */
+  text-decoration: none;
+  border: 2px solid #ffffff;
+}
+
+.resource-btn:hover {
+  background-color: #081436;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+/* Execs Only text color */
+.execs-text {
+  background-color: #dbc296 !important; /* gold for execs-only */
+  border-color: #dbc296 !important;
+}
+
+.execs-text:hover {
+  background-color: #081436 !important;
+}
 
 /* ------------------------------
    MODALS

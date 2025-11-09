@@ -1,19 +1,19 @@
 Rails.application.routes.draw do
-     # User / Auth routes
-     devise_for :users,
-       skip: [ :registrations ],
-       controllers: {
-         sessions: "users/sessions",
-         omniauth_callbacks: "users/omniauth_callbacks"
-       }
+  # User / Auth routes
+  devise_for :users,
+    skip: [ :registrations ],
+    controllers: {
+      sessions: "users/sessions",
+      omniauth_callbacks: "users/omniauth_callbacks"
+    }
 
   # Users routes
   resources :users do
-       member do
-            get :delete
-       end
+    member do
+      get :delete
+    end
     collection do
-         patch :bulk_update
+      patch :bulk_update
       get :bulk_edit
       post :reset_inactive
     end
@@ -21,44 +21,46 @@ Rails.application.routes.draw do
 
   # Event routes
   resources :events do
-       member do
-            patch :toggle_publish
-       end
+    member do
+      patch :toggle_publish
+    end
     collection do
-         get :dashboard
+      get :dashboard
     end
   end
 
   # Resource routes
   resources :resources do
-       member do
-            patch :toggle_publish
-       end
+    member do
+      patch :toggle_publish
+    end
     collection do
-         get :dashboard
+      get :dashboard
     end
   end
 
   # Committee routes
   resources :committees do
-       member do
-            get :delete
-       end
-
+    member do
+      get :delete
+    end
+    collection do 
+      get :dashboard
+    end
     resources :committee_memberships, only: [ :create, :destroy ]
   end
 
   # Service routes
   resources :services do
-       member do
-            patch :approve
-         patch :reject
-       end
+    member do
+      patch :approve
+      patch :reject
+    end
     collection do
-         get :dashboard
+      get :dashboard
     end
   end
-
+  
   get "services/dashboard", to: "services#dashboard", as: :services_dashboard
 
   # 🏠 Home page (public) + exec-only editor
@@ -92,11 +94,15 @@ Rails.application.routes.draw do
 
   # Gallery management (exec/president only)
   scope :member_center do
-       post "upload_gallery",                to: "home#upload_gallery",              as: :upload_gallery
+    post   "upload_gallery",                to: "home#upload_gallery",              as: :upload_gallery
     delete "delete_gallery_photo/:photo_id", to: "home#delete_gallery_photo",       as: :delete_gallery_photo
     post   "update_caption",                to: "users#update_member_center_caption", as: :update_member_center_caption
   end
 
   # Login page
   get "login", to: "home#login"
+
+  # 📢 Announcement routes
+  resources :announcements, only: [:create]
+  delete "end_announcement", to: "announcements#destroy", as: :end_announcement
 end

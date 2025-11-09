@@ -14,7 +14,7 @@ RSpec.describe "Users bulk actions", type: :system do
 
   let!(:exec) { create(:user, :exec, email: "exec@example.org", password: "password123") }
   let!(:u1)   { create(:user, email: "member1@example.org", password: "password123") }
-  let!(:u2)   { create(:user, :inactive, email: "member2@example.org", password: "password123") }
+  let!(:u2)   { create(:user, email: "member2@example.org", password: "password123") }
 
   it "GET /users/bulk_edit with selected ids renders the page" do
        login_as(exec, scope: :user)

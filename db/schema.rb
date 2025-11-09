@@ -42,6 +42,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_06_210624) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "announcements", force: :cascade do |t|
+    t.text "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "committee_memberships", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.bigint "committee_id", null: false
@@ -216,9 +222,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_06_210624) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "rejection_reason"
-    t.string "committee"
-    t.index ["date_performed"], name: "index_services_on_date_performed"
-    t.index ["status"], name: "index_services_on_status"
+    t.bigint "committee_id"
+    t.index ["committee_id"], name: "index_services_on_committee_id"
     t.index ["user_id"], name: "index_services_on_user_id"
   end
 
@@ -264,5 +269,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_06_210624) do
   add_foreign_key "section_versions", "sections"
   add_foreign_key "section_versions", "users"
   add_foreign_key "sections", "pages"
+  add_foreign_key "services", "committees"
   add_foreign_key "services", "users"
 end

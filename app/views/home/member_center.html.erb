@@ -1,3 +1,9 @@
+<% if Announcement.current.message.present? %>
+  <div class="alert alert-warning text-center">
+    <strong>Announcement:</strong> <%= Announcement.current.message %>
+  </div>
+<% end %>
+
 <!-- Top Header -->
 <div class="container-fluid bg-dark-gray-blue text-white py-3">
   <div class="default-padding-left">
@@ -11,7 +17,7 @@
   <div class="row flex-grow-1">
 
     <!-- Left Column Containing Photo Gallery, Caption, Sign Out, Exec Buttons -->
-    <div class="col-md-5 bg-legion-blue py-4 px-4">
+    <div class="col-md-5 bg-legion-blue py-4 px-4 min-vh-100">
     <div class="default-padding-left">
 
       <!-- Sign Out + Manage Gallery Buttons -->
@@ -36,14 +42,6 @@
               <div class="carousel-item <%= 'active' if index == 0 %> text-center">
                 <%= image_tag(url_for(photo.variant(resize_to_limit: [1600, 1600], sharpen: "0x1.5").processed),
                     class: "d-block mx-auto img-fluid shadow-sm", alt: "Gallery Photo") %>
-                
-                <!-- Delete Button for Exec/President -->
-                <% if @user.exec? || @user.president? %>
-                  <%= button_to "×",
-                      delete_gallery_photo_path(photo_id: photo.id),
-                      method: :delete, data: { confirm: "Are you sure you want to delete this photo?" },
-                      class: "position-absolute top-0 end-0 btn btn-sm btn-gold text-dark-navy p-1" %>
-                <% end %>
               </div>
             <% end %>
           </div>
@@ -68,7 +66,7 @@
 
 
     <!-- Right Column Containg Quick Links and Admin Access -->
-    <div class="col-md-7 bg-dark-navy text-white py-4 px-4">
+    <div class="col-md-7 bg-dark-navy text-white py-4 px-4 min-vh-100">
       <div class="default-padding-right">
         <div class="mb-5">
           <div class="mb-5">
@@ -79,8 +77,7 @@
             <% quick_links = [
                 ["Resources", resources_path],
                 ["View Service Hours", services_path],
-                ["Submit Service Hours", new_service_path],
-                ["Google Photos", "#"],
+                ["Google Photos", "https://photos.google.com/share/AF1QipNYcJkP1oEbcHGInXz_-kOwcBVw7fWq9Oy3Q1uFLs_VBAuSoI20pGc9HoJeVysk4g?pli=1&key=Q2VkcXR1TEpvaUJvbzNwc3cxRmxDM1otTTZETEt3"],
                 ["Upcoming Events", events_path],
                 ["Member Directory", member_directory_path]
               ] %>
@@ -88,7 +85,10 @@
             <div class="row g-3 mb-4">
               <% quick_links.each do |name, path| %>
                 <div class="col-12 col-sm-6 col-md-4 col-lg-4">
-                  <%= link_to name, path, class: "btn white-btn-member-center font-primary-heading w-100" %>
+                  <%= link_to name, path,
+                        class: "btn white-btn-member-center font-primary-heading w-100",
+                        target: (path.start_with?("http") ? "_blank" : nil),
+                        rel: (path.start_with?("http") ? "noopener" : nil) %>
                 </div>
               <% end %>
             </div>
@@ -104,7 +104,7 @@
                 ["Resources Dashboard", dashboard_resources_path],
                 ["Service Dashboard", services_dashboard_path],
                 ["Members Dashboard", users_path],
-                ["Committees Dashboard", '#'],
+                ["Committees Dashboard", dashboard_committees_path],
                 ["Edit Home Page", edit_home_path],
                 ["Edit About Us Page", edit_about_path],
                 ["Edit Recruitment Page", edit_recruitment_path],
@@ -129,79 +129,174 @@
 
 
 <!--  Pop-up Modals -->
-<!-- Combined Photo Gallery & Caption Modal -->
+<!-- Manage Gallery & Caption Modal -->
 <div class="modal fade edit-info-modal" id="manageGalleryModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content p-3">
-      <div class="modal-header border-0">
-        <h5 class="modal-title">Manage Photo Gallery & Caption</h5>
+    <div class="modal-content bg-dark-navy text-white default-border-radius">
+
+      <!-- Modal Header with bottom border -->
+      <div class="modal-header" style="border-bottom: 1px solid white;">
+        <h5 class="modal-title font-primary-heading">Manage Photo Gallery & Caption</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
+      <!-- Modal Body -->
       <div class="modal-body">
 
-        <!-- Upload New Photos -->
+        <!-- Upload New Photos Section -->
         <%= form_with url: upload_gallery_path, method: :post, local: true, html: { multipart: true } do |f| %>
           <div class="mb-3">
             <label class="form-label font-primary-heading">Upload New Photos</label>
             <%= f.file_field :gallery_photos, multiple: true, class: "form-control bg-dark-navy text-white default-border-radius" %>
           </div>
 
-        <!-- Current Uploaded Photos -->
-        <div class="current-photos mt-4">
-          <h6 class="font-primary-heading">Current Uploaded Photos</h6>
-          <ul class="list-group list-group-flush">
-            <% @gallery_photos.each do |photo| %>
-              <li class="list-group-item bg-dark-navy text-white d-flex justify-content-between align-items-center mb-2" style="border: 1px solid white;">
-                <span><%= photo.filename.to_s %></span>
-              </li>
-            <% end %>
-          </ul>
-        </div>
-
           <div class="text-end mt-3">
             <%= f.submit "Upload Photos", class: "btn btn-gold text-dark-navy font-secondary-body" %>
           </div>
         <% end %>
 
-        <hr class="my-4" style="border-color: white;">
+        <!-- Divider -->
+        <div class="w-100 mx-0 my-4" style="border-top: 1px solid white;"></div>
 
-        <!-- Edit Gallery Caption -->
+
+        <!-- Current Uploaded Photos with Delete Option -->
+        <div class="current-photos mt-4">
+          <h6 class="font-primary-heading mb-3">Current Uploaded Photos</h6>
+          <ul class="list-group list-group-flush">
+            <% @shared_user.gallery_photos.each do |photo| %>
+              <li class="list-group-item bg-dark-navy text-white d-flex justify-content-between align-items-center mb-2" style="border: 1px solid white;">
+                <!-- Thumbnail + filename -->
+                <div class="d-flex align-items-center gap-3">
+                  <%= image_tag(photo.variant(resize_to_limit: [120, 120]).processed, class: "img-thumbnail me-2", alt: "Thumbnail") %>
+                  <span class="font-secondary-subheading"><%= photo.filename.to_s %></span>
+                </div>
+
+                <!-- Delete button -->
+                <%= button_to "Delete",
+                    delete_gallery_photo_path(photo_id: photo.id),
+                    method: :delete,
+                    data: { confirm: "Are you sure you want to delete this photo?" },
+                    class: "btn btn-sm btn-gold text-dark-navy font-secondary-body" %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+
+        <!-- Divider -->
+        <div class="w-100 mx-0 my-4" style="border-top: 1px solid white;"></div>
+
+
+        <!-- Edit Gallery Caption Section -->
         <%= form_with url: update_member_center_caption_path, method: :post, local: true do |f| %>
           <div class="mb-3 form-dark-navy">
             <label class="form-label font-primary-heading">Edit Gallery Caption (HTML allowed)</label>
-            <%= f.text_area :text, value: member_center_caption_text, class: "form-control bg-dark-navy text-white default-border-radius", rows: 3 %>
+            <%= f.text_area :text,
+                value: member_center_caption_text,
+                class: "form-control bg-dark-navy text-white default-border-radius",
+                rows: 3 %>
           </div>
 
           <div class="text-end">
             <%= f.submit "Save Caption", class: "btn btn-gold text-dark-navy font-secondary-body" %>
           </div>
         <% end %>
+
       </div>
+
+      <!-- Optional Modal Footer -->
+      <div class="modal-footer" style="border-top: 1px solid white;">
+        <button type="button" class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+
     </div>
   </div>
 </div>
 
-  <!-- Page Management Modal -->
-  <div class="modal fade" id="pageManagementModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content bg-dark-navy text-white border-1 default-border-radius", style="border: 1px solid white;">
-        <div class="modal-header border-1">
-          <h5 class="modal-title">Admin User Guide</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <p>Welcome to the User Guide. As an Admin, you have access to the following features:</p>
-          <ul>
-            <li>Editing Public-facing views</li>
-            <li>Updating Member data and proccessing requests</li>
-            <li>Managing resources, events, and other member center features</li>
-          </ul>
-          <p>For additional guidance on how to use the Member Center, please refer to the User Guide below.</p>
-        <div class="modal-footer">
-          <a href="/Files/Legion_Website_Help_Guide_V.2.pdf" target="_blank" class="btn btn-gold font-secondary-body">Open User Guide (PDF)</a>
-          <button type="button" class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="modal">Close</button>
-        </div>
+
+<!-- Page Management Modal -->
+<div class="modal fade" id="pageManagementModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark-navy text-white default-border-radius" style="border: 1px solid white;">
+      
+      <!-- Modal Header -->
+      <div class="modal-header" style="border-bottom: 1px solid white;">
+        <h5 class="modal-title">Admin User Guide</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body font-secondary-subheading">
+        <p>Welcome to the User Guide. As an Admin, you have access to the following features:</p>
+        <ul>
+          <li>Editing public-facing views</li>
+          <li>Updating member data and processing requests</li>
+          <li>Managing resources, events, and other Member Center features</li>
+        </ul>
+
+        <h6 class="font-secondary-body text-gold mt-4">Navigating the Member Center</h6>
+        <ul class="font-secondary-subheading">
+          <li>The left sidebar allows you to modify the photo gallery and associated caption by adding/removing photos and editing the caption.</li>
+          <li>The <strong>Add Announcement</strong> button allows you to create an announcement that will be displayed on the home page and member center for all users to see.</li>
+          <li>Announcements can then be unpublished at any time by clicking the <strong>End Announcement</strong> button. If no announcement is present, the button will be hidden.</li>
+        </ul>
+
+        <p>For additional guidance on how to use the Member Center, please refer to the User Guide below.</p>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer" style="border-top: 1px solid white;">
+        <% if Announcement.current.message.present? %>
+          <!-- End Announcement button -->
+          <%= button_to "End Announcement",
+                        end_announcement_path,
+                        method: :delete,
+                        class: "btn btn-gold text-dark-navy font-secondary-body",
+                        data: { turbo_confirm: "Are you sure you want to end the announcement?" } %>
+        <% else %>
+          <!-- Add Announcement button -->
+          <button type="button"
+                  class="btn btn-gold text-dark-navy font-secondary-body"
+                  data-bs-toggle="modal"
+                  data-bs-target="#announcementModal">
+            Add Announcement
+          </button>
+        <% end %>
+
+        <!-- Existing buttons -->
+        <a href="/Files/Legion_Website_Help_Guide_V.2.pdf"
+          target="_blank"
+          class="btn btn-gold font-secondary-body">
+          Open User Guide (PDF)
+        </a>
+        <button type="button"
+                class="btn btn-gold text-dark-navy font-secondary-body"
+                data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div> 
+  </div> 
+</div>
+
+<!-- Announcement Modal -->
+<div class="modal fade" id="announcementModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-dark-navy text-white default-border-radius" style="border: 1px solid white;">
+      <div class="modal-header" style="border-bottom: 1px solid white;">
+        <h5 class="modal-title">Add Announcement</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%= form_with model: Announcement.current, url: announcements_path, method: :post, local: true do |f| %>
+          <div class="mb-3">
+            <%= f.label :message, "Announcement Message (appears on Home & Member Center)", class: "form-label font-secondary-heading" %>
+            <%= f.text_area :message, class: "form-control form-dark", rows: 3 %>
+          </div>
+          <%= f.submit "Publish", class: "btn btn-gold text-dark-navy font-secondary-body" %>
+        <% end %>
       </div>
     </div>
   </div>
+</div>

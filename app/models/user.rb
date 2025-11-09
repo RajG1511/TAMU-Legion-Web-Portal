@@ -34,6 +34,7 @@ class User < ApplicationRecord
   validate :president_role_matches_position
 
   scope :active,     -> { where(status: :active) }
+  scope :inactive,   -> { where(status: :inactive) }
   scope :members,    -> { where(role: [:member, :exec, :president]) }
   scope :execs,      -> { where(role: [:exec, :president]) }
   scope :leadership, -> { where(role: [:exec, :president]) }
@@ -82,6 +83,10 @@ class User < ApplicationRecord
   def apply_shared_password
     shared = ENV["DEFAULT_SHARED_PASSWORD"].presence || SecureRandom.base58(16)
     self.password = self.password_confirmation = shared
+  end
+  # OAuth mapping (intentionally no auto-create)
+  def self.from_google(email:, full_name:, uid:, avatar_url:)
+       find_by(email: email, status: :active)
   end
 
   def president_role_matches_position

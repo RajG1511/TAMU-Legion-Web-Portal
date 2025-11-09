@@ -1,31 +1,130 @@
-<h1>Submit a Service</h1>
+<!-- Full Page Wrapper -->
+<div class="container-fluid bg-dark-navy text-white min-vh-100 px-0">
 
-<%= form_with model: @service, local: true do |form| %>
-  <div>
-    <%= form.label :name %><br>
-    <%= form.text_field :name %>
+  <!-- Top Heading -->
+  <div class="container-fluid bg-dark-gray-blue text-white py-3">
+    <h2 class="text-center font-primary-title">
+      Submit a Service Request
+    </h2>
   </div>
 
-  <div>
-    <%= form.label :description %><br>
-    <%= form.text_area :description %>
+  <!-- Gold Divider -->
+  <div class="container-fluid bg-gold py-1"></div>
+
+  <!-- Form Container -->
+  <div class="container my-4 p-4 border border-4 border-white bg-dark-navy text-white default-border-radius">
+
+    <%= form_with model: @service, local: true do |f| %>
+
+      <!-- Error Messages -->
+      <% if @service.errors.any? %>
+        <div class="container-fluid bg-gold text-dark-navy py-2 mb-3">
+          <p class="text-center mb-0 h5">Please fill out all required fields.</p>
+        </div>
+      <% end %>
+
+      <!-- Error Handling -->
+      <% if @service.errors.any? %>
+        <div class="visually-hidden">
+          <ul>
+            <% @service.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+
+      <!-- Section 1: Name, Hours, Date Performed -->
+      <div class="row mb-4">
+
+        <!-- Service Name -->
+        <div class="col-md-4">
+          <div class="d-flex align-items-center">
+            <%= f.label :name, "Service Name", class: "form-label font-primary-heading mb-1 me-2" %>
+            <i class="bi bi-info-circle text-white"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              title="Enter the name or title for this service activity."></i>
+          </div>
+          <%= f.text_field :name, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+
+        <!-- Hours -->
+        <div class="col-md-4">
+          <div class="d-flex align-items-center">
+            <%= f.label :hours, "Number of Hours", class: "form-label font-primary-heading mb-1 me-2" %>
+            <i class="bi bi-info-circle text-white"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              title="Enter the total number of service hours completed (use decimals if needed)."></i>
+          </div>
+          <%= f.number_field :hours, class: "form-control form-dark default-border-radius font-secondary-subheading", step: 0.1 %>
+        </div>
+
+        <!-- Date Performed -->
+        <div class="col-md-4">
+          <div class="d-flex align-items-center">
+            <%= f.label :date_performed, "Date Performed", class: "form-label font-primary-heading mb-1 me-2" %>
+            <i class="bi bi-info-circle text-white"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              title="Select the date when the service activity was performed."></i>
+          </div>
+          <%= f.date_field :date_performed, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+          <small id="date_performed_help" class="text-white font-secondary-subheading">
+            Select the date this service took place
+          </small>
+        </div>
+
+      </div>
+
+      <hr class="border-white border-4">
+
+      <!-- Section 2: Committee -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="d-flex align-items-center">
+            <%= f.label :committee, "Committee", class: "form-label font-primary-heading mb-1 me-2" %>
+            <i class="bi bi-info-circle text-white"
+              data-bs-toggle="tooltip"
+              data-bs-placement="right"
+              title="Select the committee this service request belongs to."></i>
+          </div>
+          <%= f.collection_select :committee_id,
+              Committee.order(:name),
+              :id,
+              :name,
+              { prompt: "Select a Committee" },
+              class: "form-select default-border-radius form-dark text-legion-blue font-secondary-subheading" %>
+        </div>
+      </div>
+
+      <hr class="border-white border-4">
+
+      <!-- Section 3: Description -->
+      <div class="mb-4">
+        <div class="d-flex align-items-center">
+          <%= f.label :description, "Description", class: "form-label font-primary-heading mb-1 me-2" %>
+          <i class="bi bi-info-circle text-white"
+            data-bs-toggle="tooltip"
+            data-bs-placement="right"
+            title="Provide a detailed explanation of the service performed, including tasks or impact."></i>
+        </div>
+        <%= f.text_area :description, class: "form-control form-dark default-border-radius font-secondary-subheading", rows: 4 %>
+      </div>
+
+      <!-- Back and Submit Buttons -->
+      <div class="d-flex justify-content-start gap-2 mt-4">
+        <%= f.submit (@service.persisted? ? "Update Service Request" : "Submit Service Request"),
+            class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+        <%= link_to "← Back to Dashboard", services_path,
+            class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+      </div>
+
+    <% end %>
   </div>
 
-  <div>
-    <%= form.label :hours %><br>
-    <%= form.number_field :hours, step: 0.1 %>
-  </div>
-
-  <div>
-    <%= form.label :date_performed %><br>
-    <%= form.date_field :date_performed %>
-  </div>
-
-  <div>
-    <%= form.label :committee %><br>
-    <%= form.select :committee, Service::COMMITTEES.map { |c| [c.titleize, c] },
-                    prompt: "Select a committee" %>
-  </div>
-
-  <%= form.submit "Submit Service" %>
-<% end %>
+  <!-- Gold Footer Strip -->
+  <div class="container-fluid bg-gold py-1"></div>
+</div>

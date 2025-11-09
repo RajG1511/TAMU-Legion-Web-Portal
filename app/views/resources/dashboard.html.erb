@@ -8,7 +8,7 @@
     <div class="row">
 
         <!-- Left Column Contains Log and Buttons -->
-        <div class="col-md-5 bg-legion-blue py-4">
+        <div class="col-md-5 bg-legion-blue py-4 min-vh-100">
 
             <div class="default-padding-left">
                 <!-- Full-width Create and Member View Buttons -->
@@ -34,12 +34,20 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% @resource_versions.each do |version| %>
-                                <tr class="border border-legion-blue">
-                                    <td class="font-secondary-subheading"><%= version.name %></td>
-                                    <td class="font-secondary-subheading"><%= version.user.first_name %> <%= version.user.last_name %></td>
-                                    <td class="font-secondary-subheading"><%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
-                                    <td class="font-secondary-subheading"><%= version.change_type.capitalize %></td>
+                            <% if @resource_versions.any? %>
+                                <% @resource_versions.each do |version| %>
+                                    <tr class="border border-legion-blue">
+                                        <td class="font-secondary-subheading"><%= version.name %></td>
+                                        <td class="font-secondary-subheading"><%= version.user.first_name %> <%= version.user.last_name %></td>
+                                        <td class="font-secondary-subheading"><%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
+                                        <td class="font-secondary-subheading"><%= version.change_type.capitalize %></td>
+                                    </tr>
+                                <% end %>
+                            <% else %>
+                                <tr>
+                                    <td colspan="4" class="text-center text-black font-secondary-subheading py-3">
+                                        No resource update logs available.
+                                    </td>
                                 </tr>
                             <% end %>
                         </tbody>
@@ -49,7 +57,7 @@
         </div>
 
         <!-- Right Column Contains All Resource Cards and Filter Bar -->
-        <div class="col-md-7 bg-dark-navy text-white py-4">
+        <div class="col-md-7 bg-dark-navy text-white py-4 min-vh-100">
             
             <div class="default-padding-right">
                 <!-- Section Heading with Divider -->

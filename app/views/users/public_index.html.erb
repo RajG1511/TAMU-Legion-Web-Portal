@@ -31,7 +31,7 @@
         <h2 class="font-primary-heading"><%= committee.name %> Committee</h2>
         <hr class="thick-white-divider">
         <div class="row g-3">
-          <% committee.users.each do |user| %>
+          <% committee.active_users.each do |user| %>
             <div class="col-sm-6 col-lg-4">
               <div class="event-card p-3 h-100">
                 <% if user.headshot.present? %>

@@ -8,6 +8,10 @@ class HomeController < ApplicationController
 
   def edit
        @sections = HomePageStore.read
+       page = Page.find_by(slug: "home")
+       @home_versions = PageVersion
+          .for_page(page)
+          .order('page_versions.created_at DESC', :created_at)
   end
 
   def update

@@ -10,7 +10,7 @@
   <div class="row">
 
     <!-- LEFT COLUMN: Editable Sections -->
-    <div class="col-md-7 bg-white text-dark-navy p-4">
+    <div class="col-md-7 bg-white text-dark-navy p-4 min-vh-100">
 
       <%= form_with url: about_path, method: :patch, local: true do |f| %>
         <!-- Scrollable Edit Form Container with responsive left margin -->
@@ -90,8 +90,10 @@
       <% end %>
     </div>
 
-    <!-- RIGHT COLUMN: Update Log / User Guide -->
-    <div class="col-md-5 bg-legion-blue text-white p-4">
+    <!-- RIGHT COLUMN: Update Log / User Guide Placeholder -->
+    <div class="col-md-5 bg-legion-blue text-white p-4 min-vh-100">
+
+      <!-- User Guide Button -->
       <div style="padding-left: 3vw; padding-right: 3vw;">
         <button type="button" class="btn white-btn-edit mb-3 default-border-radius btn-lg font-primary-heading w-100"
           data-bs-toggle="modal" data-bs-target="#UserGuideModal">
@@ -103,10 +105,9 @@
         <table class="table table-bordered table-striped border-white">
           <thead>
             <tr>
-              <th colspan="3" class="bg-white text-dark text-center h5 font-secondary-heading">Update Log</th>
+              <th colspan="2" class="bg-white text-dark text-center h5 font-secondary-heading">Update Log</th>
             </tr>
             <tr>
-              <th class="bg-legion-blue text-white font-secondary-body border-white">Section</th>
               <th class="bg-legion-blue text-white font-secondary-body border-white">Updated By</th>
               <th class="bg-legion-blue text-white font-secondary-body border-white">Timestamp</th>
             </tr>
@@ -114,14 +115,13 @@
           <tbody>
             <% (@about_versions || []).each do |version| %>
               <tr>
-                <td class="font-secondary-subheading">Placeholder Section</td>
-                <td class="font-secondary-subheading">Placeholder User</td>
-                <td class="font-secondary-subheading">Placeholder Timestamp</td>
+                <td class="font-secondary-subheading"><%= version.user.first_name %> <%= version.user.last_name %></td>
+                <td class="font-secondary-subheading"><%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
               </tr>
             <% end %>
             <% if @about_versions.blank? %>
               <tr>
-                <td colspan="3" class="text-center font-secondary-subheading text-light">
+                <td colspan="2" class="text-center font-secondary-subheading text-black">
                   No updates logged yet.
                 </td>
               </tr>
