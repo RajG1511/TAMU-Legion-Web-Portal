@@ -1,12 +1,2 @@
-<h1>New User</h1>
-
-<% if flash[:error].present? %>
-  <div class="mb-4 p-3 rounded bg-red-100 text-red-800"><%= flash[:error] %></div>
-<% end %>
-
 <%= render "form" %>
-
-<p>
-  <%= link_to "Back", users_path %>
-</p>
 

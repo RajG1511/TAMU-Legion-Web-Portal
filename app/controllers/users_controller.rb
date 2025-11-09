@@ -1,38 +1,85 @@
 class UsersController < ApplicationController
-     # execs only for now
-     before_action :require_exec!, only: [ :index, :show, :new, :create, :edit, :update, :delete, :destroy ]
-  before_action :set_user,      only: [ :show, :edit, :update, :delete, :destroy ]
+  before_action :require_exec!, only: [:index, :new, :create, :edit, :update, :delete, :destroy, :bulk_edit, :bulk_update, :reset_inactive]
+  before_action :set_user,      only: [:show, :edit, :update, :delete, :destroy]
+  before_action :ensure_self_or_exec!, only: :show
+
+  
+  def ensure_self_or_exec!
+    return if current_user&.exec? || current_user&.id.to_s == params[:id]
+    redirect_to member_directory_path, alert: "You can only view your own profile."
+  end
 
   def public_index
-     @execs = User.where(role: [:exec, :president], status: :active).order(:last_name, :first_name)
-     @committees = Committee.all.includes(:active_users).order(:name)
+    @execs = User.where(role: [:exec, :president], status: :active).order(:last_name, :first_name)
+    @committees = Committee.all.includes(:active_users).order(:name)
   end
 
   def index
-     @show_inactive = params[:show_inactive] == "1"
-     @users = @show_inactive ? User.all : User.active
+    @show_inactive = params[:show_inactive] == "1"
+    @users = @show_inactive ? User.all : User.active
+    scope = @users.left_joins(:services)
+                .select('users.*, COALESCE(SUM(CASE WHEN services.status = 1 THEN services.hours END), 0) AS total_hours')
+                .group('users.id')
+                .order(:last_name, :first_name)
+
+    scope = scope.merge(User.search(params[:q])) if params[:q].present?
+    @users = scope
+
+    # OLD (problematic): includes(:actor)
+    # @user_versions = UserVersion.includes(:actor, :user).order(created_at: :desc).limit(50)
+
+    # NEW: schema-agnostic (no includes)
+    @user_versions = UserVersion.order(created_at: :desc).limit(50)
   end
 
-  def show; end
+  def directory
+    @q = params[:q].to_s.strip
+
+    scope = User.members.active
+                .select(:id, :first_name, :last_name, :email, :role, :position, :major, :graduation_year)
+                .order(:first_name, :last_name)
+
+    if @q.present?
+      pattern = "%#{@q.downcase}%"
+      scope = scope.where(
+        "LOWER(first_name) ILIKE :p OR LOWER(last_name) ILIKE :p OR LOWER(email) ILIKE :p OR LOWER(position) ILIKE :p OR LOWER(major) ILIKE :p OR CAST(graduation_year AS TEXT) ILIKE :p",
+        p: pattern
+      )
+
+      if User.roles.key?(@q.downcase)
+        scope = scope.or(
+          User.members.active.where(role: @q.downcase)
+              .select(:id, :first_name, :last_name, :email, :role, :position, :major, :graduation_year)
+        )
+      end
+    end
+
+    @users = scope
+  end
+
+
+  def show
+    # service hours rollup and list
+    @approved_hours = @user.services.approved.sum(:hours)
+    @services = @user.services.recent
+  end
 
   def new
-       # Default sensible values so execs can create without needing president fields
-       @user = User.new(role: :member, status: :active)
+    @user = User.new(role: :member, status: :active)
   end
 
   def create
-       # Pre-set defaults if the creator isn't allowed to pick them
-       defaults = {}
-    defaults[:role]   = :member  if params.dig(:user, :role).blank?
-    defaults[:status] = :active  if params.dig(:user, :status).blank?
+    defaults = {}
+    defaults[:role]   = :member if params.dig(:user, :role).blank?
+    defaults[:status] = :active if params.dig(:user, :status).blank?
 
     @user = User.new(defaults.merge(user_params))
-
     if @user.save
-         flash[:success] = "User created."
+      log_user_change(@user, :created, summary: "Member created")
+      flash[:success] = "User created."
       redirect_to users_path
     else
-         Rails.logger.error(@user.errors.full_messages.to_sentence)
+      Rails.logger.error(@user.errors.full_messages.to_sentence)
       flash.now[:error] = "User not created: " + @user.errors.full_messages.to_sentence
       render :new, status: :unprocessable_entity
     end
@@ -41,121 +88,148 @@ class UsersController < ApplicationController
   def edit; end
 
   def update
-       if @user.update(user_params)
-          if params[:user][:remove_headshot] == "1"
-               @user.headshot.purge
-          end
-          flash[:success] = "User updated."
-          redirect_to users_path
-       else
-            flash.now[:error] = "User not updated: " + @user.errors.full_messages.to_sentence
-         render :edit, status: :unprocessable_entity
-       end
+    before = @user.attributes.slice(*mutable_keys)
+    if @user.update(user_params)
+      after = @user.attributes.slice(*mutable_keys)
+      log_user_change(@user, :updated, summary: "Member updated", diff: changed_diff(before, after))
+      flash[:success] = "User updated."
+      redirect_to users_path
+    else
+      flash.now[:error] = "User not updated: " + @user.errors.full_messages.to_sentence
+      render :edit, status: :unprocessable_entity
+    end
   end
 
   def delete; end
 
   def destroy
-       @user.destroy
+    name = @user.full_name
+    log_user_change(@user, :deleted, summary: "Member deleted (#{name})")
+
+    # Safety: pre-nullify any possible FK blockers
+    UserVersion.where(user_id: @user.id).update_all(user_id: nil)
+    # (repeat for other version tables if they reference users)
+    # CommitteeVersion.where(user_id: @user.id).update_all(user_id: nil)
+    # ResourceVersion.where(user_id: @user.id).update_all(user_id: nil)
+    # EventVersion.where(user_id: @user.id).update_all(user_id: nil)
+
+    @user.destroy!
     flash[:success] = "User deleted."
     redirect_to users_path
+  rescue ActiveRecord::InvalidForeignKey => e
+    # Last-ditch fallback: nullify again and retry once
+    UserVersion.where(user_id: @user.id).update_all(user_id: nil)
+    retry
   end
 
   # ---------- BULK ACTIONS ----------
   def bulk_edit
-       @users = User.where(id: params[:user_ids])
+    @users = User.where(id: params[:user_ids])
     redirect_to(users_path, alert: "Please select users to edit") if @users.empty?
   end
 
   def bulk_update
-       user_ids = params[:user_ids] || []
+    user_ids = Array(params[:user_ids])
     updates  = {}
 
-    [ :status, :graduation_year, :major, :t_shirt_size ].each do |field|
-         value = params.dig(:bulk_update, field)
+    [:status, :graduation_year, :major, :t_shirt_size].each do |field|
+      value = params.dig(:bulk_update, field)
       updates[field] = value if value.present?
     end
 
-    if updates.any?
-         User.where(id: user_ids).update_all(updates)
+    if updates.any? && user_ids.any?
+      User.where(id: user_ids).update_all(updates)
+      UserVersion.create!(
+        user: current_user, actor: current_user,
+        change_type: :bulk_updated,
+        change_summary: "Bulk updated #{user_ids.size} members",
+        diff: updates
+      )
       flash[:success] = "#{user_ids.count} users updated successfully"
     else
-         flash[:alert] = "No fields selected for update"
+      flash[:alert] = "No fields selected for update"
     end
-
     redirect_to users_path
   end
 
   def reset_inactive
-       inactive_count = User.inactive.update_all(status: :active)
-    flash[:success] = "Reset #{inactive_count} inactive members to active status"
+    count = User.inactive.update_all(status: :active)
+    UserVersion.create!(
+      user: current_user, actor: current_user,
+      change_type: :reset_inactive,
+      change_summary: "Reset #{count} inactive members to active",
+      diff: {}
+    )
+    flash[:success] = "Reset #{count} inactive members to active status"
     redirect_to users_path
   end
 
-     def update_member_center_caption
-          text = params[:text]
+  def update_member_center_caption
+    text = params[:text]
+    allowed_tags = %w[a]
+    allowed_attributes = %w[href title target]
+    sanitized_text = ActionController::Base.helpers.sanitize(text, tags: allowed_tags, attributes: allowed_attributes)
 
-          # Only allow <a> tags with href attribute
-          allowed_tags = %w[a]
-          allowed_attributes = %w[href title target]
+    if sanitized_text.blank?
+      redirect_back(fallback_location: root_path, alert: "Caption cannot be empty!")
+      return
+    end
 
-          sanitized_text = ActionController::Base.helpers.sanitize(
-               text,
-               tags: allowed_tags,
-               attributes: allowed_attributes
-          )
-
-          if sanitized_text.blank?
-               redirect_back(fallback_location: root_path, alert: "Caption cannot be empty!")
-               return
-          end
-
-          File.write(
-               Rails.root.join("config", "member_center_caption.yml"),
-               { text: sanitized_text }.to_yaml
-          )
-
-          redirect_back(fallback_location: root_path, notice: "Member Center Caption updated!")
-     end
-
+    File.write(Rails.root.join("config", "member_center_caption.yml"), { text: sanitized_text }.to_yaml)
+    redirect_back(fallback_location: root_path, notice: "Member Center Caption updated!")
+  end
 
   private
 
-       def set_user
-            @user = User.find(params[:id])
-       end
+  def set_user
+    @user = User.find(params[:id])
+  end
 
-  # base fields everyone can edit
+  def mutable_keys
+    %w[email first_name last_name graduation_year major t_shirt_size image_url headshot status position role]
+  end
+
+  def changed_diff(before, after)
+    diff = {}
+    after.each { |k,v| diff[k] = { before: before[k], after: v } if before[k] != v }
+    diff
+  end
+
+  def log_user_change(user, type, summary:, diff: {})
+    UserVersion.create!(user: user, actor: current_user, change_type: type, change_summary: summary, diff: diff)
+  rescue => e
+    Rails.logger.warn "UserVersion log failed: #{e.message}"
+  end
+
+  # ----- strong params -----
   def base_permitted_params
-       [ :email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url, :headshot ]
+    [:email, :first_name, :last_name, :graduation_year, :major, :t_shirt_size, :image_url, :headshot, :position]
   end
 
-  # execs can also set status
   def exec_permitted_params
-       base_permitted_params + [ :status ]
+    base_permitted_params + [:status]
   end
 
-  # president can also set position/role
   def pres_permitted_params
-       exec_permitted_params + [ :position, :role ]
+    exec_permitted_params + [:role]
   end
 
   def create_permitted_params
-       [ :password, :password_confirmation ]
+    [] # password fields are hidden/managed in model
   end
 
   def user_params
-       permitted_params =
-         if current_user&.president?
-              pres_permitted_params
-         elsif current_user&.exec?
-              exec_permitted_params
-         else
-              base_permitted_params
-         end
+    permitted_params =
+      if current_user&.president?
+        pres_permitted_params
+      elsif current_user&.exec?
+        exec_permitted_params
+      else
+        base_permitted_params
+      end
 
     permitted_params += create_permitted_params if action_name == "create"
-
     params.require(:user).permit(permitted_params)
   end
 end
+

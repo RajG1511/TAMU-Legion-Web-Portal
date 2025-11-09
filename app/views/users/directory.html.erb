@@ -1,0 +1,84 @@
+<!-- app/views/users/directory.html.erb -->
+
+<!-- Header strip -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title">Member Directory</h1>
+</div>
+
+<!-- Gold divider -->
+<div class="container-fluid bg-gold py-1"></div>
+
+<!-- Body -->
+<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100 border-bottom border-12 border-gold">
+  <div class="default-padding">
+
+    <!-- Search bar row -->
+    <div class="bg-white p-3 mb-4 default-border-radius">
+      <%= form_with url: member_directory_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue" do %>
+        <div class="col-auto">
+          <span class="fw-bold font-secondary-body">Search For:</span>
+        </div>
+        <div class="col">
+          <%= text_field_tag :q, params[:q], class: "form-control default-border-radius", placeholder: "name, email, position, major, year…" %>
+        </div>
+        <div class="col-auto">
+          <!-- Members can only view their own profile; button links to current_user’s page -->
+          <% if current_user %>
+            <%= link_to "View Member’s Profile", user_path(current_user, from: "directory"), class: "btn btn-gold text-dark-navy font-secondary-body default-border-radius" %>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped mb-0 border-primary" style="border-color: #0b1530;">
+        <thead>
+          <tr class="bg-legion-blue text-white">
+            <th class="font-secondary-heading">Member</th>
+            <th class="font-secondary-heading">Email</th>
+            <th class="font-secondary-heading">Role</th>
+            <th class="font-secondary-heading">Position</th>
+            <th class="font-secondary-heading">Major</th>
+            <th class="font-secondary-heading">Graduation Year</th>
+          </tr>
+        </thead>
+        <tbody class="text-dark">
+          <% @users.each do |u| %>
+            <tr>
+              <td class="font-secondary-subheading"><%= "#{u.first_name} #{u.last_name}" %></td>
+              <td class="font-secondary-subheading"><%= u.email %></td>
+              <td class="font-secondary-subheading">
+                <!-- u.role is an enum key string via the select; titleize for display -->
+                <%= u.role.to_s.titleize %>
+              </td>
+              <td class="font-secondary-subheading"><%= u.position.presence || "-" %></td>
+              <td class="font-secondary-subheading"><%= u.major.presence || "-" %></td>
+              <td class="font-secondary-subheading"><%= u.graduation_year.presence || "-" %></td>
+            </tr>
+          <% end %>
+
+          <% if @users.blank? %>
+            <tr>
+              <td colspan="6" class="text-center text-white py-4 font-secondary-subheading">
+                No members matched your search.
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Footnote -->
+    <div class="mt-3">
+      <small class="text-white-50 font-secondary-body">
+        * Members can only view their own profile from here. Executives can view all profiles from the Members Dashboard.
+      </small>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom gold divider -->
+<div class="container-fluid bg-gold py-1"></div>
+

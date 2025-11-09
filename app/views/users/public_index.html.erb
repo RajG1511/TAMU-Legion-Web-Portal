@@ -1,38 +1,52 @@
-<h1>Members</h1>
+<!-- Public Members Directory -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title">Members</h1>
+</div>
+<div class="container-fluid bg-gold py-1"></div>
 
-<section>
-    <div>
-        <h2>Executive Board</h2>
-        <ul>
-            <% @execs.each do |user| %>
-                <li>
-                    <% if user.headshot.present? %>
-                        <%= image_tag user.headshot %>
-                    <% end %>
-                    <p><strong><%= user.full_name %> '<%= user.graduation_year%></strong></p>
-                    <p><strong><%= user.position %></strong></p>
-                    <p><%= user.major %></p>
-                </li>
-            <% end %>
-        </ul>
-    </div>
-</section>
+<div class="container-fluid bg-dark-navy text-white pt-4 pb-5">
+  <div class="default-padding">
 
-<% @committees.each do |committee| %>
-    <section>
-        <div>
-            <h2><%= committee.name %> Committee</h2>
-            <ul>
-                <% committee.active_users.each do |user| %>
-                    <li>
-                        <% if user.headshot.present? %>
-                            <%= image_tag user.headshot %>
-                        <% end %>
-                        <p><strong><%= user.full_name %> '<%= user.graduation_year%></strong></p>
-                        <p><%= user.major %></p>
-                    </li>
-                <% end %>
-            </ul>
-        </div>
+    <section class="mb-5">
+      <h2 class="font-primary-heading">Executive Board</h2>
+      <hr class="thick-white-divider">
+      <div class="row g-3">
+        <% @execs.each do |user| %>
+          <div class="col-sm-6 col-lg-4">
+            <div class="event-card p-3 h-100">
+              <% if user.headshot.present? %>
+                <%= image_tag user.headshot, class: "img-fluid mb-2" %>
+              <% end %>
+              <p class="mb-1"><strong><%= user.full_name %> '<%= user.graduation_year %></strong></p>
+              <p class="mb-1"><strong><%= user.position %></strong></p>
+              <p class="mb-0"><%= user.major %></p>
+            </div>
+          </div>
+        <% end %>
+      </div>
     </section>
-<% end %>
+
+    <% @committees.each do |committee| %>
+      <section class="mb-4">
+        <h2 class="font-primary-heading"><%= committee.name %> Committee</h2>
+        <hr class="thick-white-divider">
+        <div class="row g-3">
+          <% committee.active_users.each do |user| %>
+            <div class="col-sm-6 col-lg-4">
+              <div class="event-card p-3 h-100">
+                <% if user.headshot.present? %>
+                  <%= image_tag user.headshot, class: "img-fluid mb-2" %>
+                <% end %>
+                <p class="mb-1"><strong><%= user.full_name %> '<%= user.graduation_year %></strong></p>
+                <p class="mb-0"><%= user.major %></p>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </section>
+    <% end %>
+
+  </div>
+</div>
+<div class="container-fluid bg-gold py-1"></div>
+

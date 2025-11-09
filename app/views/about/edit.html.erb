@@ -13,7 +13,6 @@
     <div class="col-md-7 bg-white text-dark-navy p-4 min-vh-100">
 
       <%= form_with url: about_path, method: :patch, local: true do |f| %>
-
         <!-- Scrollable Edit Form Container with responsive left margin -->
         <div class="overflow-auto pe-2 edit-scroll-container" style="max-height: 75vh; margin-left: 3vw;">
 
@@ -21,7 +20,7 @@
           <div class="edit-card p-4 mb-4">
             <h3 class="font-primary-title mb-2 text-white">What is LEGION?</h3>
             <p class="text-gold mb-0 font-primary-heading"><strong>Can Edit Title & Body</strong></p>
-            <p class="text-white mb-0 font-secondary-body"><strong>Body Accepts HTML & All Fields Accept Plaintext</strong></p>
+            <p class="text-white mb-0 font-secondary-body"><strong>Body accepts HTML; all fields accept plaintext</strong></p>
 
             <div class="mt-3">
               <label class="font-secondary-subheading mb-2 text-white">Current Title Text:</label>
@@ -36,9 +35,9 @@
 
           <!-- FACTS SECTION -->
           <div class="edit-card p-4 mb-4">
-            <h3 class="font-primary-title mb-2 text-white">Facts</h3>
+            <h3 class="font-primary-title mb-2 text-white">Fast Facts</h3>
             <p class="text-gold mb-0 font-primary-heading"><strong>Can Edit Title & Facts</strong></p>
-            <p class="text-white mb-0 font-secondary-body"><strong>All Fields Accept Plaintext</strong></p>
+            <p class="text-white mb-0 font-secondary-body"><strong>All fields accept plaintext</strong></p>
 
             <div class="mt-3">
               <label class="font-secondary-subheading mb-2 text-white">Current Title Text:</label>
@@ -59,9 +58,9 @@
 
           <!-- PILLARS SECTION -->
           <div class="edit-card p-4 mb-4">
-            <h3 class="font-primary-title mb-2 text-white">Pillars</h3>
+            <h3 class="font-primary-title mb-2 text-white">Our Pillars</h3>
             <p class="text-gold mb-0 font-primary-heading"><strong>Can Edit Title & Pillars</strong></p>
-            <p class="text-white mb-0 font-secondary-body"><strong>All Fields Accept Plaintext</strong></p>
+            <p class="text-white mb-0 font-secondary-body"><strong>All fields accept plaintext</strong></p>
 
             <div class="mt-3">
               <label class="font-secondary-subheading mb-2 text-white">Current Title Text:</label>
@@ -102,7 +101,6 @@
         </button>
       </div>
 
-      <!-- Update Log Table Placeholder -->
       <div class="table-responsive log-scroll-container" style="max-height: 75vh; overflow-y: auto; padding-left: 3vw; padding-right: 3vw;">
         <table class="table table-bordered table-striped border-white">
           <thead>
@@ -131,55 +129,32 @@
           </tbody>
         </table>
       </div>
-
     </div>
 
   </div>
-</div> 
+</div>
 
 <!-- User Guide Modal -->
 <div class="modal fade edit-info-modal" id="UserGuideModal" tabindex="-1" aria-labelledby="UserGuideModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
-
-      <!-- Modal Header -->
       <div class="modal-header">
         <h5 class="modal-title font-primary-heading" id="UserGuideModalLabel">About Us Edit Guide</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-
-      <!-- Modal Body -->
       <div class="modal-body font-secondary-subheading">
-        <p>
-          Welcome to the About Us Page Editing Guide! 
-          Here you’ll find information on how to view and manage the About Us Page.
-        </p>
-
+        <p>Welcome to the About Us Page Editing Guide!</p>
         <h6 class="font-secondary-body text-gold mt-4">Editing the About Us Page</h6>
         <ul class="font-secondary-subheading">
-          <li>Each section of the About Us Page can be edited by going to the corresponding section form.</li>
-          <li>Each form showcases the current section that is editable, the fields that can be edited and how, and the current values.</li>
-          <li>Click each field under "Current" to edit its text/HTML.</li>
-          <li>Any and All changes will need to be saved located at the bottom of the form where a flash message should appear upon completion.</li>
-          <li>Once saved, the changes will be reflected on the About Us Page.</li>
-          <li>Any issues upon saving will be indicated by an error flash message.</li>
-          <li>Any HTML changes will be validated wtih restrictions on HTML inputs</li>
+          <li>Each section is editable below. Titles accept plaintext; body accepts limited HTML.</li>
+          <li>Click into a field to modify; save at the bottom.</li>
+          <li>Saved changes reflect immediately on the public About page.</li>
         </ul>
-
         <h6 class="text-gold mt-4 font-secondary-body">Understanding the Update Log</h6>
         <ul class="font-secondary-subheading">
-          <li>Whoever edits the About Us Page is recorded in the Update Log.</li>
-          <li>The log allows for admin to track any mistakes made in updates.</li>
+          <li>Edits are recorded for accountability and rollbacks.</li>
         </ul>
       </div>
-
-      <!-- Modal Footer -->
       <div class="modal-footer">
-        <button type="button" class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="modal">
-          Close
-        </button>
-      </div>
+        <button type="button" class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="m
 
-    </div>
-  </div>
-</div>
