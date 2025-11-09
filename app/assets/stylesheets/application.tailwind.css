@@ -80,6 +80,14 @@
   white-space: nowrap;
 }
 
+.gold-divider {
+  height: 10px;                  /* thickness */
+  background-color: #dbc296;     /* exact gold */
+  width: 100%;                   /* full width */
+  margin: 0;                     /* optional spacing */
+  border: none;                  /* remove any border */
+}
+
 /* ------------------------------
    SCROLLABLE CONTAINERS
    ------------------------------ */
