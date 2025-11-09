@@ -562,7 +562,8 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 .hero { position:relative; width:100%; min-height:440px; overflow:hidden; }
 
 .hero__image {
-  background-image:url('/people.jpg');
+  /* Use a safe image you added */
+  background-image:url('/Photos/Nature.jpg');
   background-size:cover;
   background-position:center 45%;
   width:100%;
@@ -863,12 +864,75 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 .contact-questions__body, .contact-list__body { color:#222; line-height:1.7; margin:0 0 12px; max-width:820px; }
 .contact-cta-btn { display:inline-block; padding:10px 16px; text-decoration:none; font-weight:700; }
 
+/* ---------- About: top slab + collage (Wix look) ---------- */
+.about-stripe { background:#dbc296; height:18px; width:100%; }
+.about-hero-slab {
+  display:grid;
+  grid-template-columns:minmax(320px, 820px) 1fr;
+  gap:0;
+  align-items:stretch;
+  width:100%;
+}
+.about-hero__left {
+  background:#0f296b;
+  color:#fff;
+  padding:46px 40px;
+}
+.about-hero__left h2 {
+  font-family:"Libre Baskerville", serif;
+  font-weight:700;
+  font-size:44px;
+  margin:0 0 18px;
+}
+.about-hero__left p { line-height:1.9; font-size:18px; margin-bottom:16px; }
+.about-hero__left .gold-rule { height:6px; background:#dbc296; width:100%; margin:18px 0 0; }
+
+.about-hero__collage {
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(6, 1fr);
+  grid-auto-rows: 120px;
+  gap:8px;
+  padding:12px 12px 18px;
+  background:#0f296b;
+}
+.about-hero__collage::before{
+  /* blue wash over photos */
+  content:"";
+  position:absolute; inset:0;
+  background:rgba(15,41,107,.28);
+  pointer-events:none;
+}
+.collage-item{
+  background-size:cover;
+  background-position:center;
+  filter:grayscale(100%) contrast(105%) brightness(96%);
+  border-radius:6px;
+}
+/* Wire collage items to your images */
+.collage-item.i1{ background-image:linear-gradient(rgba(10,20,48,.05),rgba(10,20,48,.05)), url('/Photos/House.jpg'); }
+.collage-item.i2{ background-image:linear-gradient(rgba(10,20,48,.05),rgba(10,20,48,.05)), url('/Photos/Nature.jpg'); }
+.collage-item.i3{ background-image:linear-gradient(rgba(10,20,48,.05),rgba(10,20,48,.05)), url('/Photos/MiniHouse.jpg'); }
+/* Try JPG first; if you convert Service.HEIC -> Service.jpg this path will work */
+.collage-item.i4{ background-image:linear-gradient(rgba(10,20,48,.05),rgba(10,20,48,.05)), url('/Photos/Service.jpg'), url('/Photos/Service.HEIC'); }
+
+/* Make some tiles span like Wix’s mosaic */
+.collage-item.tall { grid-row: span 2; }
+.collage-item.wide { grid-column: span 2; }
+.collage-item.hero { grid-column: span 3; grid-row: span 2; }
+
+@media (max-width: 1100px){
+  .about-hero-slab { grid-template-columns:1fr; }
+  .about-hero__collage { grid-auto-rows: 100px; }
+}
+
 /* Small screen tweaks */
 @media (max-width: 768px){
   .what__rule{ width:60%; }
   .contact-hero::after{ width:70%; opacity:.18; }
 }
 
+/* ---------- Optional single-photo blocks used below sections ---------- */
 .about-photo-block,
 .contact-hero-photo-block,
 .about-photo-dark-block {
@@ -887,14 +951,8 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   object-fit: cover;
 }
 
-.about-photo-small-wrapper {
-  margin-top: 28px;
-}
-
-.about-photo-small {
-  width: 300px;
-  border-radius: 8px;
-}
+.about-photo-small-wrapper { margin-top: 28px; }
+.about-photo-small { width: 300px; border-radius: 8px; }
 
 .contact-accent-photo,
 .contact-bottom-photo {
