@@ -1,43 +1,75 @@
-<div class="container-fluid bg-dark-gray-blue text-white py-3">
-  <h2 class="text-center font-primary-title">Bulk Edit Users</h2>
+<!-- Full Page Wrapper -->
+<div class="container-fluid bg-dark-navy text-white min-vh-100 px-0">
+
+  <!-- Header Strip -->
+  <div class="container-fluid bg-dark-gray-blue text-white py-3">
+    <h2 class="text-center font-primary-title">Bulk Update Users</h2>
+  </div>
+
+  <!-- Gold Divider -->
+  <div class="container-fluid bg-gold py-1"></div>
+
+  <!-- Form Container -->
+  <div class="container my-4 p-4 border border-4 border-white bg-dark-navy text-white default-border-radius">
+    <%= form_with url: bulk_update_users_path, method: :patch, local: true do %>
+
+      <!-- Info Text -->
+      <p class="bg-gold text-dark-navy py-2 px-3 font-primary-heading text-center mb-4">
+        You are editing <strong><%= @users.size %></strong> users. Leave fields blank to keep existing values.
+      </p>
+
+      <!-- Row 1: Major, Graduation Year, T-Shirt Size -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="d-flex align-items-center mb-1">
+            <label class="form-label font-primary-heading mb-0 me-2">Major</label>
+            <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Enter the member's major field of study."></i>
+          </div>
+          <%= text_field_tag "bulk_update[major]", nil, class: "form-control form-dark default-border-radius font-secondary-subheading", placeholder: "Keep current" %>
+        </div>
+
+        <div class="col-md-4">
+          <div class="d-flex align-items-center mb-1">
+            <label class="form-label font-primary-heading mb-0 me-2">Graduation Year</label>
+            <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Enter the member's expected graduation year."></i>
+          </div>
+          <%= number_field_tag "bulk_update[graduation_year]", nil, class: "form-control form-dark default-border-radius font-secondary-subheading", placeholder: "Keep current" %>
+        </div>
+
+        <div class="col-md-4">
+          <div class="d-flex align-items-center mb-1">
+            <label class="form-label font-primary-heading mb-0 me-2">T-Shirt Size</label>
+            <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Select the member's T-Shirt size."></i>
+          </div>
+          <%= select_tag "bulk_update[t_shirt_size]", options_for_select([["Keep current",""]] + %w[XS S M L XL XXL XXXL]), class: "form-select form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+      </div>
+
+      <!-- Row 2: Status -->
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="d-flex align-items-center mb-1">
+            <label class="form-label font-primary-heading mb-0 me-2">Status</label>
+            <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Set the member's status: Active or Inactive."></i>
+          </div>
+          <%= select_tag "bulk_update[status]", options_for_select([["Keep current",""]] + User.statuses.keys.map { |s| [s.humanize, s] }), class: "form-select form-dark default-border-radius font-secondary-subheading" %>
+          <small class="text-white font-secondary-subheading d-block mt-1">
+            *Inactive status can be used for member removal or deactivation.
+          </small>
+        </div>
+      </div>
+
+      <% @users.each { |u| concat hidden_field_tag("user_ids[]", u.id) } %>
+
+      <!-- Submit & Back Buttons -->
+      <div class="d-flex justify-content-start gap-2 mt-4">
+        <%= submit_tag "Update All Selected Users", class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+        <%= link_to "← Back to Dashboard", users_path, class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+      </div>
+
+    <% end %>
+  </div>
+
+  <!-- Gold Footer Strip -->
+  <div class="container-fluid bg-gold py-1"></div>
 </div>
-<div class="container-fluid bg-gold py-1"></div>
-
-<div class="container my-4 p-4 border border-4 border-white bg-dark-navy text-white default-border-radius">
-  <%= form_with url: bulk_update_users_path, method: :patch, local: true do %>
-    <p class="bg-gold text-dark-navy py-2 px-3 font-secondary-subheading mb-3">
-      You are editing <strong><%= @users.size %></strong> users. Leave fields blank to keep existing values.
-    </p>
-
-    <div class="row g-3">
-      <div class="col-md-4">
-        <label class="form-label font-primary-heading">Status</label>
-        <%= select_tag "bulk_update[status]", options_for_select([["Keep current",""]] + User.statuses.keys.map{ |s| [s.humanize, s] }),
-            class: "form-select form-dark default-border-radius font-secondary-subheading" %>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label font-primary-heading">Graduation Year</label>
-        <%= number_field_tag "bulk_update[graduation_year]", nil, class: "form-control form-dark default-border-radius font-secondary-subheading", placeholder: "Keep current" %>
-      </div>
-      <div class="col-md-4">
-        <label class="form-label font-primary-heading">T-Shirt Size</label>
-        <%= select_tag "bulk_update[t_shirt_size]", options_for_select([["Keep current",""]] + %w[XS S M L XL XXL XXXL]),
-            class: "form-select form-dark default-border-radius font-secondary-subheading" %>
-      </div>
-      <div class="col-md-12">
-        <label class="form-label font-primary-heading">Major</label>
-        <%= text_field_tag "bulk_update[major]", nil, class: "form-control form-dark default-border-radius font-secondary-subheading", placeholder: "Keep current" %>
-      </div>
-    </div>
-
-    <% @users.each { |u| concat hidden_field_tag("user_ids[]", u.id) } %>
-
-    <div class="d-flex justify-content-start gap-2 mt-4">
-      <%= submit_tag "Update All Selected Users", class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
-      <%= link_to "Cancel", users_path, class: "btn btn-outline-light default-border-radius font-primary-heading" %>
-    </div>
-  <% end %>
-</div>
-
-<div class="container-fluid bg-gold py-1"></div>
-

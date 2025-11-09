@@ -23,6 +23,7 @@
 .bg-powder-blue      { background-color: #8fccff !important; }
 .bg-cornflower-blue  { background-color: #4b6fcb !important; }
 .bg-dark-gray-blue   { background-color: #324158 !important; }
+.bg-light-gray       { background-color: #d9d9d9 !important; }
 
 /* Text colors */
 .text-legion-blue     { color: #0f296b !important; }
@@ -56,7 +57,7 @@
 
 .text-sm-custom { font-size: 0.875rem; }
 .text-md-custom { font-size: 1rem; }
-.text-lg-custom { font-size: 1.25rem; }
+.text-lg-custom { font-size: 3.25rem; }
 
 /* ------------------------------
    GENERAL UTILITIES
