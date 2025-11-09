@@ -10,7 +10,7 @@ class CommitteesController < ApplicationController
      end
 
      def dashboard
-          @committees = Committee.includes(committee_memberships: :user).order(:name)
+          @committees = Committee.includes(:active_users).order(:name)
           @committee_versions = CommitteeVersion.includes(:committee,:user).order(created_at: :desc).limit(20)
      end
 
@@ -60,7 +60,7 @@ class CommitteesController < ApplicationController
      private
 
      def set_committee
-          @committee = Committee.includes(committee_memberships: :user).find(params[:id])
+          @committee = Committee.includes(:active_users).find(params[:id])
      end
 
      def committee_params
@@ -89,7 +89,7 @@ class CommitteesController < ApplicationController
      end
 
      def load_members_for_form
-          @members = @committee&.users || User.none
-          @non_members = User.where.not(id: @members.select(:id)).order(:last_name, :first_name)
+          @members = @committee&.active_users || User.none
+          @non_members = User.active.where.not(id: @members.select(:id)).order(:last_name, :first_name)
      end
 end

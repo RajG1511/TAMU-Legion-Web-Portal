@@ -35,6 +35,7 @@ class User < ApplicationRecord
 
   # Scopes
   scope :active,     -> { where(status: :active) }
+  scope :inactive,   -> { where(status: :inactive) }
   scope :members,    -> { where(role: [ :member, :exec, :president ]) }
   scope :execs,      -> { where(role: [ :exec, :president ]) }
   scope :leadership, -> { where(role: [ :exec, :president ]) }
@@ -69,7 +70,7 @@ class User < ApplicationRecord
 
   # OAuth mapping (intentionally no auto-create)
   def self.from_google(email:, full_name:, uid:, avatar_url:)
-       find_by(email: email)
+       find_by(email: email, status: :active)
   end
 
   private

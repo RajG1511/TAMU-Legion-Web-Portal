@@ -2,7 +2,14 @@
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-3xl font-bold">Users Management</h1>
     <div class="flex gap-2">
-      <!-- Use site button styles instead of Tailwind utilities -->
+      <!-- toggle inactive users -->
+      <% toggle_to   = (@show_inactive ? 0 : 1) %>
+      <% toggle_text = (@show_inactive ? "Hide inactive users" : "Show inactive users") %>
+      <% toggle_cls  = (@show_inactive ? "btn btn-gold text-dark-navy" : "btn white-btn-edit") %>
+      <%= link_to toggle_text,
+                  users_path(show_inactive: toggle_to),
+                  class: "#{toggle_cls} default-border-radius font-primary-heading" %>
+
       <%= link_to 'New User', new_user_path, class: "btn btn-navy" %>
 
       <% if current_user.exec? %>
