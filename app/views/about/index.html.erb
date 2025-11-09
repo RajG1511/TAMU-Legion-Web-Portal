@@ -1,90 +1,77 @@
-<%# Top tan divider to match Wix %>
-<div class="about__tan-bar"></div>
+<!-- Thin top line like Wix -->
+<div class="wix-top-line"></div>
 
-<section class="about__hero">
-  <div class="about__hero-card">
-    <h1>What is LEGION?</h1>
-    <p>
-      Founded in 2018, LEGION Men's Organization is a student-led organization at
-      Texas A&amp;M University that aims to develop its members into leaders by providing
-      a supportive peer group that encourages personal growth, hosting knowledge
-      workshops and events to bolster professional goals, participating in community
-      service, and through the support of our philanthropic partner.
-    </p>
-    <p>
-      Every week, our members are exposed to opportunities to connect with their peers,
-      build their educational and professional knowledge base, meet members of other
-      organizations on campus, and give back to the community. Our members walk away
-      from LEGION with greater opportunities and lifelong relationships.
-    </p>
-  </div>
+<!-- HERO -->
+<section class="about-hero">
+  <div class="about-hero-bg" style="background-image:url('/Photos/Nature.jpg');"></div>
+  <div class="about-hero-overlay"></div>
 
-  <div class="about__mosaic">
-    <%# Use any 8–12 photos. HEIC won’t render in browsers—convert to JPG/PNG first. %>
-    <%= image_tag "/Photos/House.jpg",      class: "about__mosaic-img" %>
-    <%= image_tag "/Photos/MiniHouse.jpg",  class: "about__mosaic-img" %>
-    <%= image_tag "/Photos/Nature.jpg",     class: "about__mosaic-img" %>
-    <%# Add/duplicate any others you placed in /public/Photos %>
-    <%= image_tag "/Photos/House.jpg",      class: "about__mosaic-img" %>
-    <%= image_tag "/Photos/MiniHouse.jpg",  class: "about__mosaic-img" %>
-    <%= image_tag "/Photos/Nature.jpg",     class: "about__mosaic-img" %>
-    <%= image_tag "/Photos/House.jpg",      class: "about__mosaic-img" %>
-    <%= image_tag "/Photos/MiniHouse.jpg",  class: "about__mosaic-img" %>
-
-    <%# Blue overlay to match the Wix monochrome effect %>
-    <div class="about__mosaic-overlay"></div>
-  </div>
-</section>
-
-<section class="about__stats">
-  <div class="about__stats-inner">
-    <h2>Fast Facts</h2>
-    <div class="about__stats-sub">Within Spring 2024 Semester</div>
-
-    <div class="about__stats-grid">
-      <div class="about__stat">
-        <div class="about__stat-value">77 Members</div>
-      </div>
-      <div class="about__stat">
-        <div class="about__stat-value">&gt;1,000 Service hours</div>
-      </div>
-      <div class="about__stat">
-        <div class="about__stat-value">&gt;$1,700 Raised</div>
-        <a href="/philanthropy" class="about__stat-link">See Philanthropy</a>
-      </div>
+  <div class="about-hero-badge">
+    <div class="about-hero-badge-inner">
+      <div class="about-hero-badge-title">About Us</div>
+      <small>LEGION Men's Organization</small>
     </div>
   </div>
 </section>
 
-<section class="about__pillars">
-  <div class="about__pillars-inner">
-    <h2>Our Pillars</h2>
+<!-- WHAT IS LEGION -->
+<section class="about-who">
+  <div class="about-grid">
+    <!-- Left: dark blue content block -->
+    <div class="about-panel">
+      <h2 class="about-panel__title">What is LEGION?</h2>
+      <div class="about-panel__rule"></div>
 
-    <div class="about__pillars-grid">
-      <div class="about__pillar">
-        <div class="about__pillar-icon">
-          <%= image_tag "/Logos/legion_seal.png", alt: "Brotherhood" %>
-        </div>
-        <div class="about__pillar-title">Brotherhood</div>
-      </div>
+      <p class="about-panel__text">
+        Founded in 2018, LEGION Men's Organization is a student-led organization
+        at Texas A&amp;M University that aims to develop its members into leaders
+        by providing a supportive peer group that encourages personal growth,
+        hosting knowledge workshops and events to bolster professional goals,
+        participating in community service, and through the support of our
+        philanthropic partner.
+      </p>
 
-      <div class="about__pillar">
-        <div class="about__pillar-icon">
-          <%= image_tag "/Logos/legion_seal.png", alt: "Service" %>
-        </div>
-        <div class="about__pillar-title">Service</div>
-      </div>
-
-      <div class="about__pillar">
-        <div class="about__pillar-icon">
-          <%= image_tag "/Logos/legion_seal.png", alt: "Integrity" %>
-        </div>
-        <div class="about__pillar-title">Integrity</div>
-      </div>
+      <p class="about-panel__text">
+        Every week, our members are exposed to opportunities to connect with
+        their peers, build their educational and professional knowledge base,
+        meet members of other organizations on campus, and give back to the
+        community. Our members walk away from LEGION with greater opportunities
+        and lifelong relationships.
+      </p>
     </div>
+
+    <!-- Right: single tall photo (no collage) -->
+    <figure class="about-photo-figure">
+      <img src="/Photos/House.jpg"
+           alt="LEGION members"
+           class="about-photo-img" />
+    </figure>
   </div>
 </section>
 
-<%# Bottom thin tan bar, like Wix %>
-<div class="about__tan-bar about__tan-bar--bottom"></div>
+<!-- FAST FACTS -->
+<section class="about-facts">
+  <div class="about-facts__content">
+    <h3 class="about-facts__title">Fast Facts</h3>
+    <div class="about-facts__subtitle">Within Spring 2024 Semester</div>
+
+    <ul class="about-facts__list">
+      <li class="about-facts__fact">77 Members</li>
+      <li class="about-facts__fact">&gt;1,000 Service hours</li>
+      <li class="about-facts__fact">&gt;$1,700 Raised <span class="about-facts__link">See Philanthropy</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- OUR PILLARS -->
+<section class="about-pillars">
+  <div class="about-pillars__content">
+    <h3 class="about-pillars__title">Our Pillars</h3>
+    <ul class="about-pillars__list">
+      <li class="about-pillars__pillar">Brotherhood</li>
+      <li class="about-pillars__pillar">Service</li>
+      <li class="about-pillars__pillar">Integrity</li>
+    </ul>
+  </div>
+</section>
 
