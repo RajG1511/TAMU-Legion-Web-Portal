@@ -510,4 +510,9 @@ input[type="number"].form-dark::-webkit-outer-spin-button {
   .about-hero-badge{ bottom:-22px; }
   .about-hero-badge-title{ font-size:24px; }
 }
+/* ===== Members page small tweaks ===== */
+.members-table td, .members-table th { vertical-align: middle; }
+@media (max-width: 768px){
+  .members-table td:nth-child(3) { word-break: break-all; }
+}
 
