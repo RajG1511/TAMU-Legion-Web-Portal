@@ -5,3 +5,4 @@ Rails.start()
 import "./event_form"
 import "./resource_form"
 import "./service_rejection"
+import "./directory"
