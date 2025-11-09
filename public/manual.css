@@ -699,7 +699,22 @@ input[type="number"].form-dark::-webkit-outer-spin-button {
 .contact-survey__content { max-width: var(--page-max); margin: 0 auto; text-align: center; }
 .contact-survey__title { font-family: "Libre Baskerville", serif; font-weight: 700; font-size: 28px; margin: 0 0 8px; }
 .contact-survey__body { opacity: .95; margin-bottom: 12px; }
-.contact-survey__button { @apply btn btn-gold; } /* if Tailwind isn’t active, leave as is – your .btn-gold exists */
+.contact-survey__button{
+  background-color:#dbc296;
+  color:#081436 !important;
+  font-weight:700;
+  border-radius:0;
+  border:2px solid #dbc296;
+  padding:10px 16px;
+  display:inline-block;
+  text-decoration:none;
+  cursor:pointer;
+}
+.contact-survey__button:hover{
+  background-color:#081436;
+  color:#dcb296 !important;
+  border-color:#dcb296;
+}
 
 /* ---------- Responsive ---------- */
 @media (max-width: 992px) {
