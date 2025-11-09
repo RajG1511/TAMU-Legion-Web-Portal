@@ -25,7 +25,7 @@
             <!-- Reset All Inactive -->
             <%= form_with url: reset_inactive_users_path, method: :post, local: true, class: "flex-grow-1 m-0" do |f| %>
               <%= f.submit "Reset All Inactive",
-                          class: "btn white-btn-edit default-border-radius btn-lg font-primary-heading w-100 text-sm-custom" ,
+                          class: "btn white-btn-edit default-border-radius text-dark-navy btn-lg font-primary-heading w-100 text-sm-custom" ,
                           data: { confirm: "Reset all inactive to active?" } %>
             <% end %>
 
@@ -139,7 +139,7 @@
               <div id="bulk-edit-selected"></div>
               <%= submit_tag "Edit Selected Users",
                   id: "top-bulk-edit",
-                  class: "btn btn-submit-service p-3 h-100 text-dark-navy default-border-radius font-secondary-body px-4 d-flex justify-content-center align-items-center",
+                  class: "btn btn-submit-service text-white p-3 h-100 text-dark-navy default-border-radius font-secondary-body px-4 d-flex justify-content-center align-items-center",
                   style: "margin-left: -1px;" %>
             <% end %>
           </div>

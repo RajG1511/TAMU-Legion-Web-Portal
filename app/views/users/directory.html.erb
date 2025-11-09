@@ -4,10 +4,10 @@
 </div>
 
 <!-- Gold divider -->
-<div class="container-fluid bg-gold py-1"></div>
+<div class="gold-divider"></div>
 
 <!-- Body -->
-<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100 border-bottom border-12 border-gold">
+<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100">
   <div class="default-padding">
 
       <!-- Search + View Profile Bar -->
@@ -40,7 +40,7 @@
           <div class="flex-shrink-0 d-flex align-items-stretch">
             <% if current_user %>
               <%= link_to "View My Profile", user_path(current_user, from: "directory"),
-                class: "btn btn-submit-service p-3 h-100 text-dark-navy default-border-radius font-secondary-body px-4 d-flex justify-content-center align-items-center",
+                class: "btn btn-submit-service p-3 h-100 text-white default-border-radius font-secondary-body px-4 d-flex justify-content-center align-items-center",
                 style: "margin-left: -1px;" %>
             <% end %>
           </div>
@@ -96,5 +96,5 @@
   </div>
 </div>
 
-<!-- Bottom gold divider -->
-<div class="container-fluid bg-gold py-1"></div>
+<!-- Gold divider -->
+<div class="gold-divider"></div>
