@@ -3,11 +3,11 @@
     <h1 class="text-center font-primary-title">Resources</h1>
 </div>
 
-<!-- Gold Divider -->
-<div class="container-fluid bg-gold py-1"></div>
+<!-- Gold divider -->
+<div class="gold-divider"></div>
 
 <!-- Main Body Section -->
-<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100 border-bottom border-12 border-gold">
+<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100">
 
     <div class="default-padding">
         <!-- Display resources if any exist -->
@@ -42,35 +42,29 @@
             <h2 class="font-primary-title mb-2 mt-4"><%= category.name %> Resources</h2>
             <hr class="border-white border-4 mb-3">
 
-<!-- Resource Buttons -->
-<div class="d-flex flex-wrap gap-3">
-  <% resources_in_category.each do |resource| %>
-    <div class="d-flex flex-grow-1" style="min-width: 150px; max-width: 220px; min-height: 70px;"> <!-- adjust min/max width as needed -->
+            <!-- Resource Buttons -->
+            <div class="d-flex flex-wrap gap-3">
+              <% resources_in_category.each do |resource| %>
+                <div class="d-flex flex-grow-1" style="min-width: 150px; max-width: 220px; min-height: 70px;"> <!-- adjust min/max width as needed -->
 
-      <% if resource.resource_type == "link" %>
-        <%= link_to resource.name, resource.content, target: "_blank", rel: "noopener",
-            class: "resource-btn d-flex align-items-center justify-content-center text-center font-primary-heading w-100 #{'execs-text' if resource.visibility == 'execs_only'}" %>
+                  <% if resource.resource_type == "link" %>
+                    <%= link_to resource.name, resource.content, target: "_blank", rel: "noopener",
+                        class: "resource-btn d-flex align-items-center justify-content-center text-center font-primary-heading w-100 #{'execs-text' if resource.visibility == 'execs_only'}" %>
 
-      <% elsif resource.resource_type == "file" && resource.file.attached? %>
-        <div class="d-flex gap-1 w-100">
-          <%= link_to "View #{resource.name}", rails_blob_path(resource.file, disposition: "inline"),
-              target: "_blank",
-              class: "btn resource-btn default-border-radius flex-grow-1 font-primary-heading #{'execs-text' if resource.visibility == 'execs_only'}" %>
+                  <% elsif resource.resource_type == "file" && resource.file.attached? %>
+                    <div class="d-flex gap-1 w-100">
+                      <%= link_to "View #{resource.name}", rails_blob_path(resource.file, disposition: "inline"),
+                          target: "_blank",
+                          class: "btn resource-btn default-border-radius flex-grow-1 font-primary-heading #{'execs-text' if resource.visibility == 'execs_only'}" %>
 
-          <%= link_to "Download #{resource.name}", rails_blob_path(resource.file, disposition: "attachment"),
-              class: "btn resource-btn default-border-radius flex-grow-1 font-primary-heading #{'execs-text' if resource.visibility == 'execs_only'}" %>
-        </div>
-      <% end %>
+                      <%= link_to "Download #{resource.name}", rails_blob_path(resource.file, disposition: "attachment"),
+                          class: "btn resource-btn default-border-radius flex-grow-1 font-primary-heading #{'execs-text' if resource.visibility == 'execs_only'}" %>
+                    </div>
+                  <% end %>
 
-    </div>
-  <% end %>
-</div>
-
-
-
-
-
-        
+                </div>
+              <% end %>
+            </div>
         <% end %>
 
         <% else %>
@@ -80,4 +74,4 @@
 </div>
 
 <!-- Gold Divider -->
-<div class="container-fluid bg-gold py-1"></div>
+<div class="gold-divider"></div>

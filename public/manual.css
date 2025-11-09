@@ -89,6 +89,16 @@
   padding-left: 1vw !important;
 }
 
+.gold-divider {
+  height: 10px;                  /* thickness */
+  background-color: #dbc296;     /* exact gold */
+  width: 100%;                   /* full width */
+  margin: 0;                     /* optional spacing */
+  border: none;                  /* remove any border */
+}
+
+
+
 /* Accessibility helper */
 .visually-hidden {
   position: absolute !important;
@@ -163,7 +173,7 @@
 
 .event-card:hover,
 .resource-card:hover {
-  border: 4px solid #dcb296 !important;
+  border: 4px solid #dbc296 !important;
 }
 
 /* Member resource card */
@@ -232,8 +242,8 @@
 
 .btn-gold:hover {
   background-color: #081436 !important;
-  color: #dcb296 !important;
-  border-color: #dcb296 !important;
+  color: #dbc296 !important;
+  border-color: #dbc296 !important;
 }
 
 .btn-legion-blue {

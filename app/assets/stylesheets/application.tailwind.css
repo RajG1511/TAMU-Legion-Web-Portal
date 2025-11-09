@@ -92,6 +92,16 @@
   padding-left: 1vw !important;
 }
 
+.gold-divider {
+  height: 10px;                  /* thickness */
+  background-color: #dbc296;     /* exact gold */
+  width: 100%;                   /* full width */
+  margin: 0;                     /* optional spacing */
+  border: none;                  /* remove any border */
+}
+
+
+
 /* Accessibility helper */
 .visually-hidden {
   position: absolute !important;
@@ -113,7 +123,7 @@
 }
 
 .committee-scroll-container {
-  max-height: 200px;
+  max-height: 600px;
   overflow-y: auto;
   padding-right: 8px;
 }
