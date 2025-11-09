@@ -7,6 +7,11 @@
   <div class="contact-hero__inner">
     <h1 class="contact-hero__title"><%= cms_text(:hero_title, page: :contact) %></h1>
   </div>
+
+  <!-- Wix hero image -->
+  <div class="contact-hero-photo-block">
+    <img src="/Photos/Nature.jpg" class="contact-hero-photo" alt="LEGION photo">
+  </div>
 </section>
 
 <!-- MEETING INFO -->
@@ -16,9 +21,11 @@
     <p class="contact-meetings__body"><%= cms_html(:meetings_body_html, page: :contact) %></p>
     <p class="contact-meetings__location"><%= cms_text(:meetings_location, page: :contact) %></p>
     <p class="contact-meetings__map">
-      <a class="contact-meetings__location-link" href="<%= cms_text(:meetings_location_url, page: :contact) %>">View Location on an Interactive Map</a>
+      <a class="contact-meetings__location-link" href="<%= cms_text(:meetings_location_url, page: :contact) %>">View Location on Map</a>
     </p>
-    <p class="contact-meetings__additional"><%= cms_html(:meetings_additional_html, page: :contact) %></p>
+
+    <!-- accent image -->
+    <img src="/Photos/House.jpg" class="contact-accent-photo">
   </div>
 </section>
 
@@ -41,10 +48,12 @@
     <p class="contact-list__cta">
       <a class="white-btn-edit contact-cta-btn" href="<%= cms_text(:email_list_button_url, page: :contact) %>"><%= cms_text(:email_list_button_label, page: :contact) %></a>
     </p>
+
+    <!-- bottom image -->
+    <img src="/Photos/MiniHouse.jpg" class="contact-bottom-photo">
   </div>
 </section>
 
-<!-- EDIT BUTTON -->
 <% if current_user&.exec? %>
   <section class="contact-edit">
     <%= link_to "Edit Contact Page", edit_contact_path, class: "btn btn-outline-light" %>

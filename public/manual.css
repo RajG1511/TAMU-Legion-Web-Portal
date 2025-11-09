@@ -869,3 +869,38 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   .contact-hero::after{ width:70%; opacity:.18; }
 }
 
+.about-photo-block,
+.contact-hero-photo-block,
+.about-photo-dark-block {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 32px 0;
+}
+
+.about-photo,
+.contact-hero-photo,
+.about-photo-dark {
+  width: 100%;
+  max-width: 1200px;
+  border-radius: 12px;
+  object-fit: cover;
+}
+
+.about-photo-small-wrapper {
+  margin-top: 28px;
+}
+
+.about-photo-small {
+  width: 300px;
+  border-radius: 8px;
+}
+
+.contact-accent-photo,
+.contact-bottom-photo {
+  margin-top: 22px;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 10px;
+}
+
