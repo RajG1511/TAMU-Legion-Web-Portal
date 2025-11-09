@@ -2,13 +2,10 @@
 
 <div class="wix-top-line"></div>
 
-<!-- HERO -->
-<section class="contact-hero"
-         style="--hero:url('/Photos/House.jpg');">
-  <!-- background image with overlay -->
-  <div class="contact-hero__bg"
-       style="background-image: linear-gradient(transparent,transparent), url('/Photos/House.jpg');"></div>
-
+<!-- HERO (matches About: natural image + dark overlay + gold bar under) -->
+<section class="contact-hero" style="--hero:url('/Photos/House.jpg');">
+  <div class="contact-hero__bg" style="background-image: url('/Photos/House.jpg');"></div>
+  <div class="contact-hero__overlay"></div>
   <div class="contact-hero__inner">
     <h1 class="contact-hero__title"><%= cms_text(:hero_title, page: :contact) %></h1>
   </div>
@@ -17,9 +14,7 @@
 <!-- MEETING INFO -->
 <section class="contact-meetings">
   <div class="contact-meetings__content">
-    <h2 class="contact-meetings__title">
-      <%= cms_text(:meetings_title, page: :contact) %>
-    </h2>
+    <h2 class="contact-meetings__title"><%= cms_text(:meetings_title, page: :contact) %></h2>
 
     <p class="contact-meetings__body">
       <%= cms_html(:meetings_body_html, page: :contact) %>
@@ -31,21 +26,31 @@
         <%= simple_format(cms_text(:meetings_location, page: :contact)) %>
       </div>
 
-      <!-- Map: if you have an embeddable URL, use iframe; otherwise show an image placeholder -->
-      <% map_url = cms_text(:meetings_location_url, page: :contact) %>
-      <% if map_url.present? && map_url.include?("embed") %>
-        <iframe class="map-frame" src="<%= map_url %>" height="360" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-      <% else %>
-        <img class="map-image" src="/Photos/MiniHouse.jpg" alt="Map/location">
-      <% end %>
+      <!-- Google Maps (embed) -->
+      <iframe
+        class="map-frame"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3433.769724381363!2d-96.34411942545245!3d30.61225777464256!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x86468398550f7f1d%3A0x9dc3b5de86caa9a4!2s275%20Joe%20Routt%20Blvd%2C%20College%20Station%2C%20TX%2077843!5e0!3m2!1sen!2sus!4v1762719269087!5m2!1sen!2sus"
+        width="100%"
+        height="380"
+        style="border:0;"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
     </div>
 
     <p class="contact-meetings__body" style="margin-top:14px;">
       <%= cms_html(:meetings_additional_html, page: :contact) %>
     </p>
 
+    <!-- “View location on map” (opens Google Maps) -->
     <p class="contact-meetings__map">
-      <a class="contact-meetings__location-link" href="<%= map_url %>">View location on map</a>
+      <a
+        class="contact-meetings__location-link"
+        href="https://www.google.com/maps/search/?api=1&query=275%20Joe%20Routt%20Blvd%2C%20College%20Station%2C%20TX%2077843"
+        target="_blank" rel="noopener">
+        View location on map
+      </a>
     </p>
   </div>
 </section>
@@ -78,17 +83,18 @@
   </section>
 <% end %>
 
-<!-- SUPPORT SURVEY (optional CTA kept, styled) -->
+<!-- SUPPORT SURVEY -->
 <section class="contact-survey">
   <div class="contact-survey__content">
     <h2 class="contact-survey__title">Customer Support Survey</h2>
     <p class="contact-survey__body">
       We value your feedback! Please take a moment to complete our support survey and let us know how we can improve your experience on the website.
     </p>
-    <a class="btn-gold contact-survey__button"
-       href="https://docs.google.com/forms/d/e/1FAIpQLSe2qfLq6og0zteVH9JWIlZxz4QYZaJF1dWf2KxA78eCDt9lig/viewform?usp=dialog"
-       target="_blank" rel="noopener">
-       Take the Survey
+    <a
+      class="btn-gold contact-survey__button"
+      href="https://docs.google.com/forms/d/e/1FAIpQLSe2qfLq6og0zteVH9JWIlZxz4QYZaJF1dWf2KxA78eCDt9lig/viewform?usp=dialog"
+      target="_blank" rel="noopener">
+      Take the Survey
     </a>
   </div>
 </section>

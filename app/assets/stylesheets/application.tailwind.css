@@ -515,46 +515,43 @@ input[type="number"].form-dark::-webkit-outer-spin-button {
 /* Thin top divider bar like Wix already declared as .wix-top-line */
 
 /* ---------- HERO (single image with dark overlay + title) ---------- */
+/* CONTACT hero – match About: image + dark navy overlay + gold bar */
 .contact-hero {
   position: relative;
-  min-height: 360px;
+  width: 100%;
+  min-height: 380px;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
-  /* gold hairline like Wix sits under the image */
-  box-shadow: inset 0 -10px 0 #dbc296;
+  box-shadow: inset 0 -12px 0 #dbc296; /* gold bar */
 }
-
-.contact-hero::before {
-  /* dark blue overlay */
-  content: "";
-  position: absolute; inset: 0;
-  background: rgba(8, 20, 54, 0.55);
-}
-
 .contact-hero__bg {
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: 0;
   background-size: cover;
-  background-position: center 45%;
-  filter: grayscale(10%);
+  background-position: center 40%;
+  filter: none;                /* <- remove the blue tint filter */
 }
-
+.contact-hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 20, 54, 0.60); /* same navy overlay as About */
+}
 .contact-hero__inner {
   position: relative;
-  z-index: 1;
   width: 100%;
   max-width: var(--page-max);
   margin: 0 auto;
-  padding: 24px 18px;
+  padding: 32px 18px;
+}
+.contact-hero__title {
+  font-family: "Libre Baskerville", serif;
+  color: #ffffff;
+  font-size: 44px;
+  font-weight: 700;
+  margin: 0 0 6px 0;
 }
 
-.contact-hero__title {
-  color: #fff;
-  font-family: "Libre Baskerville", serif;
-  font-weight: 700;
-  font-size: 44px;
-  margin: 0 0 8px 0;
-}
 
 /* ---------- “Want to speak at one of our weekly meetings?” ---------- */
 .contact-meetings {
