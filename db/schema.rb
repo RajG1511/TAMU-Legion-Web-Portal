@@ -221,7 +221,22 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_08_202925) do
     t.text "rejection_reason"
     t.bigint "committee_id"
     t.index ["committee_id"], name: "index_services_on_committee_id"
+    t.index ["date_performed"], name: "index_services_on_date_performed"
+    t.index ["status"], name: "index_services_on_status"
     t.index ["user_id"], name: "index_services_on_user_id"
+  end
+
+  create_table "user_versions", force: :cascade do |t|
+    t.integer "change_type", default: 0, null: false
+    t.bigint "user_id"
+    t.bigint "actor_id"
+    t.string "change_summary", null: false
+    t.jsonb "diff", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_id"], name: "index_user_versions_on_actor_id"
+    t.index ["created_at"], name: "index_user_versions_on_created_at"
+    t.index ["user_id"], name: "index_user_versions_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -261,4 +276,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_11_08_202925) do
   add_foreign_key "sections", "pages"
   add_foreign_key "services", "committees"
   add_foreign_key "services", "users"
+  add_foreign_key "user_versions", "users", column: "actor_id", on_delete: :nullify
+  add_foreign_key "user_versions", "users", on_delete: :nullify
 end
