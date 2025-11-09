@@ -58,7 +58,7 @@
                 </th>
               </tr>
               <tr>
-                <th class="bg-legion-blue text-white border-white font-secondary-body">Member(s)</th>
+                <th class="bg-legion-blue text-white border-white font-secondary-body">Member</th>
                 <th class="bg-legion-blue text-white border-white font-secondary-body">Updated By</th>
                 <th class="bg-legion-blue text-white border-white font-secondary-body">Change Type</th>
                 <th class="bg-legion-blue text-white border-white font-secondary-body">Timestamp</th>
@@ -70,7 +70,7 @@
                 <% @user_versions.each do |v| %>
                   <tr class="border border-legion-blue">
                     <td class="font-secondary-subheading">
-                      <%= v.user.present? ? v.user.full_name : "(multiple)" %>
+                      <%= v.target_user.present? ? v.target_user.full_name : "(multiple)" %>
                     </td>
                     <td class="font-secondary-subheading">
                       <%= version_actor_name(v) %>

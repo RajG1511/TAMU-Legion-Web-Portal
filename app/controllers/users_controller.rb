@@ -91,7 +91,7 @@ class UsersController < ApplicationController
     before = @user.attributes.slice(*mutable_keys)
     if @user.update(user_params)
       after = @user.attributes.slice(*mutable_keys)
-      log_user_change(@user, :updated, summary: "Member updated", diff: changed_diff(before, after))
+      log_user_change(@user, :updated, summary: "Member updated", details: changed_diff(before, after))
       flash[:success] = "User updated."
       redirect_to users_path
     else
@@ -129,40 +129,51 @@ class UsersController < ApplicationController
   end
 
   def bulk_update
-    user_ids = Array(params[:user_ids])
-    updates  = {}
+  user_ids = Array(params[:user_ids])
+  updates  = {}
 
-    [:status, :graduation_year, :major, :t_shirt_size].each do |field|
-      value = params.dig(:bulk_update, field)
-      updates[field] = value if value.present?
-    end
-
-    if updates.any? && user_ids.any?
-      User.where(id: user_ids).update_all(updates)
-      UserVersion.create!(
-        user: current_user, actor: current_user,
-        change_type: :bulk_updated,
-        change_summary: "Bulk updated #{user_ids.size} members",
-        diff: updates
-      )
-      flash[:success] = "#{user_ids.count} users updated successfully"
-    else
-      flash[:alert] = "No fields selected for update"
-    end
-    redirect_to users_path
+  [:status, :graduation_year, :major, :t_shirt_size].each do |field|
+    value = params.dig(:bulk_update, field)
+    updates[field] = value if value.present?
   end
+
+  if updates.any? && user_ids.any?
+    # Update all users
+    User.where(id: user_ids).update_all(updates)
+
+    # Log a UserVersion for EACH affected user
+    user_ids.each do |uid|
+      UserVersion.create!(
+        user_id: current_user.id,       # actor
+        target_user_id: uid,            # affected user
+        change_type: :bulk_updated,
+        summary: "Bulk updated by #{current_user.full_name}",
+        details: updates
+      )
+    end
+
+    flash[:success] = "#{user_ids.count} users updated successfully"
+  else
+    flash[:alert] = "No fields selected for update"
+  end
+
+  redirect_to users_path
+end
+
 
   def reset_inactive
-    count = User.inactive.update_all(status: :active)
-    UserVersion.create!(
-      user: current_user, actor: current_user,
-      change_type: :reset_inactive,
-      change_summary: "Reset #{count} inactive members to active",
-      diff: {}
-    )
-    flash[:success] = "Reset #{count} inactive members to active status"
-    redirect_to users_path
+  affected_users = User.inactive.to_a
+  count = affected_users.size
+  affected_users.each do |user|
+    log_user_change(user, :reset_inactive, summary: "Reset inactive member to active", details: {})
   end
+
+  User.where(id: affected_users.map(&:id)).update_all(status: :active)
+
+  flash[:success] = "Reset #{count} inactive members to active status"
+  redirect_to users_path
+  end
+
 
   def update_member_center_caption
     text = params[:text]
@@ -195,11 +206,18 @@ class UsersController < ApplicationController
     diff
   end
 
-  def log_user_change(user, type, summary:, diff: {})
-    UserVersion.create!(user: user, actor: current_user, change_type: type, change_summary: summary, diff: diff)
+  def log_user_change(target_user, type, summary:, details: {})
+  UserVersion.create!(
+    user: current_user,        # actor
+    target_user: target_user,  # affected user
+    change_type: type,
+    summary: summary,
+    details: details
+  )
   rescue => e
     Rails.logger.warn "UserVersion log failed: #{e.message}"
   end
+
 
   # ----- strong params -----
   def base_permitted_params
