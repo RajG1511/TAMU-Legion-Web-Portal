@@ -1,38 +1,49 @@
+<!-- app/views/users/show.html.erb -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h2 class="text-center font-primary-title"><%= @user.full_name %></h2>
+</div>
 
-<h1><%= @user.full_name %>’s Profile</h1>
+<div class="container-fluid bg-gold py-1"></div>
 
-<dl>
-  <dt>Email</dt><dd><%= @user.email %></dd>
-  <dt>First name</dt><dd><%= @user.first_name %></dd>
-  <dt>Last name</dt><dd><%= @user.last_name %></dd>
-  <dt>Graduation year</dt><dd><%= @user.graduation_year %></dd>
-  <dt>Major</dt><dd><%= @user.major %></dd>
-  <dt>T-Shirt size</dt><dd><%= @user.t_shirt_size %></dd>
-  <dt>Status</dt><dd><%= @user.status.humanize %></dd>
-  <dt>Position</dt><dd><%= @user.position %></dd>
-  <dt>Role</dt><dd><%= @user.role.humanize %></dd>
-  <dt>Joined</dt><dd><%= @user.created_at.strftime("%B %d, %Y") %></dd>
-</dl>
+<div class="container bg-dark-navy text-white py-4">
+  <p class="font-secondary-body mb-1"><strong>Email:</strong> <%= @user.email %></p>
+  <p class="font-secondary-body mb-1"><strong>Role:</strong> <%= @user.role.humanize %> – <strong>Status:</strong> <%= @user.status.humanize %></p>
+  <p class="font-secondary-body mb-3"><strong>Approved Service Hours:</strong> <%= number_with_precision(@approved_hours, precision: 1) %></p>
 
-<% if @user.headshot.present? %>
-  <%= image_tag @user.headshot %>
-<% end %>
+  <h5 class="font-primary-heading mt-4">Service History</h5>
+  <div class="table-responsive">
+    <table class="table table-dark table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Committee</th>
+          <th>Status</th>
+          <th>Hours</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @services.each do |s| %>
+          <tr>
+            <td><%= s.name %></td>
+            <td><%= s.committee.present? ? s.committee.humanize : "-" %></td>
+            <td><%= s.status.humanize %></td>
+            <td><%= number_with_precision(s.hours, precision: 1) %></td>
+            <td><%= s.date_performed&.strftime("%m/%d/%y") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 
-<p>
-  <%= link_to 'Edit', edit_user_path(@user) %> |
-  <%= link_to 'Delete', delete_user_path(@user) %>
-</p>
+  <% back_path =
+       if params[:from] == "directory"
+         member_directory_path
+       else
+         current_user&.exec? ? users_path : member_directory_path
+       end %>
+  <%= link_to "← Back", back_path,
+              class: "btn btn-gold text-dark-navy default-border-radius mt-2" %>
+</div>
 
-<h2>Submitted Services</h2>
-<% if @user.services.any? %>
-  <ul>
-    <% @user.services.each do |service| %>
-      <li>
-        <strong><%= service.name %></strong> — <%= service.status %>
-        (<%= service.hours %> hours on <%= service.date_performed %>)
-      </li>
-    <% end %>
-  </ul>
-<% else %>
-  <p>No services submitted yet.</p>
-<% end %>
+<div class="container-fluid bg-gold py-1"></div>
