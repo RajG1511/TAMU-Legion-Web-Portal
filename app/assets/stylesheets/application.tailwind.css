@@ -484,5 +484,30 @@ input[type="number"].form-dark::-webkit-outer-spin-button {
 @media (max-width: 768px){
   .members-table td:nth-child(3) { word-break: break-all; }
 }
+/* ==== MEMBERS PAGE LAYOUT FIXES (FULL BLEED, MATCHES SERVICE DASHBOARD) ==== */
+
+/* Ensure full height on both sides */
+.min-vh-100 {
+  min-height: 100vh !important;
+}
+
+/* Keep table clean and readable */
+.members-table td,
+.members-table th {
+  vertical-align: middle;
+}
+
+/* Prevent email column overflow on mobile */
+@media (max-width: 768px) {
+  .members-table td:nth-child(3) {
+    word-break: break-all;
+  }
+}
+
+/* Remove unwanted gaps between left/right split */
+.row.g-0 > [class*='col-'] {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
 
 
