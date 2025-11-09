@@ -1,69 +1,53 @@
-<% content_for :title, "Contact Us" %>
+<% content_for :title, "Contact" %>
 
 <div class="wix-top-line"></div>
 
-<!-- Top Heading -->
-<div class="container-fluid bg-dark-gray-blue text-white py-3">
-  <h1 class="text-center font-primary-title"><%= cms_text(:hero_title, page: :contact) %></h1>
-</div>
-<div class="container-fluid bg-gold py-1"></div>
-
-<!-- Main Body -->
-<div class="container-fluid bg-dark-navy text-white pt-4 pb-5">
-  <div class="default-padding">
-
-    <!-- MEETINGS -->
-    <section class="mb-5">
-      <h2 class="font-primary-heading"><%= cms_text(:meetings_title, page: :contact) %></h2>
-      <hr class="thick-white-divider">
-      <div class="font-secondary-subheading mb-2">
-        <%= cms_html(:meetings_body_html, page: :contact) %>
-      </div>
-      <p class="font-secondary-subheading mb-1">
-        <strong>Location:</strong>
-        <%= cms_text(:meetings_location, page: :contact) %>
-      </p>
-      <p class="font-secondary-subheading mb-2">
-        <a class="text-gold" href="<%= cms_text(:meetings_location_url, page: :contact) %>">View Location on an Interactive Map</a>
-      </p>
-      <div class="font-secondary-subheading">
-        <%= cms_html(:meetings_additional_html, page: :contact) %>
-      </div>
-    </section>
-
-    <!-- GENERAL QUESTIONS -->
-    <section class="mb-5">
-      <h2 class="font-primary-heading"><%= cms_text(:questions_title, page: :contact) %></h2>
-      <hr class="thick-white-divider">
-      <div class="font-secondary-subheading mb-3">
-        <%= cms_html(:questions_body_html, page: :contact) %>
-      </div>
-      <%= link_to cms_text(:questions_button_label, page: :contact),
-                  cms_text(:questions_button_url, page: :contact),
-                  class: "btn white-btn-edit default-border-radius font-primary-heading" %>
-    </section>
-
-    <!-- EMAIL LIST -->
-    <section>
-      <h2 class="font-primary-heading"><%= cms_text(:email_list_title, page: :contact) %></h2>
-      <hr class="thick-white-divider">
-      <div class="font-secondary-subheading mb-3">
-        <%= cms_html(:email_list_body_html, page: :contact) %>
-      </div>
-      <%= link_to cms_text(:email_list_button_label, page: :contact),
-                  cms_text(:email_list_button_url, page: :contact),
-                  class: "btn white-btn-edit default-border-radius font-primary-heading" %>
-    </section>
-
+<!-- HERO -->
+<section class="contact-hero">
+  <div class="contact-hero__inner">
+    <h1 class="contact-hero__title"><%= cms_text(:hero_title, page: :contact) %></h1>
   </div>
-</div>
+</section>
 
-<!-- Edit CTA (execs only) -->
+<!-- MEETING INFO -->
+<section class="contact-meetings">
+  <div class="contact-meetings__content">
+    <h2 class="contact-meetings__title"><%= cms_text(:meetings_title, page: :contact) %></h2>
+    <p class="contact-meetings__body"><%= cms_html(:meetings_body_html, page: :contact) %></p>
+    <p class="contact-meetings__location"><%= cms_text(:meetings_location, page: :contact) %></p>
+    <p class="contact-meetings__map">
+      <a class="contact-meetings__location-link" href="<%= cms_text(:meetings_location_url, page: :contact) %>">View Location on an Interactive Map</a>
+    </p>
+    <p class="contact-meetings__additional"><%= cms_html(:meetings_additional_html, page: :contact) %></p>
+  </div>
+</section>
+
+<!-- GENERAL QUESTIONS -->
+<section class="contact-questions">
+  <div class="contact-questions__content">
+    <h2 class="contact-questions__title"><%= cms_text(:questions_title, page: :contact) %></h2>
+    <p class="contact-questions__body"><%= cms_html(:questions_body_html, page: :contact) %></p>
+    <p class="contact-questions__cta">
+      <a class="white-btn-edit contact-cta-btn" href="<%= cms_text(:questions_button_url, page: :contact) %>"><%= cms_text(:questions_button_label, page: :contact) %></a>
+    </p>
+  </div>
+</section>
+
+<!-- EMAIL LIST -->
+<section class="contact-list">
+  <div class="contact-list__content">
+    <h2 class="contact-list__title"><%= cms_text(:email_list_title, page: :contact) %></h2>
+    <p class="contact-list__body"><%= cms_html(:email_list_body_html, page: :contact) %></p>
+    <p class="contact-list__cta">
+      <a class="white-btn-edit contact-cta-btn" href="<%= cms_text(:email_list_button_url, page: :contact) %>"><%= cms_text(:email_list_button_label, page: :contact) %></a>
+    </p>
+  </div>
+</section>
+
+<!-- EDIT BUTTON -->
 <% if current_user&.exec? %>
-  <div class="container-fluid bg-gold py-3">
-    <div class="text-center">
-      <%= link_to "Edit Contact Page", edit_contact_path, class: "btn white-btn-edit default-border-radius btn-lg font-primary-heading" %>
-    </div>
-  </div>
+  <section class="contact-edit">
+    <%= link_to "Edit Contact Page", edit_contact_path, class: "btn btn-outline-light" %>
+  </section>
 <% end %>
 
