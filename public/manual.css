@@ -541,3 +541,171 @@ input[type="number"].form-dark::-webkit-outer-spin-button {
   padding-right: 0 !important;
 }
 
+/* ================= Contact Page (Wix-match) ================= */
+
+/* Thin top divider bar like Wix already declared as .wix-top-line */
+
+/* ---------- HERO (single image with dark overlay + title) ---------- */
+.contact-hero {
+  position: relative;
+  min-height: 360px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  /* gold hairline like Wix sits under the image */
+  box-shadow: inset 0 -10px 0 #dbc296;
+}
+
+.contact-hero::before {
+  /* dark blue overlay */
+  content: "";
+  position: absolute; inset: 0;
+  background: rgba(8, 20, 54, 0.55);
+}
+
+.contact-hero__bg {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center 45%;
+  filter: grayscale(10%);
+}
+
+.contact-hero__inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--page-max);
+  margin: 0 auto;
+  padding: 24px 18px;
+}
+
+.contact-hero__title {
+  color: #fff;
+  font-family: "Libre Baskerville", serif;
+  font-weight: 700;
+  font-size: 44px;
+  margin: 0 0 8px 0;
+}
+
+/* ---------- “Want to speak at one of our weekly meetings?” ---------- */
+.contact-meetings {
+  background: #081436;
+  color: #fff;
+  padding: 42px 18px 48px;
+}
+
+.contact-meetings__content {
+  max-width: var(--page-max);
+  margin: 0 auto;
+}
+
+.contact-meetings__title {
+  font-family: "Libre Baskerville", serif;
+  font-weight: 700;
+  font-size: 36px;
+  margin: 0 0 12px;
+  border-bottom: 4px solid #e6e9f5;
+  padding-bottom: 8px;
+}
+
+.contact-meetings__body { line-height: 1.7; opacity: .95; margin: 12px 0; }
+.contact-meetings__location { font-weight: 700; margin: 8px 0 0; }
+.contact-meetings__map a,
+.contact-meetings__location-link { color: #dbc296; text-decoration: underline; }
+
+/* two-column area: address card + map/image */
+.contact-meetings__grid {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  gap: 24px;
+  align-items: start;
+  margin-top: 22px;
+}
+
+.address-card {
+  background:#fff; color:#081436;
+  border: 6px solid #fff;
+  padding: 22px;
+  font-family: "Barlow", sans-serif;
+  font-weight: 700;
+  border-radius: 8px;
+  line-height: 1.45;
+}
+
+.map-frame,
+.map-image {
+  width: 100%;
+  border: 6px solid #fff;
+  border-radius: 8px;
+  background: #0f296b;
+  display: block;
+}
+
+/* ---------- Questions & Email List blocks ---------- */
+.contact-section {
+  background: #0f296b;      /* will be overridden below for each block */
+  color: #fff;
+  padding: 42px 18px;
+}
+
+.contact-section--questions { background: #0f296b; }
+.contact-section--list      { background: #f3f6fb; color:#081436; }
+
+.contact-section__inner { max-width: var(--page-max); margin: 0 auto; }
+
+.contact-section__title {
+  font-family: "Libre Baskerville", serif;
+  font-weight: 700;
+  font-size: 32px;
+  margin: 0 0 10px;
+  border-bottom: 4px solid currentColor;
+  border-bottom-color: rgba(230, 233, 245, 0.85);
+  padding-bottom: 8px;
+}
+
+.contact-section--list .contact-section__title {
+  border-bottom-color: #d7dbea;
+}
+
+.contact-section__body { line-height: 1.7; margin: 8px 0 16px; }
+
+.contact-cta-btn {
+  display: inline-block;
+  background: #fff;
+  color: #081436 !important;
+  border: 2px solid #081436;
+  font-weight: 700;
+  padding: 10px 16px;
+  text-decoration: none;
+}
+.contact-cta-btn:hover { background: #081436; color: #fff !important; }
+
+/* Optional small accent images (kept, but constrained) */
+.contact-accent {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 800px;
+  border-radius: 10px;
+  border: 6px solid #fff;
+}
+
+/* ---------- Support Survey (kept minimal/polished) ---------- */
+.contact-survey {
+  background: #081436;
+  color: #fff;
+  padding: 36px 18px 46px;
+}
+
+.contact-survey__content { max-width: var(--page-max); margin: 0 auto; text-align: center; }
+.contact-survey__title { font-family: "Libre Baskerville", serif; font-weight: 700; font-size: 28px; margin: 0 0 8px; }
+.contact-survey__body { opacity: .95; margin-bottom: 12px; }
+.contact-survey__button { @apply btn btn-gold; } /* if Tailwind isn’t active, leave as is – your .btn-gold exists */
+
+/* ---------- Responsive ---------- */
+@media (max-width: 992px) {
+  .contact-hero { min-height: 300px; }
+  .contact-hero__title { font-size: 36px; }
+  .contact-meetings__grid { grid-template-columns: 1fr; }
+  .address-card { text-align: center; }
+}
+

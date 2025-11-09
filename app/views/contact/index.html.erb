@@ -3,75 +3,93 @@
 <div class="wix-top-line"></div>
 
 <!-- HERO -->
-<section class="contact-hero">
+<section class="contact-hero"
+         style="--hero:url('/Photos/House.jpg');">
+  <!-- background image with overlay -->
+  <div class="contact-hero__bg"
+       style="background-image: linear-gradient(transparent,transparent), url('/Photos/House.jpg');"></div>
+
   <div class="contact-hero__inner">
     <h1 class="contact-hero__title"><%= cms_text(:hero_title, page: :contact) %></h1>
-  </div>
-
-  <!-- Wix hero image -->
-  <div class="contact-hero-photo-block">
-    <img src="/Photos/Nature.jpg" class="contact-hero-photo" alt="LEGION photo">
   </div>
 </section>
 
 <!-- MEETING INFO -->
 <section class="contact-meetings">
   <div class="contact-meetings__content">
-    <h2 class="contact-meetings__title"><%= cms_text(:meetings_title, page: :contact) %></h2>
-    <p class="contact-meetings__body"><%= cms_html(:meetings_body_html, page: :contact) %></p>
-    <p class="contact-meetings__location"><%= cms_text(:meetings_location, page: :contact) %></p>
-    <p class="contact-meetings__map">
-      <a class="contact-meetings__location-link" href="<%= cms_text(:meetings_location_url, page: :contact) %>">View Location on Map</a>
+    <h2 class="contact-meetings__title">
+      <%= cms_text(:meetings_title, page: :contact) %>
+    </h2>
+
+    <p class="contact-meetings__body">
+      <%= cms_html(:meetings_body_html, page: :contact) %>
     </p>
 
-    <!-- accent image -->
-    <img src="/Photos/House.jpg" class="contact-accent-photo">
+    <div class="contact-meetings__grid">
+      <!-- Address card -->
+      <div class="address-card">
+        <%= simple_format(cms_text(:meetings_location, page: :contact)) %>
+      </div>
+
+      <!-- Map: if you have an embeddable URL, use iframe; otherwise show an image placeholder -->
+      <% map_url = cms_text(:meetings_location_url, page: :contact) %>
+      <% if map_url.present? && map_url.include?("embed") %>
+        <iframe class="map-frame" src="<%= map_url %>" height="360" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+      <% else %>
+        <img class="map-image" src="/Photos/MiniHouse.jpg" alt="Map/location">
+      <% end %>
+    </div>
+
+    <p class="contact-meetings__body" style="margin-top:14px;">
+      <%= cms_html(:meetings_additional_html, page: :contact) %>
+    </p>
+
+    <p class="contact-meetings__map">
+      <a class="contact-meetings__location-link" href="<%= map_url %>">View location on map</a>
+    </p>
   </div>
 </section>
 
 <!-- GENERAL QUESTIONS -->
-<section class="contact-questions">
-  <div class="contact-questions__content">
-    <h2 class="contact-questions__title"><%= cms_text(:questions_title, page: :contact) %></h2>
-    <p class="contact-questions__body"><%= cms_html(:questions_body_html, page: :contact) %></p>
-    <p class="contact-questions__cta">
-      <a class="white-btn-edit contact-cta-btn" href="<%= cms_text(:questions_button_url, page: :contact) %>"><%= cms_text(:questions_button_label, page: :contact) %></a>
-    </p>
+<section class="contact-section contact-section--questions">
+  <div class="contact-section__inner">
+    <h2 class="contact-section__title"><%= cms_text(:questions_title, page: :contact) %></h2>
+    <p class="contact-section__body"><%= cms_html(:questions_body_html, page: :contact) %></p>
+    <a class="contact-cta-btn" href="<%= cms_text(:questions_button_url, page: :contact) %>">
+      <%= cms_text(:questions_button_label, page: :contact) %>
+    </a>
   </div>
 </section>
 
 <!-- EMAIL LIST -->
-<section class="contact-list">
-  <div class="contact-list__content">
-    <h2 class="contact-list__title"><%= cms_text(:email_list_title, page: :contact) %></h2>
-    <p class="contact-list__body"><%= cms_html(:email_list_body_html, page: :contact) %></p>
-    <p class="contact-list__cta">
-      <a class="white-btn-edit contact-cta-btn" href="<%= cms_text(:email_list_button_url, page: :contact) %>"><%= cms_text(:email_list_button_label, page: :contact) %></a>
-    </p>
-
-    <!-- bottom image -->
-    <img src="/Photos/MiniHouse.jpg" class="contact-bottom-photo">
+<section class="contact-section contact-section--list">
+  <div class="contact-section__inner">
+    <h2 class="contact-section__title"><%= cms_text(:email_list_title, page: :contact) %></h2>
+    <p class="contact-section__body"><%= cms_html(:email_list_body_html, page: :contact) %></p>
+    <a class="contact-cta-btn" href="<%= cms_text(:email_list_button_url, page: :contact) %>">
+      <%= cms_text(:email_list_button_label, page: :contact) %>
+    </a>
   </div>
 </section>
 
 <% if current_user&.exec? %>
-    <section class="contact-edit">
-        <%= link_to "Edit Contact Page", edit_contact_path, class: "btn btn-outline-light" %>
-    </section>
+  <section class="contact-edit" style="text-align:center; padding: 22px 0; background:#081436;">
+    <%= link_to "Edit Contact Page", edit_contact_path, class: "btn btn-outline-light" %>
+  </section>
 <% end %>
 
-<!-- SUPPORT SURVEY -->
+<!-- SUPPORT SURVEY (optional CTA kept, styled) -->
 <section class="contact-survey">
   <div class="contact-survey__content">
     <h2 class="contact-survey__title">Customer Support Survey</h2>
     <p class="contact-survey__body">
-      We value your feedback! Please take a moment to complete our support survey
-      and let us know how we can improve your experience on the website.
+      We value your feedback! Please take a moment to complete our support survey and let us know how we can improve your experience on the website.
     </p>
-    <a class="contact-survey__button"
+    <a class="btn-gold contact-survey__button"
        href="https://docs.google.com/forms/d/e/1FAIpQLSe2qfLq6og0zteVH9JWIlZxz4QYZaJF1dWf2KxA78eCDt9lig/viewform?usp=dialog"
        target="_blank" rel="noopener">
        Take the Survey
     </a>
   </div>
 </section>
+
