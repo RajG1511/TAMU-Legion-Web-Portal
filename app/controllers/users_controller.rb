@@ -4,8 +4,8 @@ class UsersController < ApplicationController
   before_action :set_user,      only: [ :show, :edit, :update, :delete, :destroy ]
 
   def public_index
-       @execs = User.where(role: "exec").order(:last_name, :first_name)
-    @committees = Committee.all.includes(committee_memberships: :user).order(:name)
+     @execs = User.where(role: [:exec, :president], status: :active).order(:last_name, :first_name)
+     @committees = Committee.all.includes(:active_users).order(:name)
   end
 
   def index

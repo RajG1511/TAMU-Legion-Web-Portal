@@ -88,9 +88,9 @@
     <h2 class="font-primary-heading text-dark-navy mb-2">Members</h2>
     <hr class="mb-4" style="border-top:4px solid #0f296b;">
 
-    <% if @committee.users.any? %>
+    <% if @committee.active_users.any? %>
       <div class="row g-3">
-        <% @committee.users.each do |member| %>
+        <% @committee.active_users.each do |member| %>
           <div class="col-6 col-md-4 col-lg-3">
             <div class="p-2 h-100 border border-2 default-border-radius">
               <div class="ratio ratio-1x1 border default-border-radius mb-2 overflow-hidden" style="background:#f8f9fa;">
