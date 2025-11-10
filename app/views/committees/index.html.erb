@@ -5,7 +5,6 @@
 
 <!-- HERO -->
 <section class="about-hero">
-  <!-- Swap to a committees banner: '/Photos/Service.png', '/Photos/Nature.jpg', etc. -->
   <div class="about-hero-bg" style="background-image:url('/Photos/Service.png');"></div>
   <div class="about-hero-overlay"></div>
 
@@ -17,7 +16,7 @@
   </div>
 </section>
 
-<!-- INTRO / SELECT -->
+<!-- INTRO -->
 <section class="page-section bg-legion-blue">
   <div class="page-content-container">
     <p class="section-content text-white text-center mb-0">
@@ -30,12 +29,14 @@
 <section class="page-section bg-dark-navy">
   <div class="page-content-container">
     <% if @committees.any? %>
-      <div class="row g-4">
+      <div class="row g-4 justify-content-center">
         <% @committees.each do |committee| %>
-          <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <%= link_to committee_path(committee), class: "d-block text-decoration-none" do %>
-              <div class="event-card p-4 text-center h-100">
-                <div class="font-primary-heading fs-5"><%= committee.name %></div>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+            <%= link_to committee_path(committee), class: "d-block w-100 text-decoration-none" do %>
+              <div class="event-card p-4 text-center h-100 w-100">
+                <div class="font-primary-heading fs-5" style="word-break:break-word;overflow-wrap:anywhere;">
+                  <%= committee.name %>
+                </div>
               </div>
             <% end %>
           </div>

@@ -5,7 +5,7 @@
 
 <!-- HERO -->
 <section class="about-hero">
-  <!-- Swap to any banner you like: '/Photos/Members.jpg', '/Photos/House.jpg', etc. -->
+  <!-- Swap to any banner you like -->
   <div class="about-hero-bg" style="background-image:url('/Photos/House.jpg');"></div>
   <div class="about-hero-overlay"></div>
 
@@ -23,10 +23,10 @@
     <h2 class="section-title text-white text-center mb-1">Executive Board</h2>
     <div class="section-divider-center"></div>
 
-    <div class="row g-4 mt-3">
+    <div class="row g-4 mt-3 justify-content-center">
       <% @execs.each do |user| %>
-        <div class="col-12 col-sm-6 col-lg-4">
-          <div class="event-card p-3 h-100">
+        <div class="col-12 col-sm-6 col-lg-4 d-flex">
+          <div class="event-card p-3 h-100 w-100 text-center">
             <% if user.headshot.present? %>
               <div class="photo-container mb-2">
                 <figure class="photo-figure" style="min-height:220px;">
@@ -35,11 +35,17 @@
               </div>
             <% end %>
 
-            <p class="mb-1"><strong><%= user.full_name %> '<%= user.graduation_year %></strong></p>
-            <% if user.respond_to?(:position) && user.position.present? %>
-              <p class="mb-1"><strong><%= user.position %></strong></p>
-            <% end %>
-            <p class="mb-0"><%= user.major %></p>
+            <div style="word-break:break-word;overflow-wrap:anywhere;">
+              <p class="mb-1">
+                <strong><%= user.full_name %> '<%= user.graduation_year %></strong>
+              </p>
+              <% if user.respond_to?(:position) && user.position.present? %>
+                <p class="mb-1">
+                  <strong><%= user.position %></strong>
+                </p>
+              <% end %>
+              <p class="mb-0"><%= user.major %></p>
+            </div>
           </div>
         </div>
       <% end %>
@@ -55,10 +61,10 @@
       <div class="section-divider-center"></div>
 
       <% if committee.active_users.any? %>
-        <div class="row g-4 mt-3">
+        <div class="row g-4 mt-3 justify-content-center">
           <% committee.active_users.each do |user| %>
-            <div class="col-12 col-sm-6 col-lg-4">
-              <div class="event-card p-3 h-100">
+            <div class="col-12 col-sm-6 col-lg-4 d-flex">
+              <div class="event-card p-3 h-100 w-100 text-center">
                 <% if user.headshot.present? %>
                   <div class="photo-container mb-2">
                     <figure class="photo-figure" style="min-height:220px;">
@@ -67,8 +73,12 @@
                   </div>
                 <% end %>
 
-                <p class="mb-1"><strong><%= user.full_name %> '<%= user.graduation_year %></strong></p>
-                <p class="mb-0"><%= user.major %></p>
+                <div style="word-break:break-word;overflow-wrap:anywhere;">
+                  <p class="mb-1">
+                    <strong><%= user.full_name %> '<%= user.graduation_year %></strong>
+                  </p>
+                  <p class="mb-0"><%= user.major %></p>
+                </div>
               </div>
             </div>
           <% end %>
