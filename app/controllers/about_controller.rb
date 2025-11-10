@@ -10,7 +10,7 @@ class AboutController < ApplicationController
        page = Page.find_by(slug: "about")
        @about_versions = PageVersion
           .for_page(page)
-          .order('page_versions.created_at DESC', :created_at)
+          .order("page_versions.created_at DESC", :created_at)
   end
 
   def update

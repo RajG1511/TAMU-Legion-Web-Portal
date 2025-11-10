@@ -59,7 +59,7 @@ RSpec.describe "HomeController", type: :request do
        end
 
     it "saves and redirects with notice on success" do
-      allow(HomePageStore).to receive(:save_all!).and_return(true)
+         allow(HomePageStore).to receive(:save_all!).and_return(true)
 
       patch home_path, params: params_hash
 

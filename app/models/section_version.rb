@@ -6,7 +6,7 @@ class SectionVersion < ApplicationRecord
 
   enum :change_type, { create: "create", update: "update" }, prefix: :change
 
-  scope :for_page, ->(page_id){
-    joins(:section).where(sections: { page_id: page_id })
+  scope :for_page, ->(page_id) {
+       joins(:section).where(sections: { page_id: page_id })
   }
 end

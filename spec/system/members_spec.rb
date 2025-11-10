@@ -8,7 +8,7 @@ require "rails_helper"
 require "rails_helper"
 
 RSpec.describe "Users bulk actions", type: :system do
-  include Warden::Test::Helpers
+     include Warden::Test::Helpers
 
   before(:each) { Warden.test_mode! }
   after(:each)  { Warden.test_reset! }
@@ -20,10 +20,10 @@ RSpec.describe "Users bulk actions", type: :system do
   let!(:u2)   { create(:user, email: "member2@example.org", password: "password123") }
 
   it "GET /users/bulk_edit with selected ids renders the page" do
-    login_as(exec, scope: :user)
+       login_as(exec, scope: :user)
 
     # Directly visit bulk_edit path with user_ids in query
-    visit bulk_edit_users_path(user_ids: [u1.id, u2.id])
+    visit bulk_edit_users_path(user_ids: [ u1.id, u2.id ])
 
     expect(page).to have_current_path(bulk_edit_users_path, ignore_query: true)
     expect(page).to have_selector("form")

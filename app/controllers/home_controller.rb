@@ -1,6 +1,6 @@
 class HomeController < ApplicationController
-  # Make sure only signed-in members can hit these, then fetch the shared user
-  before_action :require_member!, only: [ :member_center, :upload_gallery, :delete_gallery_photo ]
+     # Make sure only signed-in members can hit these, then fetch the shared user
+     before_action :require_member!, only: [ :member_center, :upload_gallery, :delete_gallery_photo ]
   before_action :set_shared_user, only: [ :member_center, :upload_gallery, :delete_gallery_photo ]
 
   # Only exec/president can edit or update the homepage
@@ -11,7 +11,7 @@ class HomeController < ApplicationController
        page = Page.find_by(slug: "home")
        @home_versions = PageVersion
           .for_page(page)
-          .order('page_versions.created_at DESC', :created_at)
+          .order("page_versions.created_at DESC", :created_at)
   end
 
   def update
@@ -41,14 +41,14 @@ class HomeController < ApplicationController
   end
 
   def upload_gallery
-     uploaded_files = Array(params[:gallery_photos]).select { |f| f.respond_to?(:content_type) }
+       uploaded_files = Array(params[:gallery_photos]).select { |f| f.respond_to?(:content_type) }
 
      if uploaded_files.blank?
           flash[:alert] = "No photos selected for upload."
           return redirect_to member_center_path
      end
 
-     allowed_types = ["image/jpeg", "image/png"]
+     allowed_types = [ "image/jpeg", "image/png" ]
      invalid_files = uploaded_files.reject { |file| allowed_types.include?(file.content_type) }
 
      if invalid_files.any?

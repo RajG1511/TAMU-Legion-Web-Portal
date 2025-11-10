@@ -1,5 +1,5 @@
 class PhilanthropyPageStore
-  PAGE_SLUG = "philanthropy".freeze
+     PAGE_SLUG = "philanthropy".freeze
 
   SECTION_KEYS = [
     :hero_title,              # text
@@ -17,7 +17,7 @@ class PhilanthropyPageStore
     :events_body_html         # html
   ].freeze
 
-  POSITION_MAP = SECTION_KEYS.each_with_index.to_h { |k, i| [k, i + 1] }.freeze
+  POSITION_MAP = SECTION_KEYS.each_with_index.to_h { |k, i| [ k, i + 1 ] }.freeze
 
   DEFAULTS = {
     hero_title: "Philanthropy",
@@ -47,7 +47,7 @@ class PhilanthropyPageStore
       All proceeds of Smoke Out Diabetes go to Camp Sweeney.
     HTML
     events_title: "Smoke Out Diabetes",
-    events_body_html: <<~HTML,
+    events_body_html: <<~HTML
       Smoke Out Diabetes is our annual fundraising event wherein pitbasters and cooks from across College Station
       and beyond come to compete for prizes provided by sponsors. Guests are encouraged to come to enjoy barbecue,
       live music, and participate in our games and activities. In past years, we partnered with groups including
@@ -58,91 +58,91 @@ class PhilanthropyPageStore
 
   # api for controller
   def self.read
-    ensure_page_and_sections!
+       ensure_page_and_sections!
     SECTION_KEYS.to_h do |key|
-      section = section_for(key)
-      [key.to_s, latest_content_for(section) || DEFAULTS[key]]
+         section = section_for(key)
+      [ key.to_s, latest_content_for(section) || DEFAULTS[key] ]
     end
   end
 
   def self.save_all!(inputs:, user:)
-    ensure_page_and_sections!
-    normalized = inputs.to_h { |k, v| [k.to_sym, v.to_s] }
+       ensure_page_and_sections!
+    normalized = inputs.to_h { |k, v| [ k.to_sym, v.to_s ] }
 
     pv_id = nil
     if defined?(PageVersion)
-      pv = PageVersion.create!(
-        page_id: page.id,
-        user_id: user&.id,
-        slug: page.slug,
-        title: page.title,
-        change_type: "update"
-      )
+         pv = PageVersion.create!(
+           page_id: page.id,
+           user_id: user&.id,
+           slug: page.slug,
+           title: page.title,
+           change_type: "update"
+         )
       pv_id = pv.id
     end
 
     Section.transaction do
-      SECTION_KEYS.each do |key|
-        new_html = normalized[key]
-        next if new_html.nil?
-        new_html = sanitize_html(new_html)
+         SECTION_KEYS.each do |key|
+              new_html = normalized[key]
+           next if new_html.nil?
+           new_html = sanitize_html(new_html)
 
-        s = section_for(key)
+           s = section_for(key)
 
-        attrs = {
-          section_id: s.id,
-          page_version_id: pv_id,
-          user_id: user&.id,
-          position: s.position,
-          content_html: new_html,
-          change_type: "update"
-        }.compact
+           attrs = {
+             section_id: s.id,
+             page_version_id: pv_id,
+             user_id: user&.id,
+             position: s.position,
+             content_html: new_html,
+             change_type: "update"
+           }.compact
 
-        if defined?(SectionVersion)
-          SectionVersion.create!(attrs)
-        else
-          raise "SectionVersion model not found. Check autoloading / file name."
-        end
-      end
+           if defined?(SectionVersion)
+                SectionVersion.create!(attrs)
+           else
+                raise "SectionVersion model not found. Check autoloading / file name."
+           end
+         end
     end
     true
   end
 
   # internals
   def self.page
-    @page ||= Page.find_by(slug: PAGE_SLUG)
+       @page ||= Page.find_by(slug: PAGE_SLUG)
   end
 
   def self.ensure_page_and_sections!
-    ActiveRecord::Base.transaction do
-      p = page || Page.create!(slug: PAGE_SLUG, title: "Philanthropy")
+       ActiveRecord::Base.transaction do
+            p = page || Page.create!(slug: PAGE_SLUG, title: "Philanthropy")
 
-      existing_positions = Section.where(page_id: p.id).pluck(:position)
-      needed_positions = POSITION_MAP.values
-      (needed_positions - existing_positions).sort.each do |pos|
-        Section.create!(page_id: p.id, position: pos)
-      end
-    end
+         existing_positions = Section.where(page_id: p.id).pluck(:position)
+         needed_positions = POSITION_MAP.values
+         (needed_positions - existing_positions).sort.each do |pos|
+              Section.create!(page_id: p.id, position: pos)
+         end
+       end
   end
 
   def self.section_for(key)
-    pos = POSITION_MAP.fetch(key)
+       pos = POSITION_MAP.fetch(key)
     Section.find_by!(page_id: page.id, position: pos)
   end
 
   def self.latest_content_for(section)
-    if defined?(SectionVersion)
-      SectionVersion.where(section_id: section.id)
-                    .order(created_at: :desc, id: :desc)
-                    .limit(1)
-                    .pick(:content_html)
-    else
-      nil
-    end
+       if defined?(SectionVersion)
+            SectionVersion.where(section_id: section.id)
+                          .order(created_at: :desc, id: :desc)
+                          .limit(1)
+                          .pick(:content_html)
+       else
+            nil
+       end
   end
 
   def self.sanitize_html(html)
-    raw = html.to_s
+       raw = html.to_s
     raw = raw.gsub(/<script.*?>.*?<\/script>/mi, "")
     raw = raw.gsub(/<style.*?>.*?<\/style>/mi, "")
     ActionController::Base.helpers.sanitize(

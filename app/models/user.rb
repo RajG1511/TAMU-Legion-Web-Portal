@@ -1,8 +1,8 @@
 class User < ApplicationRecord
-  # Devise
-  devise :database_authenticatable, :registerable,
-         :recoverable, :validatable,
-         :omniauthable, omniauth_providers: [:google_oauth2]
+     # Devise
+     devise :database_authenticatable, :registerable,
+            :recoverable, :validatable,
+            :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
   enum :status, { inactive: 0, active: 1 }
   enum :role,   { nonmember: 0, member: 1, exec: 2, president: 3 }
@@ -35,13 +35,13 @@ class User < ApplicationRecord
 
   scope :active,     -> { where(status: :active) }
   scope :inactive,   -> { where(status: :inactive) }
-  scope :members,    -> { where(role: [:member, :exec, :president]) }
-  scope :execs,      -> { where(role: [:exec, :president]) }
-  scope :leadership, -> { where(role: [:exec, :president]) }
+  scope :members,    -> { where(role: [ :member, :exec, :president ]) }
+  scope :execs,      -> { where(role: [ :exec, :president ]) }
+  scope :leadership, -> { where(role: [ :exec, :president ]) }
 
   # Text search that won’t ILIKE integer columns
   def self.search(q)
-    return all if q.blank?
+       return all if q.blank?
 
     term = "%#{q.strip}%"
     base = where(
@@ -54,7 +54,7 @@ class User < ApplicationRecord
 
     # Enum matching by name
     role_hits   = roles.keys.select   { |k| k.include?(q.downcase) }
-    status_hits = statuses.keys.select{ |k| k.include?(q.downcase) }
+    status_hits = statuses.keys.select { |k| k.include?(q.downcase) }
 
     base = base.or(where(role: role_hits))     if role_hits.any?
     base = base.or(where(status: status_hits)) if status_hits.any?
@@ -70,18 +70,18 @@ class User < ApplicationRecord
   def can_create_events?  = exec?
 
   def self.from_google(email:, full_name:, uid:, avatar_url:)
-    find_by(email: email) # no auto-create
+       find_by(email: email) # no auto-create
   end
 
   private
 
-  def apply_defaults
-    self.role   ||= "member"
-    self.status ||= "active"
-  end
+       def apply_defaults
+            self.role   ||= "member"
+         self.status ||= "active"
+       end
 
   def apply_shared_password
-    shared = ENV["DEFAULT_SHARED_PASSWORD"].presence || SecureRandom.base58(16)
+       shared = ENV["DEFAULT_SHARED_PASSWORD"].presence || SecureRandom.base58(16)
     self.password = self.password_confirmation = shared
   end
   # OAuth mapping (intentionally no auto-create)
@@ -90,11 +90,10 @@ class User < ApplicationRecord
   end
 
   def president_role_matches_position
-    if role == "president" && position != "President"
-      errors.add(:position, "must be 'President' for president role")
-    elsif position == "President" && role != "president"
-      errors.add(:role, "must be president for President position")
-    end
+       if role == "president" && position != "President"
+            errors.add(:position, "must be 'President' for president role")
+       elsif position == "President" && role != "president"
+            errors.add(:role, "must be president for President position")
+       end
   end
 end
-
