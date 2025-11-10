@@ -1,34 +1,105 @@
-<h1>Members</h1>
+<% content_for :title, "Members" %>
 
-<section>
-    <div>
-        <h2>Executive Board</h2>
-        <ul>
-            <% @execs.each do |user| %>
-                <li>
-                    <img src="<%= user.image_url %>" alt="<%= user.full_name %>">
-                    <p><strong><%= user.full_name %> '<%= user.graduation_year%></strong></p>
-                    <p><strong><%= user.position %></strong></p>
-                    <p><%= user.major %></p>
-                </li>
-            <% end %>
-        </ul>
+<!-- Thin top line -->
+<div class="wix-top-line"></div>
+
+<!-- HERO -->
+<section class="about-hero">
+  <div class="about-hero-bg" style="background-image:url('/Photos/House.jpg');"></div>
+  <div class="about-hero-overlay"></div>
+
+  <div class="page-title-badge">
+    <div class="page-title-badge-inner">
+      <div class="page-title-badge-title">Members</div>
+      <div class="page-title-badge-subtitle">LEGION Men's Organization</div>
     </div>
+  </div>
 </section>
 
-<% @committees.each do |committee| %>
-    <section>
-        <div>
-            <h2><%= committee.name %> Committee</h2>
-            <ul>
-                <% committee.users.each do |user| %>
-                    <li>
-                        <img src="<%= user.image_url %>" alt="<%= user.full_name %>">
-                        <p><strong><%= user.full_name %> '<%= user.graduation_year%></strong></p>
-                        <p><%= user.major %></p>
-                    </li>
-                <% end %>
-            </ul>
+<!-- EXECUTIVE BOARD -->
+<section class="page-section bg-legion-blue">
+  <div class="page-content-container">
+    <h2 class="section-title text-white text-center mb-1">Executive Board</h2>
+    <div class="section-divider-center"></div>
+
+    <div class="row g-4 mt-3 justify-content-center">
+      <% @execs.each do |user| %>
+        <div class="col-12 col-sm-6 col-lg-4 d-flex">
+          <!-- Flex column + clip overflow -->
+          <div class="event-card p-3 h-100 w-100 text-center"
+               style="display:flex;flex-direction:column;overflow:hidden;">
+            <% if user.headshot.present? %>
+              <!-- OVERRIDE global heights so image doesn't consume the card -->
+              <div class="photo-container mb-3"
+                   style="flex:0 0 auto;height:auto;">
+                <figure class="photo-figure"
+                        style="height:240px;min-height:0;margin:0;">
+                  <%= image_tag user.headshot,
+                                class: "photo-img",
+                                alt: user.full_name %>
+                </figure>
+              </div>
+            <% end %>
+
+            <!-- Safe text wrapper -->
+            <div style="word-break:break-word;overflow-wrap:anywhere;">
+              <p class="mb-1">
+                <strong><%= user.full_name %> '<%= user.graduation_year %></strong>
+              </p>
+              <% if user.respond_to?(:position) && user.position.present? %>
+                <p class="mb-1"><strong><%= user.position %></strong></p>
+              <% end %>
+              <p class="mb-0"><%= user.major %></p>
+            </div>
+          </div>
         </div>
-    </section>
+      <% end %>
+    </div>
+  </div>
+</section>
+
+<!-- COMMITTEES & MEMBERS -->
+<% @committees.each do |committee| %>
+  <section class="page-section bg-dark-navy">
+    <div class="page-content-container">
+      <h3 class="section-title text-white text-center mb-1"><%= committee.name %> Committee</h3>
+      <div class="section-divider-center"></div>
+
+      <% if committee.active_users.any? %>
+        <div class="row g-4 mt-3 justify-content-center">
+          <% committee.active_users.each do |user| %>
+            <div class="col-12 col-sm-6 col-lg-4 d-flex">
+              <div class="event-card p-3 h-100 w-100 text-center"
+                   style="display:flex;flex-direction:column;overflow:hidden;">
+                <% if user.headshot.present? %>
+                  <div class="photo-container mb-3"
+                       style="flex:0 0 auto;height:auto;">
+                    <figure class="photo-figure"
+                            style="height:240px;min-height:0;margin:0;">
+                      <%= image_tag user.headshot,
+                                    class: "photo-img",
+                                    alt: user.full_name %>
+                    </figure>
+                  </div>
+                <% end %>
+
+                <div style="word-break:break-word;overflow-wrap:anywhere;">
+                  <p class="mb-1">
+                    <strong><%= user.full_name %> '<%= user.graduation_year %></strong>
+                  </p>
+                  <p class="mb-0"><%= user.major %></p>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-white text-center mt-3">No members listed yet.</p>
+      <% end %>
+    </div>
+  </section>
 <% end %>
+
+<!-- Gold Divider -->
+<div class="gold-divider"></div>
+

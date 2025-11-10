@@ -9,7 +9,11 @@ module Users
               flash[:success] = t "devise.omniauth_callbacks.success", kind: "Google"
               sign_in_and_redirect user, event: :authentication, fallback_location: login_path
             else
-                 flash[:alert] = "You are not authorized. Please contact an executive."
+                 if User.find_by(email: from_google_params[:email]).try(:inactive?)
+                      flash[:alert] = "Your account is inactive. Please contact an executive."
+                 else
+                      flash[:alert] = "You are not authorized. Please contact an executive."
+                 end
               redirect_to login_path
             end
           end

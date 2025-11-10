@@ -5,4 +5,6 @@ class PageVersion < ApplicationRecord
   has_many :section_versions, dependent: :destroy
 
   enum :change_type, { create: "create", update: "update" }, prefix: :change
+
+  scope :for_page, ->(page) { where(page: page) }
 end

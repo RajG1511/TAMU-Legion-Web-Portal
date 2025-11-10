@@ -7,6 +7,11 @@ class ContactController < ApplicationController
 
   def edit
        @sections = ContactPageStore.read
+       # get the section versions from the page
+       page = Page.find_by(slug: "contact")
+       @contact_versions = PageVersion
+          .for_page(page)
+          .order("page_versions.created_at DESC", :created_at)
   end
 
   def update

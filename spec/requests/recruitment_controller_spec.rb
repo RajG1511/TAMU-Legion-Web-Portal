@@ -41,43 +41,49 @@ RSpec.describe "RecruitmentController", type: :request do
   end
 
   describe "PATCH /recruitment" do
-       let(:params_hash) do
-            {
-              recruitment_page: {
-                hero_title: "New",
-                hero_tagline_html: "<p>Tag</p>",
-                body_html: "<div>Body</div>",
-                apply_url: "https://example.com/apply",
-                groupme_url: "https://example.com/groupme",
-                contact_email: "contact@example.com"
-              }
+     let(:params_hash) do
+          {
+            recruitment_page: {
+              hero_title: "New",
+              hero_tagline_html: "<p>Tag</p>",
+              body_html: "<div>Body</div>",
+              apply_url: "https://example.com/apply",
+              groupme_url: "https://example.com/groupme",
+              contact_email: "contact@example.com"
             }
-       end
+          }
+     end
 
-    it "saves and redirects with notice on success" do
-         allow(RecruitmentPageStore).to receive(:save_all!).and_return(true)
+  it "saves and redirects with notice on success" do
+       allow(RecruitmentPageStore).to receive(:save_all!).and_return(true)
 
-      patch update_recruitment_path, params: params_hash
+    patch update_recruitment_path, params: params_hash
 
-      expect(response).to redirect_to(recruitment_path)
-      follow_redirect!
-      expect(response.body).to include("Recruitment page updated.")
-    end
+    # Redirect assertion
+    expect(response).to redirect_to(recruitment_path)
 
-    it "rescues validation error and re-renders :edit with 422" do
-         # make edit re-render path have sections
-         allow(RecruitmentPageStore).to receive(:read).and_return(sections_hash)
-
-      invalid = Page.new
-      invalid.errors.add(:base, "Bad inputs")
-      allow(RecruitmentPageStore).to receive(:save_all!)
-        .and_raise(ActiveRecord::RecordInvalid.new(invalid))
-
-      patch update_recruitment_path, params: params_hash
-
-      expect(response.status).to eq(422)         # Unprocessable Content
-      expect(flash[:alert]).to eq("Bad inputs")  # assert flash instead of HTML
-      expect(response.body).to include("Edit Recruitment Page")
-    end
+    # Assert the flash message directly
+    expect(flash[:notice] || flash[:success]).to eq("Recruitment page updated.")
   end
+
+  it "rescues validation error and re-renders :edit with 422" do
+       allow(RecruitmentPageStore).to receive(:read).and_return(sections_hash)
+
+    invalid = Page.new
+    invalid.errors.add(:base, "Bad inputs")
+    allow(RecruitmentPageStore).to receive(:save_all!)
+      .and_raise(ActiveRecord::RecordInvalid.new(invalid))
+
+    patch update_recruitment_path, params: params_hash
+
+    # Re-render with 422
+    expect(response.status).to eq(422)
+
+    # Assert flash alert
+    expect(flash[:alert]).to eq("Bad inputs")
+
+    # Ensure edit template is rendered
+    expect(response.body).to include("Edit Recruitment Page")
+  end
+end
 end

@@ -21,9 +21,9 @@ RSpec.describe "Member Center UI", type: :system do
     it "shows welcome message and quick links but hides admin options" do
          visit member_center_path
       expect(page).to have_content("Welcome John")
-      expect(page).to have_link("Submit Service Hours")
+      expect(page).to have_link("View Service Hours")
       expect(page).not_to have_content("Admin Access")
-      expect(page).not_to have_link("Modify Photo Gallery")
+      expect(page).not_to have_link("Manage Gallery & Caption")
     end
   end
 
@@ -35,29 +35,33 @@ RSpec.describe "Member Center UI", type: :system do
        end
 
     it "shows admin buttons and modals" do
-         visit member_center_path
-      expect(page).to have_content("Welcome Alice")
-      expect(page).to have_link("Modify Photo Gallery")
-      expect(page).to have_link("Edit Photo Gallery Caption")
+         expect(page).to have_content("Welcome Alice")
+
+      # New combined link for gallery & caption
+      expect(page).to have_link("Manage Gallery & Caption")
+
       expect(page).to have_content("Admin Access")
+      expect(page).to have_link("Events Dashboard")
+      expect(page).to have_link("Resources Dashboard")
+      expect(page).to have_link("Service Dashboard")
     end
 
-    it "opens and submits the Edit Member Center Caption modal" do
-         visit member_center_path
-      click_link "Edit Photo Gallery Caption"
+    it "opens and submits the Manage Gallery & Caption modal" do
+         click_link "Manage Gallery & Caption"
 
       # Ensure modal appears
-      expect(page).to have_selector("#editMemberCenterCaptionModal", visible: true)
-      expect(page).to have_content("Edit Member Center Caption")
+      expect(page).to have_selector("#manageGalleryModal", visible: true)
+      expect(page).to have_content("Manage Photo Gallery & Caption")
 
-      # Submit the form with blank input
-      within("#editMemberCenterCaptionModal") do
-           fill_in "Member Center Caption (HTML allowed)", with: ""
-        click_button "Save"
+      # Interact with the caption form inside the modal
+      within("#manageGalleryModal") do
+           # `text` is the name of your text area
+           fill_in "text", with: ""
+        click_button "Save Caption"
       end
 
-      # Expect a flash message (controller sets one)
-      expect(page).to have_content("Member Center Caption updated!").or have_content("Caption cannot be blank")
+      # Expect a flash message
+      expect(page).to have_content("Member Center Caption updated!").or have_content("Caption cannot be empty!")
     end
   end
 end

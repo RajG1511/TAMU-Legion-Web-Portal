@@ -1,107 +1,102 @@
-# spec/requests/users_bulk_actions_auth_spec.rb
 require "rails_helper"
 
-# NOTE:
-# These are characterization tests that document CURRENT behavior:
-# - bulk_edit/bulk_update/reset_inactive are accessible even when not signed in
-# - non-exec users can access and perform updates
-# If/when you add proper before_actions/authorization, update these examples
-# to assert redirects/forbidden instead.
+RSpec.describe "Users bulk actions auth & functionality", type: :request do
+     let!(:exec_user)     { create(:user, :exec) }
+  let!(:non_exec_user) { create(:user) }
+  let!(:users)         { create_list(:user, 3, status: :active) }
+  let!(:inactive_users) { create_list(:user, 2, status: :inactive) }
 
-RSpec.describe "Users bulk actions auth", type: :request do
-     include Warden::Test::Helpers
-
-  before(:each) { Warden.test_mode! }
-  after(:each)  { Warden.test_reset! }
-
-  let!(:u1) do
-       User.create!(
-         email: "auth_member1@example.org",
-         first_name: "Mem",
-         last_name: "One",
-         status: :inactive,
-         role: :member,
-         password: "password123",
-         password_confirmation: "password123"
-       )
-  end
-
-  let!(:u2) do
-       User.create!(
-         email: "auth_member2@example.org",
-         first_name: "Mem",
-         last_name: "Two",
-         status: :inactive,
-         role: :member,
-         password: "password123",
-         password_confirmation: "password123"
-       )
-  end
-
-  let!(:non_exec) do
-       User.create!(
-         email: "plain_user@example.org",
-         first_name: "Plain",
-         last_name: "User",
-         status: :active,
-         role: :member,
-         password: "password123",
-         password_confirmation: "password123"
-       )
-  end
-
-  describe "when not signed in" do
-       it "renders bulk_edit (no redirect currently)" do
-            get bulk_edit_users_path, params: { user_ids: [ u1.id, u2.id ] }
-         expect(response).to have_http_status(200)
-         expect(response.body).to include("Bulk Edit Users")
-         expect(response.body).to include(%(name="user_ids[]"))
-         expect(response.body).to include(%(action="/users/bulk_update"))
+  # Shared examples for actions requiring exec users
+  RSpec.shared_examples "requires exec user" do
+       context "when not signed in" do
+            it "redirects to login" do
+                 action.call
+              expect(response).to redirect_to(login_path)
+            end
        end
 
-    it "allows bulk_update (updates happen)" do
-         patch bulk_update_users_path, params: {
-           user_ids: [ u1.id, u2.id ],
-           bulk_update: { status: "active" }
-         }
-      expect(response).to redirect_to(users_path)
-      expect(u1.reload.status).to eq("active")
-      expect(u2.reload.status).to eq("active")
-    end
+    context "when signed in as non-exec user" do
+         before do
+              Rails.application.env_config["devise.mapping"] = Devise.mappings[:user]
+           sign_in non_exec_user
+         end
 
-    it "allows reset_inactive (activates any inactive users)" do
-         expect(User.where(status: :inactive).count).to be >= 1
-      post reset_inactive_users_path
-      expect(response).to redirect_to(users_path)
-      expect(User.where(status: :inactive).count).to eq(0)
+      it "redirects non-exec users to login" do
+           action.call
+        expect(response).to redirect_to(login_path)
+      end
     end
   end
 
-  describe "when signed in as a non-exec user" do
-       before { login_as(non_exec, scope: :user) }
+  # ---------- BULK EDIT ----------
+  describe "bulk_edit" do
+       let(:action) { -> { get bulk_edit_users_path, params: { user_ids: users.map(&:id) } } }
 
-    it "can access bulk_edit" do
-         get bulk_edit_users_path, params: { user_ids: [ u1.id ] }
-      expect(response).to have_http_status(200)
-      expect(response.body).to include("Bulk Edit Users")
-      expect(response.body).to include(%(name="user_ids[]"))
-      expect(response.body).to include(%(action="/users/bulk_update"))
+    it_behaves_like "requires exec user"
+
+    context "when signed in as exec user" do
+         before do
+              Rails.application.env_config["devise.mapping"] = Devise.mappings[:user]
+           sign_in exec_user
+           get bulk_edit_users_path, params: { user_ids: users.map(&:id) }
+         end
+
+      it "allows exec user to view bulk_edit" do
+           expect(response).to have_http_status(:success)
+      end
     end
+  end
 
-    it "can perform bulk_update" do
-         patch bulk_update_users_path, params: {
-           user_ids: [ u1.id ],
-           bulk_update: { status: "active" }
-         }
-      expect(response).to redirect_to(users_path)
-      expect(u1.reload.status).to eq("active")
+  # ---------- BULK UPDATE ----------
+  describe "bulk_update" do
+       let(:bulk_params) do
+            {
+              user_ids: users.map(&:id),
+              bulk_update: {
+                status: "inactive",
+                major: "Updated Major"
+              }
+            }
+       end
+
+    let(:action) { -> { patch bulk_update_users_path, params: bulk_params } }
+
+    it_behaves_like "requires exec user"
+
+    context "when signed in as exec user" do
+         before do
+              Rails.application.env_config["devise.mapping"] = Devise.mappings[:user]
+           sign_in exec_user
+           patch bulk_update_users_path, params: bulk_params
+         end
+
+      it "allows exec user to update users" do
+           users.each do |u|
+                expect(u.reload.status).to eq("inactive")
+             expect(u.reload.major).to eq("Updated Major")
+           end
+      end
     end
+  end
 
-    it "can call reset_inactive" do
-         u2.update!(status: :inactive)
-      post reset_inactive_users_path
-      expect(response).to redirect_to(users_path)
-      expect(User.where(status: :inactive).count).to eq(0)
+  # ---------- RESET INACTIVE ----------
+  describe "reset_inactive" do
+       let(:action) { -> { post reset_inactive_users_path } }
+
+    it_behaves_like "requires exec user"
+
+    context "when signed in as exec user" do
+         before do
+              Rails.application.env_config["devise.mapping"] = Devise.mappings[:user]
+           sign_in exec_user
+           post reset_inactive_users_path
+         end
+
+      it "resets inactive users to active" do
+           inactive_users.each do |u|
+                expect(u.reload.status).to eq("active")
+           end
+      end
     end
   end
 end

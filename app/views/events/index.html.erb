@@ -1,55 +1,59 @@
 <!-- Header Strip -->
-<div class="container-fluid bg-polo-slate text-white py-3">
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
   <h1 class="text-center font-primary-title">Upcoming Events</h1>
 </div>
 
-<!-- Gold Divider -->
-<div class="container-fluid bg-gold py-1"></div>
+<!-- Gold divider -->
+<div class="gold-divider"></div>
 
 <!-- Main Body Section -->
-<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100 border-bottom border-12 border-gold">
+<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100">
+  <div class="default-padding">
+    <!-- Filter Bar -->
+    <div class="bg-white p-3 mb-4 default-border-radius" style="max-width: 600px;">
+      <%= form_with url: events_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue" do %>
+        <div class="col-auto"> <span class="fw-bold font-secondary-body">Filter by Category:</span> </div>
+        
+        <div class="col">
+          <%= select_tag :category_id, options_for_select([["All", ""]] + EventCategory.pluck(:name, :id), params[:category_id]),
+              include_blank: false, class: "form-select default-border-radius text-legion-blue" %>
+        </div>
+        
+        <div class="col-auto"> <%= submit_tag "Filter", class: "btn btn-gold default-border-radius font-secondary-body" %> </div>
+      <% end %>
+    </div>
 
-  <!-- Filter Bar -->
-  <div class="bg-white p-3 mb-4 default-border-radius" style="max-width: 600px;">
-    <%= form_with url: events_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue" do %>
-      <div class="col-auto"> <span class="fw-bold font-secondary-body">Filter by Category:</span> </div>
-      
-      <div class="col">
-        <%= select_tag :category_id, options_for_select([["All", ""]] + EventCategory.pluck(:name, :id), params[:category_id]),
-            include_blank: false, class: "form-select default-border-radius text-legion-blue" %>
+    <!-- Event Cards -->
+    <% if @events.any? %>
+      <div class="event-scroll-container px-2" style="max-height: 70vh; overflow-y: auto;">
+        <ul class="list-unstyled">
+          <% @events.each do |event| %>
+            <li class="event-card mb-4 p-3 ms-5 border border-white default-border-radius">
+              <h3 class="mb-0 text-white font-primary-title"><%= event.name %></h3>
+              <p class="text-gold mb-0 font-primary-heading"> <%= event.starts_at.strftime("%B %d, %Y at %I:%M %p") %> – <%= event.ends_at.strftime("%B %d, %Y at %I:%M %p") %> </p>
+              <p class="text-white mb-0 font-primary-heading">
+                  <strong>Location:</strong> <%= event.full_location %> |
+                  <strong>Category:</strong> <%= event.event_category&.name %>
+              </p>
+              <p class="text-white mt-3 font-secondary-subheading"> <strong>Description:</strong> <%= event.description %> </p>
+
+              <!-- Execs Only Event Tag -->
+              <% if event.visibility == "execs_only" %>
+                <div class="mt-3 p-2 bg-gold text-dark-navy text-center default-border-radius font-secondary-body">Execs Only Event </div>
+              
+            </li>
+          <% end %>
+
+        <% end %>
+        </ul>
       </div>
       
-      <div class="col-auto"> <%= submit_tag "Filter", class: "btn bg-gold text-dark-navy default-border-radius font-secondary-body" %> </div>
+    <!-- No Events Message -->
+    <% else %>
+      <p class="text-white font-secondary-body px-2">No upcoming events.</p>
     <% end %>
   </div>
-
-  <!-- Event Cards -->
-  <% if @events.any? %>
-    <div class="event-scroll-container px-2" style="max-height: 70vh; overflow-y: auto;">
-      <ul class="list-unstyled">
-        <% @events.each do |event| %>
-          <li class="event-card mb-4 p-3 ms-5 border border-white default-border-radius">
-            <h3 class="mb-0 text-white font-primary-title"><%= event.name %></h3>
-            <p class="text-gold mb-0 font-primary-heading"> <%= event.starts_at.strftime("%B %d, %Y at %I:%M %p") %> – <%= event.ends_at.strftime("%B %d, %Y at %I:%M %p") %> </p>
-            <p class="text-white mb-0 font-primary-heading">
-                <strong>Location:</strong> <%= event.full_location %> |
-                <strong>Category:</strong> <%= event.event_category&.name %>
-            </p>
-            <p class="text-white mt-3 font-secondary-subheading"> <strong>Description:</strong> <%= event.description %> </p>
-
-            <!-- Execs Only Event Tag -->
-            <% if event.visibility == "execs_only" %>
-              <div class="mt-3 p-2 bg-gold text-dark-navy text-center default-border-radius font-secondary-body">Execs Only Event </div>
-            
-          </li>
-        <% end %>
-
-      <% end %>
-      </ul>
-    </div>
-    
-  <!-- No Events Message -->
-  <% else %>
-    <p class="text-white font-secondary-body px-2">No upcoming events.</p>
-  <% end %>
 </div>
+
+<!-- Gold divider -->
+<div class="gold-divider"></div>

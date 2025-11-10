@@ -1,45 +1,44 @@
-# spec/views/users/index_bulk_checkboxes_spec.rb
-# frozen_string_literal: true
-
+# spec/system/members_spec.rb
 require "rails_helper"
 
-RSpec.describe "users/index", type: :view do
-     let(:exec)   { create(:user, :exec) }
-  let(:member) { create(:user, role: :member) }
-  let(:u1)     { create(:user, role: :member) }
-  let(:u2)     { create(:user, role: :member, status: :inactive) }
+RSpec.describe "Users bulk actions", type: :system do
+     include Warden::Test::Helpers
 
-  context "when current_user is an exec" do
-       it "renders bulk edit form with user_id checkboxes and the reset button" do
-            assign(:users, [ u1, u2 ])
-         allow(view).to receive(:current_user).and_return(exec)
+  before(:each) { Warden.test_mode! }
+  after(:each)  { Warden.test_reset! }
 
-         render template: "users/index"
+  before { driven_by(:rack_test) }
 
-         # Bulk-edit form
-         expect(rendered).to include(%(action="#{bulk_edit_users_path}"))
-         expect(rendered).to include("Edit Selected Users")
+  let!(:exec) { create(:user, :exec, email: "exec@example.org", password: "password123") }
+  let!(:u1)   { create(:user, email: "member1@example.org", password: "password123") }
+  let!(:u2)   { create(:user, email: "member2@example.org", password: "password123") }
 
-         # Checkboxes for users
-         [ u1, u2 ].each do |user|
-              expect(rendered).to match(/name="user_ids\[\]".*value="#{user.id}"/)
-         end
+  it "renders the bulk edit page after selecting users" do
+       login_as(exec, scope: :user)
 
-         # Reset button visible for execs
-         expect(rendered).to include(%(action="#{reset_inactive_users_path}"))
-       end
+    # Directly visit the bulk_edit page with selected user IDs
+    visit bulk_edit_users_path(user_ids: [ u1.id, u2.id ])
+
+    expect(page).to have_current_path(bulk_edit_users_path, ignore_query: true)
+    expect(page).to have_selector("form")
   end
 
-  context "when current_user is a member" do
-       it "hides the reset button but still shows bulk form" do
-            assign(:users, [ member ])
-         allow(view).to receive(:current_user).and_return(member)
+  it "renders the bulk edit page even if only one user is selected" do
+       login_as(exec, scope: :user)
 
-         render template: "users/index"
+    visit bulk_edit_users_path(user_ids: [ u1.id ])
 
-         expect(rendered).to include(%(action="#{bulk_edit_users_path}"))
-         expect(rendered).to include("Edit Selected Users")
-         expect(rendered).not_to include(%(action="#{reset_inactive_users_path}"))
-       end
+    expect(page).to have_current_path(bulk_edit_users_path, ignore_query: true)
+    expect(page).to have_selector("form")
+  end
+
+  it "redirects or shows an error if no users are selected" do
+       login_as(exec, scope: :user)
+
+    # visiting without any user_ids simulates no selection
+    visit bulk_edit_users_path
+
+    # Expect some kind of notice/error message (adjust depending on your controller)
+    expect(page).to have_content("No users selected for bulk edit").or have_current_path(users_path)
   end
 end

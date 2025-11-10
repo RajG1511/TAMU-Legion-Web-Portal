@@ -1,47 +1,115 @@
-<h1>My Service Requests</h1>
+<!-- Top Heading -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title">View Service Hours</h1>
+</div>
 
-<% if notice.present? %>
-  <p style="color: green;"><%= notice %></p>
-<% end %>
-<% if alert.present? %>
-  <p style="color: red;"><%= alert %></p>
-<% end %>
+<!-- Gold Divider Bar -->
+<div class="container-fluid bg-gold py-1"></div>
 
-<% if @services.blank? %>
-  <p>You have no service requests.</p>
-<% else %>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Hours</th>
-        <th>Date performed</th>
-        <th>Committee</th>
-        <th>Status</th>
-        <th>Rejection Reason</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @services.each do |service| %>
-        <tr>
-          <td><%= service.name %></td>
-          <td><%= service.description %></td>
-          <td><%= service.hours %></td>
-          <td><%= service.date_performed %></td>
-          <td><%= service.committee.present? ? service.committee.titleize : "—" %>
-          <td><%= service.status %></td>
-          <td>
-            <% if service.rejected? %>
-              <%= service.rejection_reason.presence || "No reason provided" %>
-            <% else %>
-              —
-            <% end %>
-          </td>
-        </tr>
+<!-- Main Body Section -->
+<div class="container-fluid bg-dark-navy py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-10">
+      <div class="default-padding-left default-padding-right">
+
+<!-- Filter Bar Row -->
+<div class="d-flex align-items-stretch mb-3 flex-wrap mt-4 mb-4">
+
+  <!-- Filter Bar -->
+  <div class="flex-grow-0">
+    <div class="bg-white p-3 d-flex align-items-center h-100" style="min-width: 500px;">
+      <%= form_with url: services_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue w-100" do %>
+
+        <!-- Label: Filter By -->
+        <div class="col-auto">
+          <span class="fw-bold font-secondary-body">Filter By</span>
+        </div>
+
+        <!-- Committee Filter -->
+        <div class="col-auto">
+          <label for="committee_filter" class="form-label mb-0 font-secondary-subheading">Committee:</label>
+        </div>
+        <div class="col">
+          <%= select_tag :committee_id,
+            options_from_collection_for_select(Committee.order(:name), :id, :name, params[:committee_id]),
+            include_blank: "All",
+            class: "form-select default-border-radius text-legion-blue" %>
+
+        </div>
+
+        <!-- Date Sort -->
+        <div class="col-auto">
+          <label for="sort_filter" class="form-label mb-0 font-secondary-subheading">Date:</label>
+        </div>
+        <div class="col">
+          <%= select_tag :sort,
+                options_for_select([["Newest First", "desc"], ["Oldest First", "asc"]], params[:sort]),
+                class: "form-select default-border-radius text-legion-blue" %>
+        </div>
+
+        <!-- Filter Submit Button -->
+        <div class="col-auto d-flex align-items-stretch">
+          <%= submit_tag "Filter", class: "btn btn-legion-blue font-secondary-body flex-grow-1" %>
+        </div>
+
       <% end %>
-    </tbody>
-  </table>
-<% end %>
+    </div>
+  </div>
 
-<%= link_to "Submit New Service Request", new_service_path %>
+  <!-- Submit Service Request Button (attached visually) -->
+  <div class="flex-shrink-0 d-flex align-items-stretch">
+    <%= link_to "Submit Service Request",
+        new_service_path,
+        class: "btn btn-submit-service border border-white default-border-radius font-secondary-body px-4 d-flex justify-content-center align-items-center",
+        style: "margin-left: -1px;" %>
+  </div>
+
+
+</div>
+
+        <!-- Table Section -->
+        <% if @services.blank? %>
+          <p class="text-white font-secondary-subheading">You have no service requests.</p>
+        <% else %>
+          <div class="table-responsive log-scroll-container" style="max-height: 900px; overflow-y: auto;">
+            <table class="table table-bordered table-striped border-primary border-white">
+              <thead>
+                <tr>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Name</th>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Hours</th>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Date Performed</th>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Committee</th>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Status</th>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Rejection Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @services.each do |service| %>
+                  <tr class="border border-legion-blue">
+                    <td class="font-secondary-subheading"><%= service.name %></td>
+                    <td class="font-secondary-subheading"><%= service.hours %></td>
+                    <td class="font-secondary-subheading"><%= service.date_performed.strftime("%b %d, %Y") %></td>
+                    <td class="font-secondary-subheading"><%= service.committee.present? ? service.committee.name.titleize : "—" %></td>
+                    <td class="font-secondary-subheading bg-gold <%= service.status %>">
+                      <%= service.status.capitalize %>
+                    </td>
+                    <td class="font-secondary-subheading">
+                      <% if service.rejected? %>
+                        <%= service.rejection_reason.presence || "No reason provided" %>
+                      <% else %>
+                        —
+                      <% end %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        <% end %>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container-fluid bg-gold py-1"></div>

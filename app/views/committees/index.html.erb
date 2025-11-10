@@ -1,31 +1,61 @@
-<% flash.each do |key, message| %>
-    <div class="alert alert-<%= key %>"><%= message %></div>
-<% end %>
+<% content_for :title, "Committees" %>
 
-<h1>Committees</h1>
+<!-- Thin top line -->
+<div class="wix-top-line"></div>
 
-<% if current_user&.exec? %>
-    <div><%= link_to "Create New Committee", new_committee_path %></div>
-<% end %>
+<!-- HERO -->
+<section class="about-hero">
+  <div class="about-hero-bg" style="background-image:url('/Photos/campsweeney2.JPG');"></div>
+  <div class="about-hero-overlay"></div>
 
-<ul id="committee-list">
-    <% @committees.each do |committee| %>
-        <li>
-            <h2><%= committee.name %> Committee</h2>
-            <p><%= link_to "View More About This Committee", committee_path(committee) %></p>
-            <div>
-                <strong>Members:</strong>
-                <ul>
-                <% committee.users.each do |member| %>
-                    <li>
-                        <% if member.image_url.present? %>
-                            <img src="<%= member.image_url %>">
-                        <% end %>
-                        <p><%= member.full_name %></p>
-                    </li>
-                <% end %>
-                </ul>
-            </div>
-        </li>
+  <div class="page-title-badge">
+    <div class="page-title-badge-inner">
+      <div class="page-title-badge-title">Committees</div>
+      <div class="page-title-badge-subtitle">LEGION Men's Organization</div>
+    </div>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section class="page-section bg-legion-blue">
+  <div class="page-content-container">
+    <p class="section-content text-white text-center mb-0">
+      Select a committee for more information.
+    </p>
+  </div>
+</section>
+
+<!-- COMMITTEE GRID -->
+<section class="page-section bg-dark-navy">
+  <div class="page-content-container">
+    <% if @committees.any? %>
+      <div class="row g-4 justify-content-center">
+        <% @committees.each do |committee| %>
+          <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
+            <%= link_to committee_path(committee), class: "d-block w-100 text-decoration-none" do %>
+              <div class="event-card p-4 text-center h-100 w-100">
+                <div class="font-primary-heading fs-5" style="word-break:break-word;overflow-wrap:anywhere;">
+                  <%= committee.name %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-white text-center mb-0">No committees yet.</p>
     <% end %>
-</ul>
+
+    <% if current_user&.exec? %>
+      <div class="text-center mt-4">
+        <%= link_to "Open Committees Dashboard",
+                    dashboard_committees_path,
+                    class: "btn btn-gold default-border-radius font-primary-heading" %>
+      </div>
+    <% end %>
+  </div>
+</section>
+
+<!-- Gold Divider -->
+<div class="gold-divider"></div>
+

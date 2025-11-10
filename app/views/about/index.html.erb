@@ -1,39 +1,94 @@
-<% content_for :title, "About" %>
+<% content_for :title, "About Us" %>
 
+<!-- Thin top line -->
 <div class="wix-top-line"></div>
 
-<!-- WHAT IS LEGION? -->
-<section class="what-is-legion">
-    <div class="what__content">
-        <h2 class="what__title"><%= cms_text(:what_is_title, page: :about) %></h2>
-        <div class="what__rule"></div>
-        <p class="what__body"><%= cms_html(:what_is_body_html, page: :about) %></p>
+<!-- HERO -->
+<section class="about-hero">
+  <div class="about-hero-bg" style="background-image:url('/Photos/Nature.jpg');"></div>
+  <div class="about-hero-overlay"></div>
+  
+  <div class="page-title-badge">
+    <div class="page-title-badge-inner">
+      <div class="page-title-badge-title"><%= @sections["what_is_title"] %></div>
+      <div class="page-title-badge-subtitle">LEGION Men's Organization</div>
     </div>
+  </div>
 </section>
 
-<!-- FACTS -->
-<section class="about-facts">
-    <div class="about-facts__content">
-        <h2 class="about-facts__title"><%= cms_text(:facts_title, page: :about) %></h2>
-        <p class="about-facts__fact"><%= cms_text(:fact_1, page: :about) %></p>
-        <p class="about-facts__fact"><%= cms_text(:fact_2, page: :about) %></p>
-        <p class="about-facts__fact"><%= cms_text(:fact_3, page: :about) %></p>
+<!-- WHAT IS LEGION -->
+<section class="page-section bg-legion-blue">
+  <div class="page-content-container">
+    <div class="content-grid">
+      <!-- Left: content block -->
+      <div class="content-panel">
+        <h2 class="section-title text-white"><%= @sections["what_is_title"] %></h2>
+        <div class="section-divider"></div>
+        <div class="section-content text-white">
+          <%= raw @sections["what_is_body_html"] %>
+        </div>
+      </div>
+
+      <!-- Right: photo with proper border -->
+      <div class="photo-container">
+        <figure class="photo-figure">
+          <img src="/Photos/House.jpg" alt="LEGION members" class="photo-img" />
+        </figure>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- PILLARS -->
-<section class="about-pillars">
-    <div class="about-pillars__content">
-        <h2 class="about-pillars__title"><%= cms_text(:pillars_title, page: :about) %></h2>
-        <p class="about-pillars__pillar"><%= cms_text(:pillar_1, page: :about) %></p>
-        <p class="about-pillars__pillar"><%= cms_text(:pillar_2, page: :about) %></p>
-        <p class="about-pillars__pillar"><%= cms_text(:pillar_3, page: :about) %></p>
+<!-- FAST FACTS with background pattern -->
+<section class="page-section bg-dark-navy facts-section">
+  <div class="legion-pattern-overlay"></div>
+  <div class="page-content-container position-relative">
+    <h3 class="section-title text-white text-center mb-4"><%= @sections["facts_title"] %></h3>
+    <div class="facts-grid">
+      <div class="fact-card">
+        <div class="fact-number"><%= @sections["fact_1"] %></div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-number"><%= @sections["fact_2"] %></div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-number"><%= @sections["fact_3"] %></div>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- EDIT BUTTON -->
-<% if current_user&.exec?%>
-    <section class="about-edit">
-        <%= link_to "Edit About Page", edit_about_path, class: "btn btn-outline-light" %>
-    </section>
+<!-- OUR PILLARS with branding -->
+<section class="page-section bg-legion-blue pillars-section">
+  <div class="page-content-container">
+    <div class="pillars-header">
+      <img src="/Logos/legion_seal.png" alt="LEGION Seal" class="pillars-seal">
+      <h3 class="section-title text-white text-center mb-4"><%= @sections["pillars_title"] %></h3>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-icon">⚔</div>
+        <div class="pillar-text"><%= @sections["pillar_1"] %></div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">🤝</div>
+        <div class="pillar-text"><%= @sections["pillar_2"] %></div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">⚖</div>
+        <div class="pillar-text"><%= @sections["pillar_3"] %></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<% if current_user&.exec? || current_user&.president? %>
+  <section class="page-section bg-dark-navy">
+    <div class="page-content-container text-center">
+      <%= link_to "Edit About Page", edit_about_path, class: "btn btn-outline-light" %>
+    </div>
+  </section>
 <% end %>
+
+<!-- Gold Divider -->
+<div class="gold-divider"></div>

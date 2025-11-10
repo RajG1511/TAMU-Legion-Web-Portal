@@ -14,13 +14,15 @@ RSpec.describe "home/index.html.erb", type: :view do
      end
 
   before do
-       # Make helper calls return our test content without hitting DB/services.
+       # Stub the store to return our test content
        allow(HomePageStore).to receive(:read).and_return(sections)
+    # Assign @sections so the view can use it
+    assign(:sections, sections)
 
-    # Avoid route dependencies the template links to.
+    # Avoid route dependencies the template links to
     allow(view).to receive(:resources_path).and_return("/resources")
 
-    # Default: no signed-in user (so no edit button).
+    # Default: no signed-in user (so no edit button)
     allow(view).to receive(:current_user).and_return(nil)
   end
 
@@ -28,7 +30,7 @@ RSpec.describe "home/index.html.erb", type: :view do
        render template: "home/index"
 
     expect(rendered).to include("Who we are")
-    # cms_html returns sanitized+raw; allowed tags like <strong> should survive:
+    # cms_html returns sanitized+raw; allowed tags like <strong> should survive
     expect(rendered).to include("<strong>world</strong>")
   end
 

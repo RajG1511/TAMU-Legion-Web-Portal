@@ -1,59 +1,122 @@
-<% flash.each do |key, message| %>
-  <div class="alert alert-<%= key %>"><%= message %></div>
-<% end %>
+<% content_for :title, "#{@committee.name} Committee" %>
 
-<h1><%= @committee.name %> Committee</h1>
+<!-- Header Strip -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <div class="container d-flex justify-content-between align-items-center">
+    <h1 class="mb-0 font-primary-title"><%= @committee.name %> Committee</h1>
 
-<% if current_user&.exec? %>
-    <div><%= link_to "Edit Committee", edit_committee_path(@committee) %></div>
-    <div><%= link_to "Delete Committee", delete_committee_path(@committee) %></div>
-<% end %>
+    <%# Optional quick admin link for execs only %>
+    <% if current_user&.exec? %>
+      <%= link_to "Edit", edit_committee_path(@committee),
+                  class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+    <% end %>
+  </div>
+</div>
 
-<section>
-    <p><%= @committee.description %></p>
+<!-- Gold Divider -->
+<div class="container-fluid bg-gold py-1"></div>
+
+<!-- Overview -->
+<section class="container-fluid bg-dark-navy text-white py-4">
+  <div class="default-padding">
+    <% if @committee.description.present? %>
+      <%= simple_format(@committee.description, { class: "font-secondary-subheading mb-0 text-center" }) %>
+    <% else %>
+      <p class="font-secondary-subheading mb-0 text-center">Details coming soon.</p>
+    <% end %>
+  </div>
 </section>
 
-<section>
-    <h2><%= @committee.section1_heading %></h2>
-    <p><%= @committee.section1_body %></p>
-    <% if @committee.primary_image.present? %>
-        <%= image_tag @committee.primary_image.variant(resize_to_limit: [500, 500]) %>
-    <% end %>
-</section>
-
-<section>
-    <h2><%= @committee.section2_heading %></h2>
-    <p><%= @committee.section2_body %></p>
-    <% if @committee.secondary_image.present? %>
-        <%= image_tag @committee.secondary_image.variant(resize_to_limit: [500, 500]) %>
-    <% end %>
-</section>
-
-<p>
-    <strong>Members:</strong>
-    <ul>
-    <% @committee.users.each do |member| %>
-        <li>
-            <% if member.image_url.present? %>
-                <img src="<%= member.image_url %>">
-            <% end %>
-            <p><%= member.full_name %></p>
-        </li>
-    <% end %>
-    </ul>
-</p>
-
-<% # Committee membership management %>
-
-<% if current_user&.exec? %>
-    <%= form_with url: committee_committee_memberships_path(@committee), method: :post, local: true do %>
-        <h2>Add Member</h2>
-        <%= select_tag :user_id, options_from_collection_for_select(@non_members, :id, :full_name), prompt: "Select User" %>
-        <%= submit_tag "Add Member" %>
-    <% end %>
-    <%= form_with url: committee_committee_membership_path(@committee, 0), method: :delete, local: true do %>
-        <h2>Remove Member</h2>
-        <%= select_tag :user_id, options_from_collection_for_select(@members, :id, :full_name), prompt: "Select User" %>
-        <%= submit_tag "Remove Member" %>
-    <% end %>
+<!-- Section 1 -->
+<% if @committee.section1_heading.present? || @committee.section1_body.present? || @committee.primary_image.present? %>
+  <section class="container-fluid bg-white text-dark py-5">
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-6 order-lg-1">
+          <h2 class="font-primary-heading text-dark-navy mb-2">
+            <%= @committee.section1_heading.presence || "About This Committee" %>
+          </h2>
+          <hr class="mb-3" style="border-top:4px solid #0f296b;">
+          <div class="font-secondary-subheading">
+            <%= simple_format(@committee.section1_body.to_s.presence || "More information coming soon.") %>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-2">
+          <% if @committee.primary_image.present? %>
+            <div class="ratio ratio-16x9">
+                <%= image_tag @committee.primary_image,
+                    class: "w-100 h-100 object-fit-cover d-block",
+                    alt: "#{@committee.name} primary image" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </section>
 <% end %>
+
+<!-- Section 2 -->
+<% if @committee.section2_heading.present? || @committee.section2_body.present? || @committee.secondary_image.present? %>
+  <section class="container-fluid bg-dark-navy text-white py-5">
+    <div class="container">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-6 order-lg-2">
+          <h2 class="font-primary-heading mb-2">
+            <%= @committee.section2_heading.presence || "What We Do" %>
+          </h2>
+          <hr class="thick-white-divider mb-3">
+          <div class="font-secondary-subheading">
+            <%= simple_format(@committee.section2_body.to_s.presence || "Details coming soon.") %>
+          </div>
+        </div>
+        <div class="col-lg-6 order-lg-1">
+          <% if @committee.secondary_image.present? %>
+            <div class="border border-4 border-white default-border-radius overflow-hidden">
+              <%= image_tag @committee.secondary_image.variant(resize_to_limit: [1200, 800]),
+                            class: "img-fluid d-block", alt: "#{@committee.name} secondary image" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </section>
+<% end %>
+
+<!-- Members Grid -->
+<section class="container-fluid bg-white text-dark py-5">
+  <div class="container">
+    <h2 class="font-primary-heading text-dark-navy mb-2">Members</h2>
+    <hr class="mb-4" style="border-top:4px solid #0f296b;">
+
+    <% if @committee.active_users.any? %>
+      <div class="row g-3">
+        <% @committee.active_users.each do |member| %>
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="p-2 h-100 border border-2 default-border-radius">
+              <div class="ratio ratio-1x1 border default-border-radius mb-2 overflow-hidden" style="background:#f8f9fa;">
+                <%# Prefer member.headshot if you have ActiveStorage; fallback to image_url if that’s your field %>
+                <% if member.respond_to?(:headshot) && member.headshot.present? %>
+                  <%= image_tag member.headshot,
+                                class: "w-100 h-100 object-fit-cover",
+                                alt: member.full_name %>
+                <% elsif member.respond_to?(:image_url) && member.image_url.present? %>
+                  <img src="<%= member.image_url %>" alt="<%= member.full_name %>" class="w-100 h-100 object-fit-cover">
+                <% else %>
+                  <div class="w-100 h-100 d-flex align-items-center justify-content-center text-legion-blue">
+                    <span class="font-secondary-subheading">No Photo</span>
+                  </div>
+                <% end %>
+              </div>
+              <p class="mb-0 text-center fw-bold font-secondary-body text-legion-blue"><%= member.full_name %></p>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="font-secondary-subheading">No members listed yet.</p>
+    <% end %>
+  </div>
+</section>
+
+<!-- Footer Gold Strip -->
+<div class="container-fluid bg-gold py-1"></div>

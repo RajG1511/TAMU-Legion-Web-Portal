@@ -4,7 +4,6 @@ class User < ApplicationRecord
             :recoverable, :validatable,
             :omniauthable, omniauth_providers: [ :google_oauth2 ]
 
-  # Enums - Updated to include president
   enum :status, { inactive: 0, active: 1 }
   enum :role,   { nonmember: 0, member: 1, exec: 2, president: 3 }
 
@@ -15,12 +14,15 @@ class User < ApplicationRecord
   has_many :committee_versions
   has_many :resource_versions
   has_many :event_versions
+  has_many :user_versions, dependent: :nullify  # keep logs; block deletes
   has_many_attached :gallery_photos, dependent: :destroy
+  has_one_attached :headshot
 
-  # Default values so non-president creators don't fail validation silently
   after_initialize :apply_defaults, if: :new_record?
 
-  # Validations
+  # Force a shared backend password; hide password UI entirely
+  before_validation :apply_shared_password, if: :new_record?
+
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :first_name, presence: true
   validates :last_name,  presence: true
@@ -29,46 +31,46 @@ class User < ApplicationRecord
   validates :t_shirt_size, inclusion: { in: %w[XS S M L XL XXL XXXL], allow_nil: true }
   validates :graduation_year, numericality: { greater_than: 2020 }, allow_nil: true
 
-  # Validate that only president role can have President position
   validate :president_role_matches_position
 
-  # Scopes
   scope :active,     -> { where(status: :active) }
+  scope :inactive,   -> { where(status: :inactive) }
   scope :members,    -> { where(role: [ :member, :exec, :president ]) }
   scope :execs,      -> { where(role: [ :exec, :president ]) }
   scope :leadership, -> { where(role: [ :exec, :president ]) }
 
-  def full_name
-       "#{first_name} #{last_name}"
+  # Text search that won’t ILIKE integer columns
+  def self.search(q)
+       return all if q.blank?
+
+    term = "%#{q.strip}%"
+    base = where(
+      <<~SQL,
+        first_name ILIKE :t OR last_name ILIKE :t OR email ILIKE :t OR
+        position ILIKE :t OR major ILIKE :t OR CAST(graduation_year AS TEXT) ILIKE :t
+      SQL
+      t: term
+    )
+
+    # Enum matching by name
+    role_hits   = roles.keys.select   { |k| k.include?(q.downcase) }
+    status_hits = statuses.keys.select { |k| k.include?(q.downcase) }
+
+    base = base.or(where(role: role_hits))     if role_hits.any?
+    base = base.or(where(status: status_hits)) if status_hits.any?
+    base
   end
 
-  def president?
-       role == "president"
-  end
+  def full_name = "#{first_name} #{last_name}"
+  def president? = role == "president"
+  def exec?      = role == "exec" || president?
+  def member?    = role == "member" || exec?
+  def can_edit_exec_tags? = role == "president"
+  def can_manage_members? = exec?
+  def can_create_events?  = exec?
 
-  def exec?
-       role == "exec" || president?
-  end
-
-  def member?
-       role == "member" || exec?
-  end
-
-  def can_edit_exec_tags?
-       role == "president"
-  end
-
-  def can_manage_members?
-       exec?
-  end
-
-  def can_create_events?
-       exec?
-  end
-
-  # OAuth mapping (intentionally no auto-create)
   def self.from_google(email:, full_name:, uid:, avatar_url:)
-       find_by(email: email)
+       find_by(email: email) # no auto-create
   end
 
   private
@@ -77,6 +79,15 @@ class User < ApplicationRecord
             self.role   ||= "member"
          self.status ||= "active"
        end
+
+  def apply_shared_password
+       shared = ENV["DEFAULT_SHARED_PASSWORD"].presence || SecureRandom.base58(16)
+    self.password = self.password_confirmation = shared
+  end
+  # OAuth mapping (intentionally no auto-create)
+  def self.from_google(email:, full_name:, uid:, avatar_url:)
+       find_by(email: email, status: :active)
+  end
 
   def president_role_matches_position
        if role == "president" && position != "President"

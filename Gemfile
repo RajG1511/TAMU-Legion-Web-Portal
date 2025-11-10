@@ -1,5 +1,7 @@
 source "https://rubygems.org"
 
+
+gem 'kaminari'
 # gem "devise"
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
 gem "rails", "~> 8.0.2.1", ">= 8.0.2.1"
@@ -72,6 +74,7 @@ group :test do
   gem "selenium-webdriver"
   gem "webdrivers"
   gem 'simplecov', :require => false
+  gem 'rails-controller-testing'
 end
 
 ruby '~> 3.4.5'

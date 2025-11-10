@@ -1,0 +1,100 @@
+<!-- Header strip -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title">Member Directory</h1>
+</div>
+
+<!-- Gold divider -->
+<div class="gold-divider"></div>
+
+<!-- Body -->
+<div class="container-fluid bg-dark-navy text-white pt-4 pb-5 min-vh-100">
+  <div class="default-padding">
+
+      <!-- Search + View Profile Bar -->
+      <div class= "d-flex align-items-stretch mb-1 flex-wrap">
+
+        <!-- Search Form -->
+        <div class="flex-grow-1">
+          <div class="bg-white p-3 d-flex align-items-center h-100" style="min-width: 500px;">
+            <%= form_with url: member_directory_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue w-100" do %>
+              
+              <!-- Label: Search -->
+                <div class="col-auto">
+                  <span class="fw-bold font-secondary-body">Search For:</span>
+                </div>
+
+                <!-- Search Input -->
+                <div class="col">
+                  <%= text_field_tag :q, params[:q], placeholder: "name, email, position, major, year…", class: "form-control default-border-radius font-secondary-subheading" %>
+                </div>
+
+                <!-- Search Submit -->
+                <div class="col-auto d-flex align-items-stretch">
+                  <%= submit_tag "Search", class: "btn btn-legion-blue default-border-radius font-secondary-body flex-grow-1" %>
+                </div>
+            <% end %>
+          </div>
+        </div>
+        
+        <!-- View My Profile Button -->
+          <div class="flex-shrink-0 d-flex align-items-stretch">
+            <% if current_user %>
+              <%= link_to "View My Profile", user_path(current_user, from: "directory"),
+                class: "btn btn-submit-service p-3 h-100 text-white default-border-radius font-secondary-body px-4 d-flex justify-content-center align-items-center",
+                style: "margin-left: -1px;" %>
+            <% end %>
+          </div>
+
+      </div>
+
+
+      <!-- Footnote -->
+      <small class="text-gold font-secondary-body mt-0 mb-4">
+        * Members can only view their own profile from here. Executives can view all profiles from the Members Dashboard.
+      </small>
+
+    <!-- Members Table -->
+    <div class="table-responsive log-scroll-container mt-4" style="max-height: 1200px; overflow-y: auto;">
+      <table class="table table-bordered table-striped border-primary border-white members-table">
+        <thead>
+          <tr class="bg-legion-blue text-white">
+            <th scope="col" class="bg-legion-blue text-white font-secondary-heading">Member</th>
+            <th scope="col" class="bg-legion-blue text-white font-secondary-heading">Email</th>
+            <th scope="col" class="bg-legion-blue text-white font-secondary-heading">Role</th>
+            <th scope="col" class="bg-legion-blue text-white font-secondary-heading">Position</th>
+            <th scope="col" class="bg-legion-blue text-white font-secondary-heading">Major</th>
+            <th scope="col" class="bg-legion-blue text-white font-secondary-heading">Graduation Year</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if @users.present? %>
+            <% @users.each do |u| %>
+              <tr class="border border-legion-blue">
+                <td class="font-secondary-subheading bg-light-gray"><%= "#{u.first_name} #{u.last_name}" %></td>
+                <td class="font-secondary-subheading"><%= u.email %></td>
+                <td class="font-secondary-subheading"><%= u.role.to_s.titleize %></td>
+                <td class="font-secondary-subheading"><%= u.position.presence || "-" %></td>
+                <td class="font-secondary-subheading"><%= u.major.presence || "-" %></td>
+                <td class="font-secondary-subheading"><%= u.graduation_year.presence || "-" %></td>
+              </tr>
+            <% end %>
+            <td colspan="6" class="border-white bg-legion-blue text-center text-white py-2 font-secondary-subheading">
+              <%= link_to "VIEW ALL MEMBERS", member_directory_path, class: "text-gold text-decoration-underline ms-2" %>
+            </td>
+          <% else %>
+            <tr>
+              <td colspan="6" class="border-white bg-legion-blue text-center text-white py-2 font-secondary-subheading">
+                No members matched your search.
+                <%= link_to "VIEW ALL MEMBERS", member_directory_path, class: "text-gold text-decoration-underline ms-2" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<!-- Gold divider -->
+<div class="gold-divider"></div>

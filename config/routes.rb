@@ -44,7 +44,9 @@ Rails.application.routes.draw do
        member do
             get :delete
        end
-
+    collection do
+         get :dashboard
+    end
     resources :committee_memberships, only: [ :create, :destroy ]
   end
 
@@ -80,6 +82,11 @@ Rails.application.routes.draw do
   get "/contact/edit", to: "contact#edit", as: :edit_contact
   patch "/contact", to: "contact#update", as: :update_contact
 
+  # Philanthropy page
+  get "/philanthropy", to: "philanthropy#index", as: :philanthropy
+  get "/philanthropy/edit", to: "philanthropy#edit", as: :edit_philanthropy
+  patch "/philanthropy", to: "philanthropy#update", as: :update_philanthropy
+
   # Members page
   get "/members", to: "users#public_index", as: :members
 
@@ -88,6 +95,7 @@ Rails.application.routes.draw do
 
   # Member Center main page
   get "member_center", to: "home#member_center", as: :member_center
+  get "/member_directory", to: "users#directory", as: :member_directory
 
   # Gallery management (exec/president only)
   scope :member_center do
@@ -98,4 +106,8 @@ Rails.application.routes.draw do
 
   # Login page
   get "login", to: "home#login"
+
+  # 📢 Announcement routes
+  resources :announcements, only: [ :create ]
+  delete "end_announcement", to: "announcements#destroy", as: :end_announcement
 end

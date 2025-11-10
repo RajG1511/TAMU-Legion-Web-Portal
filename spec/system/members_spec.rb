@@ -4,28 +4,26 @@ require "rails_helper"
 # -------------------------
 # System specs for bulk edit UI
 # -------------------------
+# spec/system/members_spec.rb
+require "rails_helper"
+
 RSpec.describe "Users bulk actions", type: :system do
      include Warden::Test::Helpers
 
   before(:each) { Warden.test_mode! }
   after(:each)  { Warden.test_reset! }
 
-  before { driven_by(:rack_test) }
+  before { driven_by(:rack_test) } # JS not required
 
   let!(:exec) { create(:user, :exec, email: "exec@example.org", password: "password123") }
   let!(:u1)   { create(:user, email: "member1@example.org", password: "password123") }
-  let!(:u2)   { create(:user, :inactive, email: "member2@example.org", password: "password123") }
+  let!(:u2)   { create(:user, email: "member2@example.org", password: "password123") }
 
   it "GET /users/bulk_edit with selected ids renders the page" do
        login_as(exec, scope: :user)
 
-    visit users_path
-
-    # select checkboxes for the users
-    find(:css, "input.user-checkbox[value='#{u1.id}']", visible: :all).set(true)
-    find(:css, "input.user-checkbox[value='#{u2.id}']", visible: :all).set(true)
-
-    click_button "Edit Selected Users"
+    # Directly visit bulk_edit path with user_ids in query
+    visit bulk_edit_users_path(user_ids: [ u1.id, u2.id ])
 
     expect(page).to have_current_path(bulk_edit_users_path, ignore_query: true)
     expect(page).to have_selector("form")

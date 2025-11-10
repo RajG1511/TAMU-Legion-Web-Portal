@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
      allow_browser versions: :modern
+     before_action :load_nav_committees
 
   def require_member!
        return if current_user&.member?
@@ -19,4 +20,10 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
        member_center_path
   end
+
+  private
+
+       def load_nav_committees
+            @nav_committees = Committee.select(:id, :name).order(:name)
+       end
 end

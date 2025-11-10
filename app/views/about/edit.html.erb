@@ -1,33 +1,160 @@
-<% content_for :title, "Edit About" %>
+<% content_for :title, "Edit About Us" %>
 
-<h1>Edit About Page</h1>
+<!-- Top Heading -->
+<div class="container-fluid bg-dark-navy text-white py-3">
+  <h1 class="text-center font-primary-title">Edit About Us Page</h1>
+</div>
 
-<%= form_with url: about_path, method: :patch, local: true do |f| %>
-    <div class="card p-3 mb-3">
-        <h3>What is LEGION - Title</h3>
-        <%= text_field_tag "about_page[what_is_title]", @sections["what_is_title"], class: "form-control" %>
-        <h3 class="mt-3">What is LEGION - Body (HTML)</h3>
-        <%= text_area_tag "about_page[what_is_body_html]", @sections["what_is_body_html"], rows: 6, class: "form-control" %>
+<!-- Main Body -->
+<div class="container-fluid bg-gold py-2">
+  <div class="row">
+
+    <!-- LEFT COLUMN: Editable Sections -->
+    <div class="col-md-7 bg-white text-dark-navy p-4 min-vh-100">
+
+      <%= form_with url: about_path, method: :patch, local: true do |f| %>
+        <!-- Scrollable Edit Form Container with responsive left margin -->
+        <div class="overflow-auto pe-2 edit-scroll-container" style="max-height: 75vh; margin-left: 3vw;">
+
+          <!-- WHAT IS LEGION SECTION -->
+          <div class="edit-card p-4 mb-4">
+            <h3 class="font-primary-title mb-2 text-white">What is LEGION?</h3>
+            <p class="text-gold mb-0 font-primary-heading"><strong>Can Edit Title & Body</strong></p>
+            <p class="text-white mb-0 font-secondary-body"><strong>Body accepts HTML; all fields accept plaintext</strong></p>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Current Title Text:</label>
+              <%= text_field_tag "about_page[what_is_title]", @sections["what_is_title"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Current Body Text:</label>
+              <%= text_area_tag "about_page[what_is_body_html]", @sections["what_is_body_html"], rows: 6, class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+          </div>
+
+          <!-- FACTS SECTION -->
+          <div class="edit-card p-4 mb-4">
+            <h3 class="font-primary-title mb-2 text-white">Fast Facts</h3>
+            <p class="text-gold mb-0 font-primary-heading"><strong>Can Edit Title & Facts</strong></p>
+            <p class="text-white mb-0 font-secondary-body"><strong>All fields accept plaintext</strong></p>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Current Title Text:</label>
+              <%= text_field_tag "about_page[facts_title]", @sections["facts_title"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Current Fact 1:</label>
+              <%= text_field_tag "about_page[fact_1]", @sections["fact_1"], class: "form-control default-border-radius edit-textarea font-secondary-subheading mb-2" %>
+
+              <label class="font-secondary-subheading mb-2 text-white">Current Fact 2:</label>
+              <%= text_field_tag "about_page[fact_2]", @sections["fact_2"], class: "form-control default-border-radius edit-textarea font-secondary-subheading mb-2" %>
+
+              <label class="font-secondary-subheading mb-2 text-white">Current Fact 3:</label>
+              <%= text_field_tag "about_page[fact_3]", @sections["fact_3"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+          </div>
+
+          <!-- PILLARS SECTION -->
+          <div class="edit-card p-4 mb-4">
+            <h3 class="font-primary-title mb-2 text-white">Our Pillars</h3>
+            <p class="text-gold mb-0 font-primary-heading"><strong>Can Edit Title & Pillars</strong></p>
+            <p class="text-white mb-0 font-secondary-body"><strong>All fields accept plaintext</strong></p>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Current Title Text:</label>
+              <%= text_field_tag "about_page[pillars_title]", @sections["pillars_title"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Current Pillar 1:</label>
+              <%= text_field_tag "about_page[pillar_1]", @sections["pillar_1"], class: "form-control default-border-radius edit-textarea font-secondary-subheading mb-2" %>
+
+              <label class="font-secondary-subheading mb-2 text-white">Current Pillar 2:</label>
+              <%= text_field_tag "about_page[pillar_2]", @sections["pillar_2"], class: "form-control default-border-radius edit-textarea font-secondary-subheading mb-2" %>
+
+              <label class="font-secondary-subheading mb-2 text-white">Current Pillar 3:</label>
+              <%= text_field_tag "about_page[pillar_3]", @sections["pillar_3"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Buttons Below Scrollable Form -->
+        <div class="d-flex justify-content-start gap-3 mt-4" style="margin-left: 3vw;">
+          <%= f.submit "Save", class: "btn btn-gold text-dark-navy font-secondary-body default-border-radius" %>
+          <%= link_to "Cancel", root_path, class: "btn btn-gold text-dark-navy font-secondary-body default-border-radius" %>
+        </div>
+
+      <% end %>
     </div>
 
-    <div class="card p-3 mb-3">
-        <h3>Facts - Title</h3>
-        <%= text_field_tag "about_page[facts_title]", @sections["facts_title"], class: "form-control" %>
-        <h3 class="mt-3">Facts</h3>
-        <%= text_field_tag "about_page[fact_1]", @sections["fact_1"], class: "form-control" %>
-        <%= text_field_tag "about_page[fact_2]", @sections["fact_2"], class: "form-control" %>
-        <%= text_field_tag "about_page[fact_3]", @sections["fact_3"], class: "form-control" %>
+    <!-- RIGHT COLUMN: Update Log / User Guide Placeholder -->
+    <div class="col-md-5 bg-legion-blue text-white p-4 min-vh-100">
+
+      <!-- User Guide Button -->
+      <div style="padding-left: 3vw; padding-right: 3vw;">
+        <button type="button" class="btn white-btn-edit mb-3 default-border-radius btn-lg font-primary-heading w-100"
+          data-bs-toggle="modal" data-bs-target="#UserGuideModal">
+          User Guide: Editing About Us Page
+        </button>
+      </div>
+
+      <div class="table-responsive log-scroll-container" style="max-height: 75vh; overflow-y: auto; padding-left: 3vw; padding-right: 3vw;">
+        <table class="table table-bordered table-striped border-white">
+          <thead>
+            <tr>
+              <th colspan="2" class="bg-white text-dark text-center h5 font-secondary-heading">Update Log</th>
+            </tr>
+            <tr>
+              <th class="bg-legion-blue text-white font-secondary-body border-white">Updated By</th>
+              <th class="bg-legion-blue text-white font-secondary-body border-white">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% (@about_versions || []).each do |version| %>
+              <tr>
+                <td class="font-secondary-subheading"><%= version.user.first_name %> <%= version.user.last_name %></td>
+                <td class="font-secondary-subheading"><%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
+              </tr>
+            <% end %>
+            <% if @about_versions.blank? %>
+              <tr>
+                <td colspan="2" class="text-center font-secondary-subheading text-black">
+                  No updates logged yet.
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
 
-    <div class="card p-3 mb-3">
-        <h3>Pillars - Title</h3>
-        <%= text_field_tag "about_page[pillars_title]", @sections["pillars_title"], class: "form-control" %>
-        <h3 class="mt-3">Pillars</h3>
-        <%= text_field_tag "about_page[pillar_1]", @sections["pillar_1"], class: "form-control" %>
-        <%= text_field_tag "about_page[pillar_2]", @sections["pillar_2"], class: "form-control" %>
-        <%= text_field_tag "about_page[pillar_3]", @sections["pillar_3"], class: "form-control" %>
-    </div>
+  </div>
+</div>
 
-    <%= f.submit "Save", class: "btn btn-navy" %>
-    <%= link_to "Cancel", root_path, class: "btn btn-outline-light", style: "margin-left:8px" %>    
-<% end %>
+<!-- User Guide Modal -->
+<div class="modal fade edit-info-modal" id="UserGuideModal" tabindex="-1" aria-labelledby="UserGuideModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title font-primary-heading" id="UserGuideModalLabel">About Us Edit Guide</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body font-secondary-subheading">
+        <p>Welcome to the About Us Page Editing Guide!</p>
+        <h6 class="font-secondary-body text-gold mt-4">Editing the About Us Page</h6>
+        <ul class="font-secondary-subheading">
+          <li>Each section is editable below. Titles accept plaintext; body accepts limited HTML.</li>
+          <li>Click into a field to modify; save at the bottom.</li>
+          <li>Saved changes reflect immediately on the public About page.</li>
+        </ul>
+        <h6 class="text-gold mt-4 font-secondary-body">Understanding the Update Log</h6>
+        <ul class="font-secondary-subheading">
+          <li>Edits are recorded for accountability and rollbacks.</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="m
+

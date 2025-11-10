@@ -1,73 +1,300 @@
-<h1>Pending Service Requests</h1>
+<!-- Top Heading -->
+<div class="container-fluid bg-dark-gray-blue text-white py-3">
+  <h1 class="text-center font-primary-title">Service Dashboard</h1>
+</div>
 
-<% if notice.present? %>
-  <p style="color: green;"><%= notice %></p>
-<% end %>
-<% if alert.present? %>
-  <p style="color: red;"><%= alert %></p>
-<% end %>
+<!-- Main Split Body Section -->
+<div class="container-fluid bg-gold py-2">
+  <div class="row">
 
-<% if @services.blank? %>
-  <p>No pending service requests.</p>
-<% else %>
-  <table>
-    <thead>
-      <tr>
-        <th>Submitter</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Hours</th>
-        <th>Date performed</th>
-        <th>Committee</th>
-        <th>Status</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @services.each do |service| %>
-        <tr>
-          <td><%= service.user&.email || "Unknown" %></td>
-          <td><%= service.name %></td>
-          <td><%= service.description %></td>
-          <td><%= service.hours %></td>
-          <td><%= service.date_performed %></td>
-          <td><%= service.committee.present? ? service.committee.titleize : "—" %>
-          <td><%= service.status %></td>
-          <td>
-            <%= button_to "Approve",
-                approve_service_path(service),
-                method: :patch,
-                form: { data: { turbo_confirm: "Approve this request?" } } %>
+    <!--  LEFT COLUMN — Logs and Buttons -->
+    <div class="col-md-5 bg-legion-blue py-4 min-vh-100">
+      <div class="default-padding-left">
 
-            <%= form_with model: service, url: reject_service_path(service), method: :patch, local: true do |f| %>
-                <div>
-                    <%= f.text_field :rejection_reason,
-                        placeholder: "Reason for rejection",
-                        required: true %>
-                </div>
-                <%= f.submit "Reject", class: "danger" %>
-            <% end %>
-          </td>
-        </tr>
+        <!-- User Guide Button -->
+        <div class="d-grid gap-3 px-4 mt-4 mb-4">
+          <button
+            type="button"
+            class="btn white-btn-edit default-border-radius btn-lg font-primary-heading w-100"
+            data-bs-toggle="modal"
+            data-bs-target="#UserGuideModal">
+            User Guide: Managing Service Requests
+          </button>
+        </div>
+
+        <!-- Approved Hours by Committee -->
+        <div class="log-scroll-container mb-2">
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped border-primary border-legion-blue">
+              <thead>
+                <tr>
+                  <th colspan="2" class="bg-white text-black border-white text-center h4 font-secondary-heading">
+                    Total Approved Hours
+                  </th>
+                </tr>
+                <tr>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Committee</th>
+                  <th class="bg-legion-blue text-white border-white font-secondary-body">Total Hours</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% Committee.order(:name).each do |committee| %>
+                  <tr class="border border-legion-blue">
+                    <!-- Committee Name -->
+                    <td class="font-secondary-subheading"><%= committee.name.titleize %></td>
+
+                    <!-- Total Approved Hours for this Committee -->
+                    <td class="font-secondary-subheading"><%= @committee_totals[committee.name] || 0 %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Service Request Log -->
+        <div class="table-responsive log-scroll-container" style="max-height: 900px; overflow-y: auto;">
+          <table class="table table-bordered table-striped border-primary border-legion-blue">
+            <thead>
+              <tr>
+                <th colspan="5" class="bg-white text-black border-white text-center h4 font-secondary-heading">
+                  Request Update Log
+                </th>
+              </tr>
+              <tr>
+                <th class="bg-legion-blue text-white border-white font-secondary-body">Member Name</th>
+                <th class="bg-legion-blue text-white border-white font-secondary-body">Service Name</th>
+                <th class="bg-legion-blue text-white border-white font-secondary-body">Updated By</th>
+                <th class="bg-legion-blue text-white border-white font-secondary-body">Timestamp</th>
+                <th class="bg-legion-blue text-white border-white font-secondary-body">Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <% if @all_services.present? %>
+                <% @all_services.each do |service| %>
+                  <tr class="border border-legion-blue">
+                    <!-- Member Name -->
+                    <td class="font-secondary-subheading">
+                      <%= service.user.present? ? "#{service.user.first_name} #{service.user.last_name}" : "Unknown" %>
+                    </td>
+
+                    <!-- Service Name -->
+                    <td class="font-secondary-subheading"><%= service.name %></td>
+
+                    <!-- Updated By -->
+                    <td class="font-secondary-subheading">
+                      <% if service.respond_to?(:updated_by) && service.updated_by.present? %>
+                        <%= "#{service.updated_by.first_name} #{service.updated_by.last_name}" %>
+                      <% else %>
+                        <%= service.user.present? ? "#{service.user.first_name} #{service.user.last_name}" : "Unknown" %>
+                      <% end %>
+                    </td>
+
+                    <!-- Timestamp -->
+                    <td class="font-secondary-subheading">
+                      <%= service.updated_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %>
+                    </td>
+
+                    <!-- Status -->
+                    <td class="font-secondary-subheading bg-gold <%= service.status %>">
+                      <%= service.status.capitalize %>
+                    </td>
+                  </tr>
+                <% end %>
+              <% else %>
+                <tr>
+                  <td colspan="5" class="text-center text-black font-secondary-subheading py-3">
+                    No hours submitted.
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN — Pending Service Requests -->
+<div class="col-md-7 bg-dark-navy text-white py-4 min-vh-100">
+  <div class="default-padding-right">
+
+    <!-- Section Heading -->
+    <h2 class="mb-2 font-primary-heading">Pending Service Requests</h2>
+    <hr class="thick-white-divider mb-2">
+
+    <!-- Filter Bar -->
+    <div class="bg-white p-3 mb-4 default-border-radius">
+      <%= form_with url: dashboard_services_path, method: :get, local: true, class: "row g-3 align-items-center text-legion-blue" do %>
+
+        <!-- Label -->
+        <div class="col-auto">
+          <span class="fw-bold font-secondary-body">Filter By</span>
+        </div>
+
+        <!-- Committee Dropdown -->
+        <div class="col-auto">
+          <label for="committee_filter" class="form-label mb-0 font-secondary-subheading">Committee:</label>
+        </div>
+
+        <div class="col">
+          <%= select_tag :committee_id,
+              options_from_collection_for_select(Committee.order(:name), :id, :name, params[:committee_id]),
+              include_blank: "All",
+              class: "form-select default-border-radius text-legion-blue" %>
+        </div>
+
+        <!-- Filter Button -->
+        <div class="col-auto">
+          <%= submit_tag "Filter", class: "btn btn-gold text-dark-navy default-border-radius font-secondary-body" %>
+        </div>
+
       <% end %>
-    </tbody>
-  </table>
-<% end %>
+    </div>
 
-<h2>Approved Hours by Committee</h2>
-<table>
-  <thead>
-    <tr>
-      <th>Committee</th>
-      <th>Total Approved Hours</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% Service::COMMITTEES.each do |committee| %>
-      <tr>
-        <td><%= committee.titleize %></td>
-        <td><%= @committee_totals[committee] || 0 %></td>
-      </tr>
+    <!-- Pending Requests List -->
+    <% if @services.blank? %>
+      <p class="text-white font-secondary-subheading">No pending service requests.</p>
+    <% else %>
+      <div class="event-scroll-container">
+        <ul class="list-unstyled">
+
+          <% @services.each do |service| %>
+            <% next unless service.status == "pending" %>
+
+            <!-- Service Request Card -->
+            <li class="event-card service-event-card mb-4 p-3">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+
+                <!-- Submitter Info -->
+                <div>
+                  <h3 class="mb-0 text-white font-primary-title">
+                    <%= service.user.present? ? "#{service.user.first_name} #{service.user.last_name}" : "Unknown" %>
+                  </h3>
+                  <p class="text-gold mb-2 font-primary-heading">
+                    Service: <%= service.name %> |
+                    <%= service.committee.present? ? service.committee.name : "No Committee" %>
+                  </p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex gap-2">
+                  <%= button_to "Approve",
+                      approve_service_path(service),
+                      method: :patch,
+                      class: "btn btn-gold text-dark-navy btn-sm service-action-btn font-secondary-body",
+                      data: { confirm: "Are you sure you want to approve this request?" },
+                      form: { "data-turbo" => "false" } %>
+
+                  <!-- Reject Button -->
+                  <button
+                    type="button"
+                    class="btn btn-gold text-dark-navy btn-sm service-action-btn font-secondary-body toggle-reject-form"
+                    data-service-id="<%= service.id %>">
+                    Reject
+                  </button>
+                </div>
+              </div>
+
+              <!-- Service Details -->
+              <p class="text-white mb-1 font-secondary-body">
+                <strong>Hours Performed:</strong> <%= service.hours %>
+              </p>
+              <p class="text-white mb-0 font-secondary-body">
+                <strong>Date Performed:</strong>
+                <%= service.date_performed.present? ? service.date_performed.strftime("%B %d, %Y") : service.created_at.strftime("%B %d, %Y") %>
+              </p>
+              <p class="text-white mt-3 font-secondary-subheading">
+                Description: <%= service.description %>
+              </p>
+
+              <!-- Rejection Form (hidden by default) -->
+              <div class="reject-form mt-3" id="reject-form-<%= service.id %>" style="display: none;">
+                <%= form_with model: service,
+                      url: reject_service_path(service),
+                      method: :patch,
+                      local: true,
+                      data: { turbo: false },
+                      class: "row g-2 align-items-center" do |f| %>
+
+                    <div class="col-12">
+                      <%= f.text_area :rejection_reason,
+                          placeholder: "Reason for rejection",
+                          required: true,
+                          rows: 3,
+                          class: "form-control rejection-reason text-white font-secondary-subheading" %>
+                    </div>
+
+                    <div class="col-auto">
+                      <%= f.submit "Submit Rejection",
+                          class: "btn btn-gold text-dark-navy btn-sm font-secondary-body",
+                          data: { confirm: "Submit rejection for this service request?" } %>
+                    </div>
+
+                    <div class="col-auto">
+                      <button
+                        type="button"
+                        class="btn btn-gold text-dark-navy btn-sm font-secondary-body cancel-reject-form"
+                        data-service-id="<%= service.id %>">
+                        Cancel
+                      </button>
+                    </div>
+                <% end %>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      </div>
     <% end %>
-  </tbody>
-</table>
+  </div>
+</div>
+
+
+<!-- User Guide Modal -->
+<div
+  class="modal fade edit-info-modal"
+  id="UserGuideModal"
+  tabindex="-1"
+  aria-labelledby="UserGuideModalLabel"
+  aria-hidden="true">
+
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title font-primary-heading" id="UserGuideModalLabel">Managing Service Requests</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="modal-body font-secondary-subheading">
+        <p>
+          Welcome to the Service Dashboard Guide! Here you'll find information on how to view and manage service requests.
+        </p>
+
+        <h6 class="font-secondary-body text-gold mt-4">Navigating the Service Dashboard</h6>
+        <ul class="font-secondary-subheading">
+          <li>The left sidebar provides statistics on the service hours committed by each committee.</li>
+          <li>The left sidebar also includes an update log of all submitted service requests and users.</li>
+          <li>Within the Pending Service Requests section, you can filter by committee.</li>
+          <li>Each service card shows submitter, service name, committee, hours, date performed, and description.</li>
+        </ul>
+
+        <h6 class="text-gold mt-4 font-secondary-body">Service Card Actions</h6>
+        <ul class="font-secondary-subheading">
+          <li><strong>Approve</strong> — approves the request and records approved hours.</li>
+          <li><strong>Reject</strong> — expands a rejection form; a reason for rejection is required.</li>
+          <li>Approved/Rejected statuses will appear in the Service Request Log on the left.</li>
+        </ul>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="modal">
+          Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
