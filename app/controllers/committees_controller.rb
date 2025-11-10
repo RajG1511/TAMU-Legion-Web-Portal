@@ -11,7 +11,7 @@ class CommitteesController < ApplicationController
 
      def dashboard
           @committees = Committee.includes(:active_users).order(:name)
-          @committee_versions = CommitteeVersion.includes(:committee,:user).order(created_at: :desc).limit(20)
+          @committee_versions = CommitteeVersion.includes(:committee, :user).order(created_at: :desc).limit(20)
      end
 
      def new
@@ -59,9 +59,9 @@ class CommitteesController < ApplicationController
 
      private
 
-     def set_committee
-          @committee = Committee.includes(:active_users).find(params[:id])
-     end
+          def set_committee
+               @committee = Committee.includes(:active_users).find(params[:id])
+          end
 
      def committee_params
           params.require(:committee).permit(

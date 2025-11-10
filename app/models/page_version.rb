@@ -1,6 +1,6 @@
 # app/models/page_version.rb
 class PageVersion < ApplicationRecord
-  belongs_to :page
+     belongs_to :page
   belongs_to :user
   has_many :section_versions, dependent: :destroy
 

@@ -133,7 +133,7 @@ class AboutPageStore
   end
 
   def self.sanitize_html(html)
-     raw = html.to_s
+       raw = html.to_s
 
      # get rid of any script or style blocks
      raw = raw.gsub(/<script.*?>.*?<\/script>/mi, "")

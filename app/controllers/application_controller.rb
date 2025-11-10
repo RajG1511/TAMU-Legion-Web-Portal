@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def load_nav_committees
-     @nav_committees = Committee.select(:id, :name).order(:name)
-  end
+       def load_nav_committees
+            @nav_committees = Committee.select(:id, :name).order(:name)
+       end
 end

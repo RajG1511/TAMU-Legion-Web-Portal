@@ -41,21 +41,21 @@ RSpec.describe "RecruitmentController", type: :request do
   end
 
   describe "PATCH /recruitment" do
-  let(:params_hash) do
-    {
-      recruitment_page: {
-        hero_title: "New",
-        hero_tagline_html: "<p>Tag</p>",
-        body_html: "<div>Body</div>",
-        apply_url: "https://example.com/apply",
-        groupme_url: "https://example.com/groupme",
-        contact_email: "contact@example.com"
-      }
-    }
-  end
+     let(:params_hash) do
+          {
+            recruitment_page: {
+              hero_title: "New",
+              hero_tagline_html: "<p>Tag</p>",
+              body_html: "<div>Body</div>",
+              apply_url: "https://example.com/apply",
+              groupme_url: "https://example.com/groupme",
+              contact_email: "contact@example.com"
+            }
+          }
+     end
 
   it "saves and redirects with notice on success" do
-    allow(RecruitmentPageStore).to receive(:save_all!).and_return(true)
+       allow(RecruitmentPageStore).to receive(:save_all!).and_return(true)
 
     patch update_recruitment_path, params: params_hash
 
@@ -67,7 +67,7 @@ RSpec.describe "RecruitmentController", type: :request do
   end
 
   it "rescues validation error and re-renders :edit with 422" do
-    allow(RecruitmentPageStore).to receive(:read).and_return(sections_hash)
+       allow(RecruitmentPageStore).to receive(:read).and_return(sections_hash)
 
     invalid = Page.new
     invalid.errors.add(:base, "Bad inputs")

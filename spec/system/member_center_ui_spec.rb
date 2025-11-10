@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe "Member Center UI", type: :system do
-  include Warden::Test::Helpers
+     include Warden::Test::Helpers
 
   before(:each) { Warden.test_mode! }
   after(:each)  { Warden.test_reset! }
@@ -12,14 +12,14 @@ RSpec.describe "Member Center UI", type: :system do
   let!(:shared_user) { create(:user, email: "shared@domain.com") }
 
   before do
-    driven_by(:rack_test)
+       driven_by(:rack_test)
   end
 
   context "as a member" do
-    before { login_as(member, scope: :user) }
+       before { login_as(member, scope: :user) }
 
     it "shows welcome message and quick links but hides admin options" do
-      visit member_center_path
+         visit member_center_path
       expect(page).to have_content("Welcome John")
       expect(page).to have_link("View Service Hours")
       expect(page).not_to have_content("Admin Access")
@@ -28,14 +28,14 @@ RSpec.describe "Member Center UI", type: :system do
   end
 
   context "as an exec" do
-    before(:each) do
-      login_as(exec, scope: :user)
-      exec.gallery_photos.purge  # ensure a clean gallery for every test
-      visit member_center_path
-    end
+       before(:each) do
+            login_as(exec, scope: :user)
+         exec.gallery_photos.purge  # ensure a clean gallery for every test
+         visit member_center_path
+       end
 
     it "shows admin buttons and modals" do
-      expect(page).to have_content("Welcome Alice")
+         expect(page).to have_content("Welcome Alice")
 
       # New combined link for gallery & caption
       expect(page).to have_link("Manage Gallery & Caption")
@@ -47,7 +47,7 @@ RSpec.describe "Member Center UI", type: :system do
     end
 
     it "opens and submits the Manage Gallery & Caption modal" do
-      click_link "Manage Gallery & Caption"
+         click_link "Manage Gallery & Caption"
 
       # Ensure modal appears
       expect(page).to have_selector("#manageGalleryModal", visible: true)
@@ -55,8 +55,8 @@ RSpec.describe "Member Center UI", type: :system do
 
       # Interact with the caption form inside the modal
       within("#manageGalleryModal") do
-        # `text` is the name of your text area
-        fill_in "text", with: ""
+           # `text` is the name of your text area
+           fill_in "text", with: ""
         click_button "Save Caption"
       end
 

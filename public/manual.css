@@ -1502,3 +1502,15 @@ input[type="number"].form-dark::-webkit-outer-spin-button {
   object-position: center; /* Add this */
   display: block;
 }
+
+/* Keep text from spilling & make cards flex nicely */
+.event-card { overflow: hidden; }
+.event-card p { overflow-wrap: anywhere; word-break: break-word; }
+
+/* Member cards: consistent internals */
+.member-card { display: flex; flex-direction: column; }
+.member-card .member-card-body { margin-top: .25rem; }
+
+/* Stronger centering for odd rows on very wide screens */
+.row.justify-content-center { justify-content: center !important; }
+
