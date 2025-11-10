@@ -1,77 +1,98 @@
-<% content_for :title, "Contact" %>
+<% content_for :title, "Contact Us" %>
 
+<!-- Thin top line -->
 <div class="wix-top-line"></div>
 
 <!-- HERO -->
-<section class="contact-hero">
-  <div class="contact-hero__inner">
-    <h1 class="contact-hero__title"><%= cms_text(:hero_title, page: :contact) %></h1>
-  </div>
-
-  <!-- Wix hero image -->
-  <div class="contact-hero-photo-block">
-    <img src="/Photos/Nature.jpg" class="contact-hero-photo" alt="LEGION photo">
+<section class="about-hero">
+  <div class="about-hero-bg" style="background-image:url('/Photos/House.jpg');"></div>
+  <div class="about-hero-overlay"></div>
+  
+  <div class="page-title-badge">
+    <div class="page-title-badge-inner">
+      <div class="page-title-badge-title"><%= @sections["hero_title"] %></div>
+      <div class="page-title-badge-subtitle">LEGION Men's Organization</div>
+    </div>
   </div>
 </section>
 
 <!-- MEETING INFO -->
-<section class="contact-meetings">
-  <div class="contact-meetings__content">
-    <h2 class="contact-meetings__title"><%= cms_text(:meetings_title, page: :contact) %></h2>
-    <p class="contact-meetings__body"><%= cms_html(:meetings_body_html, page: :contact) %></p>
-    <p class="contact-meetings__location"><%= cms_text(:meetings_location, page: :contact) %></p>
-    <p class="contact-meetings__map">
-      <a class="contact-meetings__location-link" href="<%= cms_text(:meetings_location_url, page: :contact) %>">View Location on Map</a>
-    </p>
+<section class="page-section bg-legion-blue">
+  <div class="page-content-container">
+    <h2 class="section-title text-white text-center"><%= @sections["meetings_title"] %></h2>
+    <div class="section-divider-center"></div>
+    
+    <div class="section-content text-white text-center mb-4">
+      <%= raw @sections["meetings_body_html"] %>
+    </div>
 
-    <!-- accent image -->
-    <img src="/Photos/House.jpg" class="contact-accent-photo">
+    <div class="map-container mb-4">
+      <iframe
+        class="map-frame"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3433.769724381363!2d-96.34411942545245!3d30.61225777464256!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x86468398550f7f1d%3A0x9dc3b5de86caa9a4!2s275%20Joe%20Routt%20Blvd%2C%20College%20Station%2C%20TX%2077843!5e0!3m2!1sen!2sus!4v1762719269087!5m2!1sen!2sus"
+        width="100%"
+        height="400"
+        style="border:0;"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+
+    <div class="section-content text-white text-center">
+      <%= raw @sections["meetings_additional_html"] %>
+      <p class="mt-3">
+        <a class="text-gold" href="<%= @sections["meetings_location_url"] %>" target="_blank" rel="noopener">
+          View location on map
+        </a>
+      </p>
+    </div>
   </div>
 </section>
 
 <!-- GENERAL QUESTIONS -->
-<section class="contact-questions">
-  <div class="contact-questions__content">
-    <h2 class="contact-questions__title"><%= cms_text(:questions_title, page: :contact) %></h2>
-    <p class="contact-questions__body"><%= cms_html(:questions_body_html, page: :contact) %></p>
-    <p class="contact-questions__cta">
-      <a class="white-btn-edit contact-cta-btn" href="<%= cms_text(:questions_button_url, page: :contact) %>"><%= cms_text(:questions_button_label, page: :contact) %></a>
-    </p>
+<section class="page-section bg-dark-navy">
+  <div class="page-content-container">
+    <h2 class="section-title text-white text-center"><%= @sections["questions_title"] %></h2>
+    <div class="section-divider-center"></div>
+    
+    <div class="section-content text-white text-center mb-4">
+      <%= raw @sections["questions_body_html"] %>
+    </div>
+    
+    <div class="text-center">
+      <a class="btn btn-gold" href="<%= @sections["questions_button_url"] %>" target="_blank" rel="noopener">
+        <%= @sections["questions_button_label"] %>
+      </a>
+    </div>
   </div>
 </section>
 
 <!-- EMAIL LIST -->
-<section class="contact-list">
-  <div class="contact-list__content">
-    <h2 class="contact-list__title"><%= cms_text(:email_list_title, page: :contact) %></h2>
-    <p class="contact-list__body"><%= cms_html(:email_list_body_html, page: :contact) %></p>
-    <p class="contact-list__cta">
-      <a class="white-btn-edit contact-cta-btn" href="<%= cms_text(:email_list_button_url, page: :contact) %>"><%= cms_text(:email_list_button_label, page: :contact) %></a>
-    </p>
-
-    <!-- bottom image -->
-    <img src="/Photos/MiniHouse.jpg" class="contact-bottom-photo">
+<section class="page-section bg-legion-blue">
+  <div class="page-content-container">
+    <h2 class="section-title text-white text-center"><%= @sections["email_list_title"] %></h2>
+    <div class="section-divider-center"></div>
+    
+    <div class="section-content text-white text-center mb-4">
+      <%= raw @sections["email_list_body_html"] %>
+    </div>
+    
+    <div class="text-center">
+      <a class="btn btn-gold" href="<%= @sections["email_list_button_url"] %>" target="_blank" rel="noopener">
+        <%= @sections["email_list_button_label"] %>
+      </a>
+    </div>
   </div>
 </section>
 
-<% if current_user&.exec? %>
-    <section class="contact-edit">
-        <%= link_to "Edit Contact Page", edit_contact_path, class: "btn btn-outline-light" %>
-    </section>
+<% if current_user&.exec? || current_user&.president? %>
+  <section class="page-section bg-dark-navy">
+    <div class="page-content-container text-center">
+      <%= link_to "Edit Contact Page", edit_contact_path, class: "btn btn-outline-light" %>
+    </div>
+  </section>
 <% end %>
 
-<!-- SUPPORT SURVEY -->
-<section class="contact-survey">
-  <div class="contact-survey__content">
-    <h2 class="contact-survey__title">Customer Support Survey</h2>
-    <p class="contact-survey__body">
-      We value your feedback! Please take a moment to complete our support survey
-      and let us know how we can improve your experience on the website.
-    </p>
-    <a class="contact-survey__button"
-       href="https://docs.google.com/forms/d/e/1FAIpQLSe2qfLq6og0zteVH9JWIlZxz4QYZaJF1dWf2KxA78eCDt9lig/viewform?usp=dialog"
-       target="_blank" rel="noopener">
-       Take the Survey
-    </a>
-  </div>
-</section>
+<!-- Gold Divider -->
+<div class="gold-divider"></div>

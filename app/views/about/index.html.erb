@@ -1,77 +1,94 @@
-<!-- Thin top line like Wix -->
+<% content_for :title, "About Us" %>
+
+<!-- Thin top line -->
 <div class="wix-top-line"></div>
 
 <!-- HERO -->
 <section class="about-hero">
   <div class="about-hero-bg" style="background-image:url('/Photos/Nature.jpg');"></div>
   <div class="about-hero-overlay"></div>
-
-  <div class="about-hero-badge">
-    <div class="about-hero-badge-inner">
-      <div class="about-hero-badge-title">About Us</div>
-      <small>LEGION Men's Organization</small>
+  
+  <div class="page-title-badge">
+    <div class="page-title-badge-inner">
+      <div class="page-title-badge-title"><%= @sections["what_is_title"] %></div>
+      <div class="page-title-badge-subtitle">LEGION Men's Organization</div>
     </div>
   </div>
 </section>
 
 <!-- WHAT IS LEGION -->
-<section class="about-who">
-  <div class="about-grid">
-    <!-- Left: dark blue content block -->
-    <div class="about-panel">
-      <h2 class="about-panel__title">What is LEGION?</h2>
-      <div class="about-panel__rule"></div>
+<section class="page-section bg-legion-blue">
+  <div class="page-content-container">
+    <div class="content-grid">
+      <!-- Left: content block -->
+      <div class="content-panel">
+        <h2 class="section-title text-white"><%= @sections["what_is_title"] %></h2>
+        <div class="section-divider"></div>
+        <div class="section-content text-white">
+          <%= raw @sections["what_is_body_html"] %>
+        </div>
+      </div>
 
-      <p class="about-panel__text">
-        Founded in 2018, LEGION Men's Organization is a student-led organization
-        at Texas A&amp;M University that aims to develop its members into leaders
-        by providing a supportive peer group that encourages personal growth,
-        hosting knowledge workshops and events to bolster professional goals,
-        participating in community service, and through the support of our
-        philanthropic partner.
-      </p>
-
-      <p class="about-panel__text">
-        Every week, our members are exposed to opportunities to connect with
-        their peers, build their educational and professional knowledge base,
-        meet members of other organizations on campus, and give back to the
-        community. Our members walk away from LEGION with greater opportunities
-        and lifelong relationships.
-      </p>
+      <!-- Right: photo with proper border -->
+      <div class="photo-container">
+        <figure class="photo-figure">
+          <img src="/Photos/House.jpg" alt="LEGION members" class="photo-img" />
+        </figure>
+      </div>
     </div>
-
-    <!-- Right: single tall photo (no collage) -->
-    <figure class="about-photo-figure">
-      <img src="/Photos/House.jpg"
-           alt="LEGION members"
-           class="about-photo-img" />
-    </figure>
   </div>
 </section>
 
-<!-- FAST FACTS -->
-<section class="about-facts">
-  <div class="about-facts__content">
-    <h3 class="about-facts__title">Fast Facts</h3>
-    <div class="about-facts__subtitle">Within Spring 2024 Semester</div>
-
-    <ul class="about-facts__list">
-      <li class="about-facts__fact">77 Members</li>
-      <li class="about-facts__fact">&gt;1,000 Service hours</li>
-      <li class="about-facts__fact">&gt;$1,700 Raised <span class="about-facts__link">See Philanthropy</span></li>
-    </ul>
+<!-- FAST FACTS with background pattern -->
+<section class="page-section bg-dark-navy facts-section">
+  <div class="legion-pattern-overlay"></div>
+  <div class="page-content-container position-relative">
+    <h3 class="section-title text-white text-center mb-4"><%= @sections["facts_title"] %></h3>
+    <div class="facts-grid">
+      <div class="fact-card">
+        <div class="fact-number"><%= @sections["fact_1"] %></div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-number"><%= @sections["fact_2"] %></div>
+      </div>
+      <div class="fact-card">
+        <div class="fact-number"><%= @sections["fact_3"] %></div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- OUR PILLARS -->
-<section class="about-pillars">
-  <div class="about-pillars__content">
-    <h3 class="about-pillars__title">Our Pillars</h3>
-    <ul class="about-pillars__list">
-      <li class="about-pillars__pillar">Brotherhood</li>
-      <li class="about-pillars__pillar">Service</li>
-      <li class="about-pillars__pillar">Integrity</li>
-    </ul>
+<!-- OUR PILLARS with branding -->
+<section class="page-section bg-legion-blue pillars-section">
+  <div class="page-content-container">
+    <div class="pillars-header">
+      <img src="/Logos/legion_seal.png" alt="LEGION Seal" class="pillars-seal">
+      <h3 class="section-title text-white text-center mb-4"><%= @sections["pillars_title"] %></h3>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-icon">⚔</div>
+        <div class="pillar-text"><%= @sections["pillar_1"] %></div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">🤝</div>
+        <div class="pillar-text"><%= @sections["pillar_2"] %></div>
+      </div>
+      <div class="pillar-card">
+        <div class="pillar-icon">⚖</div>
+        <div class="pillar-text"><%= @sections["pillar_3"] %></div>
+      </div>
+    </div>
   </div>
 </section>
 
+<% if current_user&.exec? || current_user&.president? %>
+  <section class="page-section bg-dark-navy">
+    <div class="page-content-container text-center">
+      <%= link_to "Edit About Page", edit_about_path, class: "btn btn-outline-light" %>
+    </div>
+  </section>
+<% end %>
+
+<!-- Gold Divider -->
+<div class="gold-divider"></div>

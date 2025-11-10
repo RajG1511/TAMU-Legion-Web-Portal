@@ -81,6 +81,11 @@ Rails.application.routes.draw do
   get "/contact", to: "contact#index", as: :contact
   get "/contact/edit", to: "contact#edit", as: :edit_contact
   patch "/contact", to: "contact#update", as: :update_contact
+  
+  # Philanthropy page
+  get "/philanthropy", to: "philanthropy#index", as: :philanthropy
+  get "/philanthropy/edit", to: "philanthropy#edit", as: :edit_philanthropy
+  patch "/philanthropy", to: "philanthropy#update", as: :update_philanthropy
 
   # Members page
   get "/members", to: "users#public_index", as: :members
