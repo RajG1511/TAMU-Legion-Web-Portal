@@ -1,4 +1,12 @@
-document.getElementById("check-all")?.addEventListener("change", (e) => {
+document.addEventListener("turbo:load", () => {
+  const checkAll = document.getElementById("check-all");
+  const topBulkEdit = document.getElementById("top-bulk-edit");
+
+  if (!checkAll || !topBulkEdit) return; // skip if elements are not on this page
+
+  console.log("directory.js loaded", checkAll, topBulkEdit);
+
+  checkAll.addEventListener("change", (e) => {
     document.querySelectorAll(".user-checkbox").forEach(cb => cb.checked = e.target.checked);
   });
 
@@ -14,7 +22,9 @@ document.getElementById("check-all")?.addEventListener("change", (e) => {
     });
   }
 
-  document.getElementById("top-bulk-edit")?.addEventListener("click", () => {
+  topBulkEdit.addEventListener("click", (e) => {
+    e.preventDefault(); // prevent form double submit
     pushSelectedToHiddenForm();
     document.getElementById("bulk-edit-form").submit();
   });
+});
