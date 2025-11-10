@@ -1,51 +1,82 @@
 <% content_for :title, "Recruitment" %>
 
-<section class="recruit-hero bg-legion-blue">
-  <div class="container-xl recruit-hero__grid">
+<!-- Thin top line -->
+<div class="wix-top-line"></div>
 
-    <div class="recruit-hero__left">
-      <h1 class="recruit-title font-primary-title"><%= @sections["hero_title"] %></h1>
-      <p class="recruit-tagline font-primary-body">
-        <%= raw @sections["hero_tagline_html"] %>
-      </p>
-
-      <div class="recruit-cta">
-        <% if @sections["apply_url"].present? %>
-          <a class="btn btn-gold" href="<%= @sections["apply_url"] %>" target="_blank" rel="noopener">Apply Now</a>
-        <% end %>
-        <% if @sections["groupme_url"].present? %>
-          <a class="btn white-btn" href="<%= @sections["groupme_url"] %>" target="_blank" rel="noopener">Join the GroupMe</a>
-        <% end %>
-      </div>
+<!-- HERO with background image -->
+<section class="about-hero">
+  <div class="about-hero-bg" style="background-image:url('/Photos/Service.jpg');"></div>
+  <div class="about-hero-overlay"></div>
+  
+  <div class="page-title-badge">
+    <div class="page-title-badge-inner">
+      <div class="page-title-badge-title">Recruitment</div>
+      <div class="page-title-badge-subtitle">LEGION Men's Organization</div>
     </div>
-
-    <div class="recruit-hero__right">
-      <!-- schedule flyer -->
-      <figure class="recruit-flyer">
-        <img src="/Flyers/Calendar_FA25.png" alt="Fall ’25 Recruitment Schedule">
-      </figure>
-    </div>
-
   </div>
 </section>
 
-<section class="recruit-body bg-dark-navy">
-  <div class="container-xl">
-    <div class="recruit-body__content">
-      <%= raw @sections["body_html"] %>
-    </div>
+<!-- MAIN CONTENT with subtle branding -->
+<section class="page-section bg-legion-blue recruitment-section">
+  <div class="legion-watermark"></div>
+  <div class="page-content-container">
+    <div class="content-grid">
+      <!-- Left: content -->
+      <div class="content-panel">
+        <h2 class="section-title text-white"><%= @sections["hero_title"] %></h2>
+        <div class="section-divider"></div>
+        <div class="section-content text-white mb-4">
+          <%= raw @sections["hero_tagline_html"] %>
+        </div>
+        
+        <div class="button-group">
+          <% if @sections["apply_url"].present? %>
+            <a class="btn btn-gold" href="<%= @sections["apply_url"] %>" target="_blank" rel="noopener">Apply Now</a>
+          <% end %>
+          <% if @sections["groupme_url"].present? %>
+            <a class="btn btn-outline-light" href="<%= @sections["groupme_url"] %>" target="_blank" rel="noopener">Join the GroupMe</a>
+          <% end %>
+        </div>
+      </div>
 
-    <div class="recruit-contact">
+      <!-- Right: flyer with proper border -->
+      <div class="photo-container">
+        <figure class="photo-figure">
+          <img src="/Flyers/Calendar_FA25.png" alt="Fall '25 Recruitment Schedule" class="photo-img">
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ADDITIONAL INFO -->
+<% if @sections["body_html"].present? %>
+  <section class="page-section bg-dark-navy">
+    <div class="page-content-container">
+      <div class="section-content text-white text-center">
+        <%= raw @sections["body_html"] %>
+      </div>
+    </div>
+  </section>
+<% end %>
+
+<!-- CONTACT INFO -->
+<section class="page-section bg-legion-blue">
+  <div class="page-content-container text-center">
+    <div class="contact-box">
       <% email = @sections["contact_email"].presence || "proflicter.tamulegion@gmail.com" %>
-      For questions about recruitment, please contact
-      <a class="recruit-contact__link" href="mailto:<%= email %>"><%= email %></a>
+      <p class="text-white mb-0">
+        For questions about recruitment, please contact
+        <a class="text-gold" href="mailto:<%= email %>"><%= email %></a>
+      </p>
     </div>
-
-    <% if current_user&.exec? || current_user&.president? %>
-      <div class="text-center mt-4">
-        <%= link_to "Edit Recruitment", edit_recruitment_path, class: "btn btn-outline-light" %>
-      </div>
-    <% end %>
   </div>
 </section>
 
+<% if current_user&.exec? || current_user&.president? %>
+  <section class="page-section bg-dark-navy">
+    <div class="page-content-container text-center">
+      <%= link_to "Edit Recruitment Page", edit_recruitment_path, class: "btn btn-outline-light" %>
+    </div>
+  </section>
+<% end %>
