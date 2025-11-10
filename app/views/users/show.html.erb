@@ -1,49 +1,127 @@
-<!-- app/views/users/show.html.erb -->
+<!-- Top Heading -->
 <div class="container-fluid bg-dark-gray-blue text-white py-3">
-  <h2 class="text-center font-primary-title"><%= @user.full_name %></h2>
+  <h1 class="text-center font-primary-title"><%= @user.full_name %>'s Profile</h1>
 </div>
 
-<div class="container-fluid bg-gold py-1"></div>
+<!-- Main Split Body Section -->
+<div class="container-fluid bg-gold py-2">
+  <div class="row">
 
-<div class="container bg-dark-navy text-white py-4">
-  <p class="font-secondary-body mb-1"><strong>Email:</strong> <%= @user.email %></p>
-  <p class="font-secondary-body mb-1"><strong>Role:</strong> <%= @user.role.humanize %> – <strong>Status:</strong> <%= @user.status.humanize %></p>
-  <p class="font-secondary-body mb-3"><strong>Approved Service Hours:</strong> <%= number_with_precision(@approved_hours, precision: 1) %></p>
+    <!-- LEFT COLUMN: Member Card -->
+    <div class="col-md-6 bg-dark-navy text-white py-4 min-vh-100">
+      <div class="default-padding-left">
 
-  <h5 class="font-primary-heading mt-4">Service History</h5>
-  <div class="table-responsive">
-    <table class="table table-dark table-striped">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Committee</th>
-          <th>Status</th>
-          <th>Hours</th>
-          <th>Date</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @services.each do |s| %>
-          <tr>
-            <td><%= s.name %></td>
-            <td><%= s.committee.present? ? s.committee.humanize : "-" %></td>
-            <td><%= s.status.humanize %></td>
-            <td><%= number_with_precision(s.hours, precision: 1) %></td>
-            <td><%= s.date_performed&.strftime("%m/%d/%y") %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+        <!-- Member Card -->
+          <div class="event-card mb-4 p-3">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <h3 class="mb-0 text-white font-primary-title text-lg-custom"><%= @user.full_name %></h3>
+            </div>
+              
+            <!-- Member Details -->
+            <p class="text-gold mb-0 font-primary-heading"><strong>Email:</strong> <%= @user.email %></p>
+            <p class="text-gold mb-1 font-primary-heading">
+                <strong>Position:</strong> <%= @user.position.presence || "None" %> |
+                <strong>Role:</strong> <%= @user.role.humanize || "None" %>
+            </p>
+            
+            <hr class="border-white border-4">
+
+            <p class="text-white mb-0 font-secondary-subheading">
+              <strong>Education:</strong>
+              <%= @user.major.presence || "Data not available" %>,
+              <%= @user.graduation_year.presence || "Data not available" %>
+            </p>
+            <p class="text-white mb-0 font-secondary-subheading">
+              <strong>Status:</strong> <%= @user.status.humanize %>
+            </p>
+            <p class="text-white mb-0 font-secondary-subheading">
+              <strong>T-Shirt Size:</strong> <%= @user.t_shirt_size.presence || "-" %>
+            </p>
+            <p class="text-white mb-5 font-secondary-subheading">
+              <strong>Photo:</strong>
+              <% if @user.headshot.attached? %>
+                <%= link_to "View Photo", url_for(@user.headshot), target: "_blank", class: "text-gold" %>
+              <% else %>
+                No Photo Available
+              <% end %>
+            </p>
+
+
+            <!-- Joined & Service Hours Bar -->
+            <div class="bg-white p-3 default-border-radius mb-1 mt-3 d-flex justify-content-center align-items-center font-primary-heading text-legion-blue">
+              <span class="text-center">
+                Joined: <%= @user.created_at.strftime("%B %d, %Y") %>
+              </span>
+              <span class="mx-3">|</span>
+              <span class="text-center">
+                <%= number_with_precision(@approved_hours, precision: 1) %> Hours of Service
+              </span>
+            </div>
+          </div>
+
+          <!-- Back and Edit Buttons -->
+          <div class="d-flex gap-2 mt-2">
+
+            <!-- Back Button -->
+            <% back_path =
+                if params[:from] == "directory"
+                  member_directory_path
+                else
+                  current_user&.exec? ? users_path : member_directory_path
+                end %>
+            <%= link_to "← Back", back_path,
+                        class: "btn btn-gold text-dark-navy default-border-radius flex-grow-1" %>
+
+            <!-- Edit Button (only for exec/president) -->
+            <% if current_user&.exec? %>
+              <%= link_to "Edit", edit_user_path(@user),
+                          class: "btn btn-gold text-dark-navy default-border-radius flex-grow-1" %>
+            <% end %>
+
+          </div>
+
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN: Service History Table -->
+    <div class="col-md-6 bg-white text-dark-navy py-4 min-vh-100">
+      <div class="default-padding-right">
+
+        <!-- Service History Table -->
+        <div class="table-responsive log-scroll-container" style="max-height: 700px; overflow-y: auto;">
+          <table class="table table-bordered table-striped border-primary border-white">
+            <thead>
+              <tr> <th colspan="5" class="bg-white text-legion-blue border-legion-blue text-center h4 font-secondary-heading" style="border-top: 1px solid #0f296b;"> Service History </th> </tr>
+              <tr>
+                <th scope="col" class="bg-legion-blue text-white font-secondary-body">Name</th>
+                <th scope="col" class="bg-legion-blue text-white font-secondary-body">Committee</th>
+                <th scope="col" class="bg-legion-blue text-white font-secondary-body">Status</th>
+                <th scope="col" class="bg-legion-blue text-white font-secondary-body">Hours</th>
+                <th scope="col" class="bg-legion-blue text-white font-secondary-body">Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if @services.any? %>
+                <% @services.each do |s| %>
+                  <tr class="border border-legion-blue">
+                    <td class="font-secondary-subheading"><%= s.name %></td>
+                    <td class="font-secondary-subheading"><%= s.committee.present? ? s.committee.name : "-" %></td>
+                    <td class="font-secondary-subheading"><%= s.status.humanize %></td>
+                    <td class="font-secondary-subheading"><%= number_with_precision(s.hours, precision: 1) %></td>
+                    <td class="font-secondary-subheading"><%= s.date_performed&.strftime("%m/%d/%y") %></td>
+                  </tr>
+                <% end %>
+              <% else %>
+                <tr>
+                  <td colspan="5" class=" text-black text-center font-secondary-subheading py-3">No service history available.</td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
   </div>
-
-  <% back_path =
-       if params[:from] == "directory"
-         member_directory_path
-       else
-         current_user&.exec? ? users_path : member_directory_path
-       end %>
-  <%= link_to "← Back", back_path,
-              class: "btn btn-gold text-dark-navy default-border-radius mt-2" %>
 </div>
-
-<div class="container-fluid bg-gold py-1"></div>

@@ -1,74 +1,151 @@
-<div class="container-fluid bg-dark-gray-blue text-white py-3">
-  <h2 class="text-center font-primary-title"><%= @user.persisted? ? "Update a Member" : "Create a Member" %></h2>
-</div>
-<div class="container-fluid bg-gold py-1"></div>
+<!-- Full Page Wrapper -->
+<div class="container-fluid bg-dark-navy text-white min-vh-100 px-0">
 
-<div class="container my-4 p-4 border border-4 border-white bg-dark-navy text-white default-border-radius">
-  <%= form_with model: @user, local: true do |f| %>
-    <% if @user.errors.any? %>
-      <div class="container-fluid bg-gold text-dark-navy py-2 mb-3">
-        <p class="text-center mb-0 h5">Please fix the highlighted fields.</p>
+  <!-- Header Strip -->
+  <div class="container-fluid bg-dark-gray-blue text-white py-3">
+    <h2 class="text-center font-primary-title">
+      <%= @user.persisted? ? "Update #{@user.full_name}" : "Create a Member" %>
+    </h2>
+  </div>
+
+  <!-- Gold Divider -->
+  <div class="container-fluid bg-gold py-1"></div>
+
+  <!-- Form Container -->
+  <div class="container my-4 p-4 border border-4 border-white bg-dark-navy text-white default-border-radius">
+    <%= form_with model: @user, local: true, html: { multipart: true } do |f| %>
+
+      <!-- Error Messages -->
+      <% if @user.errors.any? %>
+        <div class="container-fluid bg-gold text-dark-navy py-2 mb-3">
+          <p class="text-center mb-0 h5">Please fill out all required fields.</p>
+        </div>
+
+        <div class="visually-hidden">
+          <ul>
+            <% @user.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <!-- Section 1: Name, Photo, Email -->
+      <div class="row mb-4">
+        <!-- First Name -->
+        <div class="col-md-4">
+          <div class="d-flex align-items-center mb-1">
+            <%= f.label :first_name, "First Name", class: "form-label font-primary-heading mb-0 me-2" %>
+            <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Enter the member's first name."></i>
+          </div>
+          <%= f.text_field :first_name, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+
+          <!-- Last Name under First Name -->
+          <div class="d-flex align-items-center mt-4 mb-1">
+            <%= f.label :last_name, "Last Name", class: "form-label font-primary-heading mb-0 me-2" %>
+            <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Enter the member's last name."></i>
+          </div>
+          <%= f.text_field :last_name, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+
+        <!-- Member Photo -->
+        <div class="col-md-4">
+          <div class="d-flex align-items-center mb-1">
+            <%= f.label :headshot, "Member Photo", class: "form-label font-primary-heading mb-0 me-2" %>
+            <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Upload a headshot photo for the member."></i>
+          </div>
+          <%= f.file_field :headshot, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+          
+          <% if @user.headshot.attached? %>
+            <small class="text-white font-secondary-subheading d-block mt-1">Currently Attched: <%= @user.headshot.filename %></small>
+          <% end %>
+        </div>
+
+        <!-- Email -->
+        <div class="col-md-4">
+          <div class="d-flex align-items-center mb-1">
+            <%= f.label :email, class: "form-label font-primary-heading mb-0 me-2" %>
+            <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Member's email address used for login."></i>
+          </div>
+          <%= f.email_field :email, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+          <small class="text-white font-secondary-subheading d-block mt-1">*Member's Sign-in Credential.</small>
+        </div>
       </div>
+
+
+
+      <!-- Section 2: Role, Position, Status -->
+      <hr class="border-white border-4">
+
+      <div class="row mb-4">
+        <% if current_user&.president? %>
+          <div class="col-md-4">
+            <div class="d-flex align-items-center mb-1">
+              <%= f.label :role, class: "form-label font-primary-heading mb-0 me-2" %>
+              <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Select the member's role within the organization."></i>
+            </div>
+            <%= f.select :role, User.roles.keys.map { |v| [v.humanize, v] }, {}, class: "form-select form-dark default-border-radius font-secondary-subheading" %>
+          </div>
+        <% end %>
+
+        <div class="col-md-4">
+          <div class="d-flex align-items-center mb-1">
+            <%= f.label :position, class: "form-label font-primary-heading mb-0 me-2" %>
+            <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Enter the member's position, e.g., Officer, Committee Lead."></i>
+          </div>
+          <%= f.text_field :position, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+
+        <% if current_user&.exec? %>
+          <div class="col-md-4">
+            <div class="d-flex align-items-center mb-1">
+              <%= f.label :status, class: "form-label font-primary-heading mb-0 me-2" %>
+              <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Set the member's status."></i>
+            </div>
+            <%= f.select :status, User.statuses.keys.map { |v| [v.humanize, v] }, {}, class: "form-select form-dark default-border-radius font-secondary-subheading" %>
+            <small class="text-white font-secondary-subheading d-block mt-1">*Inactive status for deletion or removal of members.</small>
+          </div>
+        <% end %>
+      </div>
+
+      <!-- Section 3: Major, Graduation Year, T-Shirt Size -->
+      <hr class="border-white border-4">
+
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <div class="d-flex align-items-center mb-1">
+            <%= f.label :major, class: "form-label font-primary-heading mb-0 me-2" %>
+            <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Enter the member's major field of study."></i>
+          </div>
+          <%= f.text_field :major, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+
+        <div class="col-md-4">
+          <div class="d-flex align-items-center mb-1">
+            <%= f.label :graduation_year, class: "form-label font-primary-heading mb-0 me-2" %>
+            <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Enter the member's expected graduation year."></i>
+          </div>
+          <%= f.number_field :graduation_year, class: "form-control form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+
+        <div class="col-md-4">
+          <div class="d-flex align-items-center mb-1">
+            <%= f.label :t_shirt_size, "T-Shirt Size", class: "form-label font-primary-heading mb-0 me-2" %>
+            <i class="bi bi-info-circle text-white" data-bs-toggle="tooltip" title="Select the member's T-Shirt size."></i>
+          </div>
+          <%= f.select :t_shirt_size, %w[XS S M L XL XXL XXXL], {}, class: "form-select form-dark default-border-radius font-secondary-subheading" %>
+        </div>
+      </div>
+
+      <!-- Submit & Back Buttons -->
+      <div class="d-flex justify-content-start gap-2 mt-4">
+        <%= f.submit (@user.persisted? ? "Update Member" : "Create Member"), class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+        <%= link_to "← Back to Dashboard", users_path, class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+      </div>
+
     <% end %>
+  </div>
 
-    <div class="row g-3">
-      <div class="col-md-6">
-        <%= f.label :first_name, class: "form-label text-white" %>
-        <%= f.text_field :first_name, class: "form-control form-dark" %>
-      </div>
-      <div class="col-md-6">
-        <%= f.label :last_name, class: "form-label text-white" %>
-        <%= f.text_field :last_name, class: "form-control form-dark" %>
-      </div>
-
-      <div class="col-md-12">
-        <%= f.label :email, class: "form-label text-white" %>
-        <%= f.email_field :email, class: "form-control form-dark" %>
-      </div>
-
-      <div class="col-md-6">
-        <%= f.label :position, class: "form-label text-white" %>
-        <%= f.text_field :position, class: "form-control form-dark" %>
-      </div>
-      <div class="col-md-6">
-        <%= f.label :t_shirt_size, "T-Shirt Size", class: "form-label text-white" %>
-        <%= f.select :t_shirt_size, %w[XS S M L XL XXL XXXL], {}, class: "form-select form-dark" %>
-      </div>
-
-      <div class="col-md-6">
-        <%= f.label :graduation_year, class: "form-label text-white" %>
-        <%= f.number_field :graduation_year, class: "form-control form-dark" %>
-      </div>
-      <div class="col-md-6">
-        <%= f.label :major, class: "form-label text-white" %>
-        <%= f.text_field :major, class: "form-control form-dark" %>
-      </div>
-
-      <% if current_user&.exec? %>
-        <div class="col-md-6">
-          <%= f.label :status, class: "form-label text-white" %>
-          <%= f.select :status, User.statuses.keys.map { |v| [v.humanize, v] }, {}, class: "form-select form-dark" %>
-        </div>
-      <% end %>
-
-      <% if current_user&.president? %>
-        <div class="col-md-6">
-          <%= f.label :role, class: "form-label text-white" %>
-          <%= f.select :role, User.roles.keys.map { |v| [v.humanize, v] }, {}, class: "form-select form-dark" %>
-        </div>
-      <% end %>
-
-      <div class="col-md-12">
-        <%= f.label :headshot, "Member Photo", class: "form-label text-white" %>
-        <%= f.file_field :headshot, class: "form-control form-dark" %>
-      </div>
-    </div>
-
-    <div class="d-flex gap-2 mt-4">
-      <%= f.submit (@user.persisted? ? "Update Member" : "Create Member"), class: "btn btn-gold text-dark-navy default-border-radius" %>
-      <%= link_to "← Back to Dashboard", users_path, class: "btn btn-gold text-dark-navy default-border-radius" %>
-    </div>
-  <% end %>
+  <!-- Gold Footer Strip -->
+  <div class="container-fluid bg-gold py-1"></div>
 </div>
-<div class="container-fluid bg-gold py-1"></div>
-
