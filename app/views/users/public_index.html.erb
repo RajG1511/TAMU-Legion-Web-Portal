@@ -1,52 +1,85 @@
-<!-- Public Members Directory -->
-<div class="container-fluid bg-dark-gray-blue text-white py-3">
-  <h1 class="text-center font-primary-title">Members</h1>
-</div>
-<div class="container-fluid bg-gold py-1"></div>
+<% content_for :title, "Members" %>
 
-<div class="container-fluid bg-dark-navy text-white pt-4 pb-5">
-  <div class="default-padding">
+<!-- Thin top line -->
+<div class="wix-top-line"></div>
 
-    <section class="mb-5">
-      <h2 class="font-primary-heading">Executive Board</h2>
-      <hr class="thick-white-divider">
-      <div class="row g-3">
-        <% @execs.each do |user| %>
-          <div class="col-sm-6 col-lg-4">
-            <div class="event-card p-3 h-100">
-              <% if user.headshot.present? %>
-                <%= image_tag user.headshot, class: "img-fluid mb-2" %>
-              <% end %>
-              <p class="mb-1"><strong><%= user.full_name %> '<%= user.graduation_year %></strong></p>
+<!-- HERO -->
+<section class="about-hero">
+  <!-- Swap to any banner you like: '/Photos/Members.jpg', '/Photos/House.jpg', etc. -->
+  <div class="about-hero-bg" style="background-image:url('/Photos/House.jpg');"></div>
+  <div class="about-hero-overlay"></div>
+
+  <div class="page-title-badge">
+    <div class="page-title-badge-inner">
+      <div class="page-title-badge-title">Members</div>
+      <div class="page-title-badge-subtitle">LEGION Men's Organization</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXECUTIVE BOARD -->
+<section class="page-section bg-legion-blue">
+  <div class="page-content-container">
+    <h2 class="section-title text-white text-center mb-1">Executive Board</h2>
+    <div class="section-divider-center"></div>
+
+    <div class="row g-4 mt-3">
+      <% @execs.each do |user| %>
+        <div class="col-12 col-sm-6 col-lg-4">
+          <div class="event-card p-3 h-100">
+            <% if user.headshot.present? %>
+              <div class="photo-container mb-2">
+                <figure class="photo-figure" style="min-height:220px;">
+                  <%= image_tag user.headshot, class: "photo-img", alt: user.full_name %>
+                </figure>
+              </div>
+            <% end %>
+
+            <p class="mb-1"><strong><%= user.full_name %> '<%= user.graduation_year %></strong></p>
+            <% if user.respond_to?(:position) && user.position.present? %>
               <p class="mb-1"><strong><%= user.position %></strong></p>
-              <p class="mb-0"><%= user.major %></p>
-            </div>
+            <% end %>
+            <p class="mb-0"><%= user.major %></p>
           </div>
-        <% end %>
-      </div>
-    </section>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</section>
 
-    <% @committees.each do |committee| %>
-      <section class="mb-4">
-        <h2 class="font-primary-heading"><%= committee.name %> Committee</h2>
-        <hr class="thick-white-divider">
-        <div class="row g-3">
+<!-- COMMITTEES & MEMBERS -->
+<% @committees.each do |committee| %>
+  <section class="page-section bg-dark-navy">
+    <div class="page-content-container">
+      <h3 class="section-title text-white text-center mb-1"><%= committee.name %> Committee</h3>
+      <div class="section-divider-center"></div>
+
+      <% if committee.active_users.any? %>
+        <div class="row g-4 mt-3">
           <% committee.active_users.each do |user| %>
-            <div class="col-sm-6 col-lg-4">
+            <div class="col-12 col-sm-6 col-lg-4">
               <div class="event-card p-3 h-100">
                 <% if user.headshot.present? %>
-                  <%= image_tag user.headshot, class: "img-fluid mb-2" %>
+                  <div class="photo-container mb-2">
+                    <figure class="photo-figure" style="min-height:220px;">
+                      <%= image_tag user.headshot, class: "photo-img", alt: user.full_name %>
+                    </figure>
+                  </div>
                 <% end %>
+
                 <p class="mb-1"><strong><%= user.full_name %> '<%= user.graduation_year %></strong></p>
                 <p class="mb-0"><%= user.major %></p>
               </div>
             </div>
           <% end %>
         </div>
-      </section>
-    <% end %>
+      <% else %>
+        <p class="text-white text-center mt-3">No members listed yet.</p>
+      <% end %>
+    </div>
+  </section>
+<% end %>
 
-  </div>
-</div>
-<div class="container-fluid bg-gold py-1"></div>
+<!-- Gold Divider -->
+<div class="gold-divider"></div>
 

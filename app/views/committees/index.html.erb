@@ -1,44 +1,60 @@
 <% content_for :title, "Committees" %>
 
-<!-- Header -->
-<div class="container-fluid bg-dark-gray-blue text-white py-3">
-  <h1 class="text-center font-primary-title mb-0">Committees</h1>
-</div>
+<!-- Thin top line -->
+<div class="wix-top-line"></div>
 
-<!-- Gold Divider -->
-<div class="container-fluid bg-gold py-1"></div>
+<!-- HERO -->
+<section class="about-hero">
+  <!-- Swap to a committees banner: '/Photos/Service.png', '/Photos/Nature.jpg', etc. -->
+  <div class="about-hero-bg" style="background-image:url('/Photos/Service.png');"></div>
+  <div class="about-hero-overlay"></div>
 
-<!-- Body -->
-<section class="container-fluid bg-dark-navy text-white py-5">
-  <div class="container">
-    <p class="text-center font-secondary-subheading mb-4">
+  <div class="page-title-badge">
+    <div class="page-title-badge-inner">
+      <div class="page-title-badge-title">Committees</div>
+      <div class="page-title-badge-subtitle">LEGION Men's Organization</div>
+    </div>
+  </div>
+</section>
+
+<!-- INTRO / SELECT -->
+<section class="page-section bg-legion-blue">
+  <div class="page-content-container">
+    <p class="section-content text-white text-center mb-0">
       Select a committee for more information.
     </p>
+  </div>
+</section>
 
+<!-- COMMITTEE GRID -->
+<section class="page-section bg-dark-navy">
+  <div class="page-content-container">
     <% if @committees.any? %>
-      <div class="row g-3">
+      <div class="row g-4">
         <% @committees.each do |committee| %>
           <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-            <%= link_to committee_path(committee),
-                  class: "btn white-btn-resources text-legion-blue w-100 py-4 default-border-radius d-flex align-items-center justify-content-center font-primary-heading" do %>
-              <span class="me-2"><%= committee.name %></span>
+            <%= link_to committee_path(committee), class: "d-block text-decoration-none" do %>
+              <div class="event-card p-4 text-center h-100">
+                <div class="font-primary-heading fs-5"><%= committee.name %></div>
+              </div>
             <% end %>
           </div>
         <% end %>
       </div>
     <% else %>
-      <p class="text-center font-secondary-subheading mb-0">No committees yet.</p>
+      <p class="text-white text-center mb-0">No committees yet.</p>
     <% end %>
 
     <% if current_user&.exec? %>
       <div class="text-center mt-4">
         <%= link_to "Open Committees Dashboard",
                     dashboard_committees_path,
-                    class: "btn btn-gold text-dark-navy default-border-radius font-primary-heading" %>
+                    class: "btn btn-gold default-border-radius font-primary-heading" %>
       </div>
     <% end %>
   </div>
 </section>
 
-<!-- Footer Gold Strip -->
-<div class="container-fluid bg-gold py-1"></div>
+<!-- Gold Divider -->
+<div class="gold-divider"></div>
+
