@@ -1,59 +1,85 @@
+<% content_for :title, "Home" %>
+
 <% if Announcement.current.message.present? %>
   <div class="alert alert-warning text-center">
     <strong>Announcement:</strong> <%= Announcement.current.message %>
   </div>
 <% end %>
 
-<% content_for :title, "Home" %>
-
-<div class="wix-top-line"></div>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero__image" role="img" aria-label="Legion Members"></div>
-  <div class="hero__badge">
-    <div class="hero__badge-inner">
-      <%= cms_html(:hero_badge_html, page: :home) %>
+<!-- HERO SECTION -->
+<section class="home-hero">
+  <div class="home-hero-bg" style="background-image:url('/Photos/House.jpg');"></div>
+  
+  <div class="home-hero-content">
+    <div class="hero-badge">
+      <h1 class="hero-badge-title">Legion</h1>
+      <p class="hero-badge-subtitle">Lead. Serve. Build community.</p>
+      <div class="hero-badge-divider"></div>
+      <div class="hero-badge-text">
+        <%= raw @sections["hero_badge_html"] %>
+      </div>
+      
+      <div class="hero-buttons">
+        <%= link_to "Apply Now", recruitment_path, class: "btn-hero btn-apply" %>
+        <%= link_to "Learn More", about_path, class: "btn-hero btn-learn" %>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- WHO WE ARE -->
-<section class="who-we-are">
-  <div class="who__content">
-    <h2 class="who__title"><%= cms_text(:who_we_are_title, page: :home) %></h2>
-    <div class="who__rule"></div>
-    <p class="who__body"><%= cms_html(:who_we_are_body_html, page: :home) %></p>
-    <%= link_to "Learn More", resources_path, class: "btn btn-navy" %>
-  </div>
-  <div class="who__watermark" aria-hidden="true"></div>
-</section>
-
-<!-- PARTNER -->
-<section class="partner">
-  <div class="partner__container">
-    <div class="partner__logo">
-      <img src="/Logos/partner.png" alt="Camp Sweeney logo">
+<!-- WHO WE ARE SECTION -->
+<section class="home-section bg-white">
+  <div class="section-container">
+    <div class="who-content">
+      <h2 class="section-heading"><%= @sections["who_we_are_title"] %></h2>
+      <div class="section-underline"></div>
+      
+      <div class="who-text">
+        <%= raw @sections["who_we_are_body_html"] %>
+      </div>
+      
+      <%= link_to "Learn More", about_path, class: "btn-section" %>
     </div>
-    <div class="partner__text">
-      <h2 class="partner__title"><%= cms_text(:partner_title, page: :home) %></h2>
-      <p class="partner__body"><%= cms_html(:partner_body_html, page: :home) %></p>
-      <%= link_to "Philanthropy", resources_path, class: "btn btn-navy" %>
-    </div>
+    
+    <!-- Subtle watermark -->
+    <div class="legion-helmet-watermark"></div>
   </div>
 </section>
 
-<!-- FOOTER STRIP -->
-<footer class="legion-footer">
-  <div class="footer__container">
-    <h3 class="footer__title"><%= cms_text(:footer_diversity_title, page: :home) %></h3>
-    <p class="footer__body"><%= cms_html(:footer_diversity_body_html, page: :home) %></p>
+<!-- OUR PARTNER SECTION -->
+<section class="home-section bg-gray">
+  <div class="section-container">
+    <div class="partner-grid">
+      <div class="partner-logo-container">
+        <img src="/Logos/partner.png" alt="Camp Sweeney" class="partner-logo">
+      </div>
+      
+      <div class="partner-content">
+        <h2 class="section-heading text-white"><%= @sections["partner_title"] %></h2>
+        <div class="section-underline"></div>
+        
+        <div class="partner-text">
+          <%= raw @sections["partner_body_html"] %>
+        </div>
+        
+        <%= link_to "Philanthropy", philanthropy_path, class: "btn-section btn-white" %>
+      </div>
+    </div>
+  </div>
+</section>
 
+<!-- DIVERSITY STATEMENT FOOTER -->
+<section class="home-footer">
+  <div class="footer-container">
+    <h3 class="footer-title"><%= @sections["footer_diversity_title"] %></h3>
+    <div class="footer-text">
+      <%= raw @sections["footer_diversity_body_html"] %>
+    </div>
+    
     <% if current_user&.exec? || current_user&.president? %>
-      <div class="footer__edit">
-        <%= link_to "Edit Home Page", edit_home_path, class: "btn btn-outline-light" %>
+      <div class="footer-edit">
+        <%= link_to "Edit Home Page", edit_home_path, class: "btn btn-outline-light btn-sm" %>
       </div>
     <% end %>
   </div>
-</footer>
-
+</section>

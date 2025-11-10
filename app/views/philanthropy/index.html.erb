@@ -1,0 +1,115 @@
+<% content_for :title, "Philanthropy" %>
+
+<!-- Thin top line -->
+<div class="wix-top-line"></div>
+
+<!-- HERO -->
+<section class="about-hero">
+  <!-- IMAGE PATH: Use '/Photos/Philanthropy.jpg' or any image you want -->
+  <div class="about-hero-bg" style="background-image:url('/Photos/Service.png');"></div>
+  <div class="about-hero-overlay"></div>
+  
+  <div class="page-title-badge">
+    <div class="page-title-badge-inner">
+      <div class="page-title-badge-title"><%= @sections["hero_title"] %></div>
+      <div class="page-title-badge-subtitle">LEGION Men's Organization</div>
+    </div>
+  </div>
+</section>
+
+<!-- INTRO -->
+<section class="page-section bg-legion-blue">
+  <div class="page-content-container">
+    <div class="section-content text-white text-center">
+      <p class="lead-text"><%= @sections["hero_subtitle"] %></p>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT CAMP SWEENEY -->
+<section class="page-section bg-dark-navy">
+  <div class="page-content-container">
+    <h2 class="section-title text-white text-center"><%= @sections["intro_title"] %></h2>
+    <div class="section-divider-center"></div>
+    
+    <div class="content-grid">
+      <div class="content-panel">
+        <div class="section-content text-white">
+          <%= raw @sections["intro_body_html"] %>
+        </div>
+      </div>
+      
+      <!-- IMAGE PATH: Use '/Photos/CampSweeney1.jpg' -->
+      <div class="photo-container">
+        <figure class="photo-figure">
+          <img src="/Photos/campsweeney.png" alt="Camp Sweeney" class="photo-img" />
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OUR PARTNER -->
+<section class="page-section bg-legion-blue">
+  <div class="page-content-container">
+    <h2 class="section-title text-white text-center"><%= @sections["partner_title"] %></h2>
+    <div class="section-divider-center"></div>
+    
+    <div class="partner-showcase">
+      <!-- Camp Sweeney Logo/Image - IMAGE PATH: '/Logos/CampSweeneyLogo.png' -->
+      <div class="partner-logo-box">
+        <img src="/Logos/partner.png" alt="<%= @sections["partner_name"] %>" class="partner-logo-img" />
+      </div>
+      
+      <div class="section-content text-white">
+        <%= raw @sections["partner_body_html"] %>
+      </div>
+      
+      <div class="text-center mt-4">
+        <a href="<%= @sections["partner_link_url"] %>" class="btn btn-gold" target="_blank" rel="noopener">
+          <%= @sections["partner_link_label"] %>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SMOKE OUT DIABETES -->
+<section class="page-section bg-dark-navy">
+  <div class="page-content-container">
+    <h2 class="section-title text-white text-center"><%= @sections["events_title"] %></h2>
+    <div class="section-divider-center"></div>
+    
+    <div class="events-grid">
+      <div class="section-content text-white">
+        <%= raw @sections["events_body_html"] %>
+      </div>
+      
+      <!-- EVENT IMAGES GRID - IMAGE PATHS: '/Photos/SmokeOut1.jpg', '/Photos/SmokeOut2.jpg' -->
+      <div class="events-photos">
+        <img src="/Photos/cookout1.png" alt="Smoke Out Diabetes Event" class="event-photo" />
+        <img src="/Photos/cookout2.png" alt="Smoke Out Diabetes Event" class="event-photo" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OUR IMPACT -->
+<section class="page-section bg-legion-blue">
+  <div class="page-content-container">
+    <h2 class="section-title text-white text-center"><%= @sections["impact_title"] %></h2>
+    <div class="section-divider-center"></div>
+    
+    <div class="section-content text-white text-center">
+      <%= raw @sections["impact_body_html"] %>
+    </div>
+  </div>
+</section>
+
+<% if current_user&.exec? || current_user&.president? %>
+  <section class="page-section bg-dark-navy">
+    <div class="page-content-container text-center">
+      <%= link_to "Edit Philanthropy Page", edit_philanthropy_path, class: "btn btn-outline-light" %>
+    </div>
+  </section>
+<% end %>

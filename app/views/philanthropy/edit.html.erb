@@ -1,0 +1,202 @@
+<% content_for :title, "Edit Philanthropy" %>
+
+<!-- Top Heading -->
+<div class="container-fluid bg-dark-navy text-white py-3">
+  <h1 class="text-center font-primary-title">Edit Philanthropy Page</h1>
+</div>
+
+<!-- Main Body -->
+<div class="container-fluid bg-gold py-2">
+  <div class="row">
+
+    <!-- LEFT COLUMN: Editable Sections -->
+    <div class="col-md-7 bg-white text-dark-navy p-4 min-vh-100">
+
+      <%= form_with url: philanthropy_path, method: :patch, local: true do |f| %>
+
+        <!-- Scrollable Edit Form Container -->
+        <div class="overflow-auto pe-2 edit-scroll-container" style="max-height: 75vh; margin-left: 3vw;">
+
+          <!-- HERO SECTION -->
+          <div class="edit-card p-4 mb-4">
+            <h3 class="font-primary-title mb-2 text-white">Hero Section</h3>
+            <p class="text-gold mb-0 font-primary-heading"><strong>Can Edit Title & Subtitle</strong></p>
+            <p class="text-white mb-0 font-secondary-body"><strong>All Fields Accept Plaintext</strong></p>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Current Title:</label>
+              <%= text_field_tag "philanthropy_page[hero_title]", @sections["hero_title"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Current Subtitle:</label>
+              <%= text_area_tag "philanthropy_page[hero_subtitle]", @sections["hero_subtitle"], rows: 3, class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+          </div>
+
+          <!-- INTRO SECTION -->
+          <div class="edit-card p-4 mb-4">
+            <h3 class="font-primary-title mb-2 text-white">About Camp Sweeney Section</h3>
+            <p class="text-gold mb-0 font-primary-heading"><strong>Can Edit Title & Body</strong></p>
+            <p class="text-white mb-0 font-secondary-body"><strong>Body Accepts HTML & Plaintext</strong></p>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Current Title:</label>
+              <%= text_field_tag "philanthropy_page[intro_title]", @sections["intro_title"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Current Body:</label>
+              <%= text_area_tag "philanthropy_page[intro_body_html]", @sections["intro_body_html"], rows: 6, class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+          </div>
+
+          <!-- PARTNER SECTION -->
+          <div class="edit-card p-4 mb-4">
+            <h3 class="font-primary-title mb-2 text-white">Partner Section</h3>
+            <p class="text-gold mb-0 font-primary-heading"><strong>Can Edit All Fields</strong></p>
+            <p class="text-white mb-0 font-secondary-body"><strong>Body Accepts HTML</strong></p>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Partner Name:</label>
+              <%= text_field_tag "philanthropy_page[partner_name]", @sections["partner_name"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Section Title:</label>
+              <%= text_field_tag "philanthropy_page[partner_title]", @sections["partner_title"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Body Text:</label>
+              <%= text_area_tag "philanthropy_page[partner_body_html]", @sections["partner_body_html"], rows: 8, class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Link URL:</label>
+              <%= text_field_tag "philanthropy_page[partner_link_url]", @sections["partner_link_url"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Link Label:</label>
+              <%= text_field_tag "philanthropy_page[partner_link_label]", @sections["partner_link_label"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+          </div>
+
+          <!-- EVENTS SECTION -->
+          <div class="edit-card p-4 mb-4">
+            <h3 class="font-primary-title mb-2 text-white">Events Section</h3>
+            <p class="text-gold mb-0 font-primary-heading"><strong>Can Edit Title & Body</strong></p>
+            <p class="text-white mb-0 font-secondary-body"><strong>Body Accepts HTML</strong></p>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Event Title:</label>
+              <%= text_field_tag "philanthropy_page[events_title]", @sections["events_title"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Event Description:</label>
+              <%= text_area_tag "philanthropy_page[events_body_html]", @sections["events_body_html"], rows: 6, class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+          </div>
+
+          <!-- IMPACT SECTION -->
+          <div class="edit-card p-4 mb-4">
+            <h3 class="font-primary-title mb-2 text-white">Impact Section</h3>
+            <p class="text-gold mb-0 font-primary-heading"><strong>Can Edit Title & Body</strong></p>
+            <p class="text-white mb-0 font-secondary-body"><strong>Body Accepts HTML</strong></p>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Impact Title:</label>
+              <%= text_field_tag "philanthropy_page[impact_title]", @sections["impact_title"], class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+
+            <div class="mt-3">
+              <label class="font-secondary-subheading mb-2 text-white">Impact Text:</label>
+              <%= text_area_tag "philanthropy_page[impact_body_html]", @sections["impact_body_html"], rows: 4, class: "form-control default-border-radius edit-textarea font-secondary-subheading" %>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Buttons Below Scrollable Form -->
+        <div class="d-flex justify-content-start gap-3 mt-4" style="margin-left: 3vw;">
+          <%= f.submit "Save", class: "btn btn-gold text-dark-navy font-secondary-body default-border-radius" %>
+          <%= link_to "Cancel", philanthropy_path, class: "btn btn-gold text-dark-navy font-secondary-body default-border-radius" %>
+        </div>
+
+      <% end %>
+    </div>
+
+    <!-- RIGHT COLUMN: Update Log -->
+    <div class="col-md-5 bg-legion-blue text-white p-4 min-vh-100">
+
+      <!-- User Guide Button -->
+      <div style="padding-left: 3vw; padding-right: 3vw;">
+        <button type="button" class="btn white-btn-edit mb-3 default-border-radius btn-lg font-primary-heading w-100"
+          data-bs-toggle="modal" data-bs-target="#UserGuideModal">
+          User Guide: Editing Philanthropy Page
+        </button>
+      </div>
+
+      <!-- Update Log Table -->
+      <div class="table-responsive log-scroll-container" style="max-height: 75vh; overflow-y: auto; padding-left: 3vw; padding-right: 3vw;">
+        <table class="table table-bordered table-striped border-white">
+          <thead>
+            <tr>
+              <th colspan="2" class="bg-white text-dark text-center h5 font-secondary-heading">Update Log</th>
+            </tr>
+            <tr>
+              <th class="bg-legion-blue text-white font-secondary-body border-white">Updated By</th>
+              <th class="bg-legion-blue text-white font-secondary-body border-white">Timestamp</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% (@philanthropy_versions || []).each do |version| %>
+              <tr>
+                <td class="font-secondary-subheading"><%= version.user.first_name %> <%= version.user.last_name %></td>
+                <td class="font-secondary-subheading"><%= version.created_at.in_time_zone("Central Time (US & Canada)").strftime("%B %d, %Y at %I:%M %p") %></td>
+              </tr>
+            <% end %>
+            <% if @philanthropy_versions.blank? %>
+              <tr>
+                <td colspan="2" class="text-center font-secondary-subheading text-black">
+                  No updates logged yet.
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+
+<!-- User Guide Modal -->
+<div class="modal fade edit-info-modal" id="UserGuideModal" tabindex="-1" aria-labelledby="UserGuideModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title font-primary-heading" id="UserGuideModalLabel">Philanthropy Edit Guide</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body font-secondary-subheading">
+        <p>Welcome to the Philanthropy Page Editing Guide!</p>
+        <h6 class="font-secondary-body text-gold mt-4">Editing the Philanthropy Page</h6>
+        <ul class="font-secondary-subheading">
+          <li>Each section is editable. Save at the bottom.</li>
+          <li>Saved changes reflect immediately on the public Philanthropy page.</li>
+        </ul>
+        <h6 class="text-gold mt-4 font-secondary-body">Understanding the Update Log</h6>
+        <ul class="font-secondary-subheading">
+          <li>Edits are recorded for accountability and rollbacks.</li>
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-gold text-dark-navy font-secondary-body" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

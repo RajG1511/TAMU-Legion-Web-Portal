@@ -1041,3 +1041,432 @@ input[type="number"].form-dark::-webkit-outer-spin-button {
     width: 100%;
   }
 }
+
+/* ================= HOME PAGE STYLES ================= */
+
+/* Hero Section */
+.home-hero {
+  position: relative;
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.home-hero-bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.4);
+}
+
+.home-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 0 20px;
+}
+
+.hero-badge {
+  background: rgba(15, 41, 107, 0.95);
+  padding: 40px 50px;
+  max-width: 600px;
+  margin: 0 auto;
+  border: 3px solid #fff;
+}
+
+.hero-badge-title {
+  font-family: "Libre Baskerville", serif;
+  font-size: 48px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 10px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.hero-badge-subtitle {
+  font-family: "Public Sans", sans-serif;
+  font-size: 20px;
+  color: #dbc296;
+  margin: 0 0 20px;
+}
+
+.hero-badge-divider {
+  width: 80px;
+  height: 3px;
+  background: #dbc296;
+  margin: 0 auto 20px;
+}
+
+.hero-badge-text {
+  color: #fff;
+  font-family: "Public Sans", sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.hero-badge-text strong {
+  color: #dbc296;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.btn-hero {
+  padding: 12px 30px;
+  font-family: "Barlow", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+}
+
+.btn-apply {
+  background: #dbc296;
+  color: #081436;
+}
+
+.btn-apply:hover {
+  background: transparent;
+  color: #dbc296;
+  border-color: #dbc296;
+}
+
+.btn-learn {
+  background: transparent;
+  color: #fff;
+  border-color: #fff;
+}
+
+.btn-learn:hover {
+  background: #fff;
+  color: #081436;
+}
+
+/* Section Styles */
+.home-section {
+  padding: 80px 0;
+  position: relative;
+}
+
+.bg-white {
+  background: #ffffff;
+}
+
+.bg-gray {
+  background: #6b7885;
+}
+
+.section-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+}
+
+/* Who We Are Section */
+.who-content {
+  max-width: 800px;
+  text-align: center;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.section-heading {
+  font-family: "Libre Baskerville", serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: #081436;
+  margin: 0 0 15px;
+}
+
+.section-underline {
+  width: 100px;
+  height: 4px;
+  background: #081436;
+  margin: 0 auto 30px;
+}
+
+.who-text,
+.partner-text {
+  font-family: "Public Sans", sans-serif;
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 30px;
+  color: #333;
+}
+
+.partner-text {
+  color: #fff;
+}
+
+.btn-section {
+  display: inline-block;
+  padding: 12px 30px;
+  background: #081436;
+  color: #fff;
+  font-family: "Barlow", sans-serif;
+  font-weight: 600;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  border: 2px solid #081436;
+}
+
+.btn-section:hover {
+  background: transparent;
+  color: #081436;
+}
+
+.btn-white {
+  background: #fff;
+  color: #081436;
+  border-color: #fff;
+}
+
+.btn-white:hover {
+  background: transparent;
+  color: #fff;
+  border-color: #fff;
+}
+
+/* Legion Helmet Watermark */
+.legion-helmet-watermark {
+  position: absolute;
+  top: 50%;
+  right: 10%;
+  transform: translateY(-50%);
+  width: 300px;
+  height: 300px;
+  background-image: url('/Logos/legion small white.PNG');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.05;
+  filter: grayscale(100%);
+  z-index: 1;
+}
+
+/* Partner Section */
+.partner-grid {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 60px;
+  align-items: center;
+}
+
+.partner-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  padding: 30px;
+  border: 4px solid #dbc296;
+}
+
+.partner-logo {
+  max-width: 100%;
+  height: auto;
+}
+
+.partner-content {
+  text-align: left;
+}
+
+.partner-content .section-heading {
+  color: #fff;
+}
+
+.partner-content .section-underline {
+  margin: 0 0 30px;
+  background: #dbc296;
+}
+
+/* Footer Section */
+.home-footer {
+  background: #081436;
+  padding: 50px 0;
+  color: #fff;
+}
+
+.footer-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+.footer-title {
+  font-family: "Libre Baskerville", serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #dbc296;
+  margin: 0 0 20px;
+}
+
+.footer-text {
+  font-family: "Public Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.8;
+  color: #fff;
+  opacity: 0.9;
+}
+
+.footer-edit {
+  margin-top: 30px;
+  padding-top: 30px;
+  border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 992px) {
+  .home-hero {
+    height: 400px;
+  }
+
+  .hero-badge {
+    padding: 30px 35px;
+  }
+
+  .hero-badge-title {
+    font-size: 36px;
+  }
+
+  .partner-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .partner-logo-container {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .partner-content {
+    text-align: center;
+  }
+
+  .partner-content .section-underline {
+    margin: 0 auto 30px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-badge {
+    padding: 25px 20px;
+  }
+
+  .hero-badge-title {
+    font-size: 28px;
+  }
+
+  .hero-badge-subtitle {
+    font-size: 16px;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+  }
+
+  .btn-hero {
+    width: 100%;
+  }
+
+  .section-heading {
+    font-size: 32px;
+  }
+
+  .home-section {
+    padding: 60px 0;
+  }
+
+  .legion-helmet-watermark {
+    display: none;
+  }
+}
+
+/* PHILANTHROPY PAGE STYLES */
+.lead-text {
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.partner-showcase {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.partner-logo-box {
+  width: 200px;
+  height: 200px;
+  margin: 0 auto 30px;
+  padding: 20px;
+  background: white;
+  border: 4px solid #dbc296;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.partner-logo-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.events-grid {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.events-photos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 30px;
+}
+
+.event-photo {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border: 4px solid #fff;
+}
+
+/* FIX FOR ABOUT PAGE IMAGE - Update the existing styles */
+.photo-container {
+  padding: 6px;
+  background: white;
+  height: 100%; /* Add this */
+}
+
+.photo-figure {
+  margin: 0;
+  overflow: hidden;
+  position: relative;
+  min-height: 450px;
+  height: 100%; /* Add this */
+  background: #081436;
+}
+
+.photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center; /* Add this */
+  display: block;
+}
