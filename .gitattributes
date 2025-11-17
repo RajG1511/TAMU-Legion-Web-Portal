@@ -7,3 +7,17 @@ db/schema.rb linguist-generated
 vendor/* linguist-vendored
 config/credentials/*.yml.enc diff=rails_credentials
 config/credentials.yml.enc diff=rails_credentials
+
+# Ensure all Ruby scripts and bin files use LF
+bin/* text eol=lf
+*.rb text eol=lf
+*.rake text eol=lf
+
+# Rails config and text templates
+*.yml text eol=lf
+*.yaml text eol=lf
+*.erb text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.html text eol=lf
