@@ -327,7 +327,7 @@ input[type="number"].form-dark::-webkit-outer-spin-button {
 #memberPhotoCarousel, #memberPhotoCarousel .carousel-inner, #memberPhotoCarousel .carousel-item img { border-radius: 0 !important; }
 #memberPhotoCarousel .btn-danger { background-color: #dbc296 !important; border: none !important; color: #000; z-index: 10; }
 #memberPhotoCarousel .carousel-control-prev, #memberPhotoCarousel .carousel-control-next { width: 50px; border-radius: 50%; }
-#memberPhotoCarousel .carousel-control-prev-icon, #memberPhotoCarousel .carousel-control-next-icon { filter: invert(100%); }
+#memberPhotoCarousel .carousel-control-prev-icon, #memberPhotoCarousel .carousel-control-next-icon { filter: invert(0%); }
 #editMemberCenterCaptionModal .btn-gold { background-color: #dbc296; color: #081436; font-weight: 600; border-radius: 0; transition: all 0.2s ease-in-out; }
 #editMemberCenterCaptionModal .btn-gold:hover { transform: scale(1.03); }
 
