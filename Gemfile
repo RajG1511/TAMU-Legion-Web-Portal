@@ -99,3 +99,6 @@ gem 'omniauth-google-oauth2', '~> 1.1'
 gem 'best_in_place'
 gem "image_processing", "~> 1.2", require: "image_processing/mini_magick"
 gem "mini_magick"
+
+gem "cloudinary"
+gem "activestorage-cloudinary-service"
