@@ -1,5 +1,7 @@
 # README
 
+**Note: This repository is just to showcase the code and not the actual project repo which is private**
+
 This README would normally document whatever steps are necessary to get the
 application up and running.
 
@@ -21,4 +23,3 @@ Things you may want to cover:
 
 * Deployment instructions
 
-* ...
